@@ -1,0 +1,30 @@
+{
+  "name": "headless-byteball",
+  "description": "Byteball headless wallet",
+  "author": "Byteball",
+  "version": "0.1.0",
+  "main": "start.js",
+  "keywords": [
+    "wallet",
+    "headless",
+    "byteball",
+    "full node"
+  ],
+  "license": "MIT",
+  "repository": {
+    "url": "git://github.com/byteball/headless-byteball.git",
+    "type": "git"
+  },
+  "bugs": {
+    "url": "https://github.com/byteball/headless--byteball/issues"
+  },
+  "browser": {
+    "request": "browser-request",
+    "secp256k1": "secp256k1/js"
+  },
+  "dependencies": {
+    "byteballcore": "byteball/byteballcore",
+    "bitcore-lib": "^0.13.14",
+    "bitcore-mnemonic": "~1.0.0"
+  }
+}

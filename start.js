@@ -2,6 +2,7 @@
 "use strict";
 var fs = require('fs');
 var crypto = require('crypto');
+var util = require('util');
 var constants = require('byteballcore/constants.js');
 var conf = require('byteballcore/conf.js');
 var objectHash = require('byteballcore/object_hash.js');
@@ -17,6 +18,18 @@ var appDataDir = desktopApp.getAppDataDir();
 var KEYS_FILENAME = appDataDir + '/' + conf.KEYS_FILENAME;
 var wallet_id;
 var xPrivKey;
+
+function replaceConsoleLog(){
+	var log_filename = appDataDir + '/log.txt';
+	var writeStream = fs.createWriteStream(log_filename);
+	console.log('---------------');
+	console.log('From this point, output will be redirected to '+log_filename);
+	console.log("To release the terminal, type Ctrl-Z, then 'bg'");
+	console.log = function(){
+		writeStream.write(Date().toString()+': ');
+		writeStream.write(util.format.apply(null, arguments) + '\n');
+	}
+}
 
 function readKeys(onDone){
 	console.log('-----------------------');
@@ -211,6 +224,7 @@ setTimeout(function(){
 			if (conf.permanent_paring_secret)
 				console.log("my pairing code: "+my_device_pubkey+"@"+conf.hub+"#"+conf.permanent_paring_secret);
 			eventBus.emit('headless_wallet_ready');
+			setTimeout(replaceConsoleLog, 1000);
 		});
 	});
 }, 1000);

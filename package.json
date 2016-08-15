@@ -23,7 +23,7 @@
     "secp256k1": "secp256k1/js"
   },
   "dependencies": {
-    "byteballcore": "byteball/byteballcore",
+    "byteballcore": "git+https://github.com/byteball/byteballcore.git",
     "bitcore-lib": "^0.13.14",
     "bitcore-mnemonic": "~1.0.0"
   }

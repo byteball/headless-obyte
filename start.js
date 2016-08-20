@@ -67,19 +67,11 @@ function readKeys(onDone){
 							while (!Mnemonic.isValid(mnemonic.toString()))
 								mnemonic = new Mnemonic();
 
-							var xPrivKey = mnemonic.toHDPrivateKey(passphrase);
-							var devicePrivKey = xPrivKey.derive("m/1'").privateKey.bn.toBuffer({size:32});
-							var device = require('byteballcore/device.js');
-							device.setDevicePrivateKey(devicePrivKey);
-							var strXPubKey = Bitcore.HDPublicKey(xPrivKey.derive("m/44'/0'/0'")).toString();
-
 							writeKeys(mnemonic.phrase, deviceTempPrivKey, devicePrevTempPrivKey, function(){
 								console.log('keys created');
-								var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
-								walletDefinedByKeys.createWalletByDevices(strXPubKey, 0, 1, [], 'any walletName', function(wallet_id){
-									walletDefinedByKeys.issueNextAddress(wallet_id, 0, function(addressInfo){
-										onDone(mnemonic.phrase, passphrase, deviceTempPrivKey, devicePrevTempPrivKey);
-									});
+								var xPrivKey = mnemonic.toHDPrivateKey(passphrase);
+								createWallet(xPrivKey, function(){
+									onDone(mnemonic.phrase, passphrase, deviceTempPrivKey, devicePrevTempPrivKey);
 								});
 							});
 						}
@@ -93,7 +85,19 @@ function readKeys(onDone){
 				process.stdout.moveCursor(0, -1);
 				process.stdout.clearLine();
 				var keys = JSON.parse(data);
-				onDone(keys.mnemonic_phrase, passphrase, Buffer(keys.temp_priv_key, 'base64'), Buffer(keys.prev_temp_priv_key, 'base64'));
+				var deviceTempPrivKey = Buffer(keys.temp_priv_key, 'base64');
+				var devicePrevTempPrivKey = Buffer(keys.prev_temp_priv_key, 'base64');
+				determineIfWalletExists(function(bWalletExists){
+					if (bWalletExists)
+						onDone(keys.mnemonic_phrase, passphrase, deviceTempPrivKey, devicePrevTempPrivKey);
+					else{
+						var mnemonic = new Mnemonic(keys.mnemonic_phrase);
+						var xPrivKey = mnemonic.toHDPrivateKey(passphrase);
+						createWallet(xPrivKey, function(){
+							onDone(keys.mnemonic_phrase, passphrase, deviceTempPrivKey, devicePrevTempPrivKey);
+						});
+					}
+				});
 			});
 		}
 	});
@@ -110,6 +114,19 @@ function writeKeys(mnemonic_phrase, deviceTempPrivKey, devicePrevTempPrivKey, on
 			throw Error("failed to write keys file");
 		if (onDone)
 			onDone();
+	});
+}
+
+function createWallet(xPrivKey, onDone){
+	var devicePrivKey = xPrivKey.derive("m/1'").privateKey.bn.toBuffer({size:32});
+	var device = require('byteballcore/device.js');
+	device.setDevicePrivateKey(devicePrivKey); // we need device address before creating a wallet
+	var strXPubKey = Bitcore.HDPublicKey(xPrivKey.derive("m/44'/0'/0'")).toString();
+	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+	walletDefinedByKeys.createWalletByDevices(strXPubKey, 0, 1, [], 'any walletName', function(wallet_id){
+		walletDefinedByKeys.issueNextAddress(wallet_id, 0, function(addressInfo){
+			onDone();
+		});
 	});
 }
 
@@ -150,6 +167,14 @@ function readSingleWallet(handleWallet){
 		if (rows.length > 1)
 			throw Error("more than 1 wallet");
 		handleWallet(rows[0].wallet);
+	});
+}
+
+function determineIfWalletExists(handleResult){
+	db.query("SELECT wallet FROM wallets", function(rows){
+		if (rows.length > 1)
+			throw Error("more than 1 wallet");
+		handleResult(rows.length > 0);
 	});
 }
 

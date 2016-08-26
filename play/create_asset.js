@@ -43,7 +43,7 @@ function createAsset(){
 		],
 		//attestors: ["X5ZHWBYBF4TUYS35HU3ROVDQJC772ZMG", "GZSEKMEQVOW2ZAHDZBABRTECDSDFBWVH", "2QLYLKHMUG237QG36Z6AWLVH4KQ4MEY6"].sort()
 	};
-	composer.composeAssetDefinitionJoint("PYQJWUWRMUUUSUHKNJWFHSR5OADZMUYR", asset, headlessWallet.signer, callbacks);
+	composer.composeAssetDefinitionJoint("3VH6WZ4V5AD2U55MQLRQPHRRCYQCFDUI", asset, headlessWallet.signer, callbacks);
 }
 
 eventBus.on('headless_wallet_ready', createAsset);

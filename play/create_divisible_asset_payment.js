@@ -9,8 +9,8 @@ function onError(err){
 
 function createDivisibleAssetPayment(){
 	var network = require('byteballcore/network.js');
-	var divisibleAsset = require('./divisible_asset.js');
-	var walletGeneral = require('./wallet_general.js');
+	var divisibleAsset = require('byteballcore/divisible_asset.js');
+	var walletGeneral = require('byteballcore/wallet_general.js');
 	
 	divisibleAsset.composeAndSaveDivisibleAssetPaymentJoint({
 		asset: 'gRUW3CkKYA9LNf2/gX4bnDdnDZyPY9TAd9wIATzXSwE=', 

@@ -255,26 +255,42 @@ setTimeout(function(){
 }, 1000);
 
 
-// The below events can arrive only after we read the keys and connect to the hub.
-// The event handlers depend on the global var wallet_id being set, which is set after reading the keys
-
-eventBus.on('paired', function(from_address){
-	console.log('paired '+from_address);
-	if (!isControlAddress(from_address))
-		return console.log('ignoring pairing from non-control address');
+function handlePairing(from_address){
 	var device = require('byteballcore/device.js');
 	prepareBalanceText(function(balance_text){
 		device.sendMessageToDevice(from_address, 'text', balance_text);
 	});
-});
+}
 
-eventBus.on('text', function(from_address, text){
-	console.log('text from '+from_address+': '+text);
-	if (!isControlAddress(from_address))
-		return console.log('ignoring text from non-control address');
+function sendPayment(amount, to_address, change_address, device_address, onDone){
+	var device = require('byteballcore/device.js');
+	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+	walletDefinedByKeys.sendPaymentFromWallet(
+		null, wallet_id, to_address, amount, change_address, 
+		[], device_address, 
+		signWithLocalPrivateKey, 
+		function(err){
+			if (err)
+				device.sendMessageToDevice(device_address, 'text', "Failed to pay: "+err);
+			// if successful, the peer will also receive a payment notification
+			device.sendMessageToDevice(device_address, 'text', "paid");
+			if (onDone)
+				onDone(err);
+		}
+	);
+}
+
+function issueChangeAddressAndSendPayment(amount, to_address, device_address, onDone){
+	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+	walletDefinedByKeys.issueOrSelectNextChangeAddress(wallet_id, function(objAddr){
+		sendPayment(amount, to_address, objAddr.address, device_address, onDone);
+	});
+}
+
+function handleText(from_address, text){
 	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
 	var device = require('byteballcore/device.js');
-	text = text.trim();
+	text = text.trim().toLowerCase();
 	switch(text){
 		case 'address':
 			if (conf.bSingleAddress)
@@ -301,32 +317,43 @@ eventBus.on('text', function(from_address, text){
 			if (!conf.payout_address)
 				return device.sendMessageToDevice(from_address, 'text', "payout address not defined");
 
-			var sendPayment = function(change_address){
-				walletDefinedByKeys.sendPaymentFromWallet(
-					null, wallet_id, conf.payout_address, amount, change_address, 
-					[], from_address, 
-					signWithLocalPrivateKey, 
-					function(err){
-						if (err)
-							device.sendMessageToDevice(from_address, 'text', "Failed to pay: "+err);
-						// if successful, the peer will also receive a payment notification
-						device.sendMessageToDevice(from_address, 'text', "paid");
-					}
-				);
-			};
-
 			if (conf.bSingleAddress)
 				readSingleAddress(function(address){
-					sendPayment(address);
+					sendPayment(amount, conf.payout_address, address, from_address);
 				});
 			else
 				// create a new change address or select first unused one
-				walletDefinedByKeys.issueOrSelectNextChangeAddress(wallet_id, function(objAddr){
-					sendPayment(objAddr.address);
-				});
+				issueChangeAddressAndSendPayment(amount, conf.payout_address, from_address);
 	}
-});
+}
+
+// The below events can arrive only after we read the keys and connect to the hub.
+// The event handlers depend on the global var wallet_id being set, which is set after reading the keys
+
+function setupChatEventHandlers(){
+	eventBus.on('paired', function(from_address){
+		console.log('paired '+from_address);
+		if (!isControlAddress(from_address))
+			return console.log('ignoring pairing from non-control address');
+		handlePairing(from_address);
+	});
+
+	eventBus.on('text', function(from_address, text){
+		console.log('text from '+from_address+': '+text);
+		if (!isControlAddress(from_address))
+			return console.log('ignoring text from non-control address');
+		handleText(from_address, text);
+	});
+}
 
 exports.readSingleWallet = readSingleWallet;
 exports.readSingleAddress = readSingleAddress;
 exports.signer = signer;
+exports.isControlAddress = isControlAddress;
+exports.issueChangeAddressAndSendPayment = issueChangeAddressAndSendPayment;
+exports.setupChatEventHandlers = setupChatEventHandlers;
+exports.handlePairing = handlePairing;
+exports.handleText = handleText;
+
+if (require.main === module)
+	setupChatEventHandlers();

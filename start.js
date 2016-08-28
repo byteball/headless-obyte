@@ -262,28 +262,29 @@ function handlePairing(from_address){
 	});
 }
 
-function sendPayment(amount, to_address, change_address, device_address, onDone){
+function sendPayment(asset, amount, to_address, change_address, device_address, onDone){
 	var device = require('byteballcore/device.js');
 	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
 	walletDefinedByKeys.sendPaymentFromWallet(
-		null, wallet_id, to_address, amount, change_address, 
+		asset, wallet_id, to_address, amount, change_address, 
 		[], device_address, 
 		signWithLocalPrivateKey, 
 		function(err){
 			if (err)
 				device.sendMessageToDevice(device_address, 'text', "Failed to pay: "+err);
-			// if successful, the peer will also receive a payment notification
-			device.sendMessageToDevice(device_address, 'text', "paid");
+			else
+				// if successful, the peer will also receive a payment notification
+				device.sendMessageToDevice(device_address, 'text', "paid");
 			if (onDone)
 				onDone(err);
 		}
 	);
 }
 
-function issueChangeAddressAndSendPayment(amount, to_address, device_address, onDone){
+function issueChangeAddressAndSendPayment(asset, amount, to_address, device_address, onDone){
 	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
 	walletDefinedByKeys.issueOrSelectNextChangeAddress(wallet_id, function(objAddr){
-		sendPayment(amount, to_address, objAddr.address, device_address, onDone);
+		sendPayment(asset, amount, to_address, objAddr.address, device_address, onDone);
 	});
 }
 
@@ -319,11 +320,11 @@ function handleText(from_address, text){
 
 			if (conf.bSingleAddress)
 				readSingleAddress(function(address){
-					sendPayment(amount, conf.payout_address, address, from_address);
+					sendPayment(null, amount, conf.payout_address, address, from_address);
 				});
 			else
 				// create a new change address or select first unused one
-				issueChangeAddressAndSendPayment(amount, conf.payout_address, from_address);
+				issueChangeAddressAndSendPayment(null, amount, conf.payout_address, from_address);
 	}
 }
 

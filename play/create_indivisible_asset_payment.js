@@ -13,11 +13,11 @@ function createIndivisibleAssetPayment(){
 	var walletGeneral = require('byteballcore/wallet_general.js');
 	
 	indivisibleAsset.composeAndSaveIndivisibleAssetPaymentJoint({
-		asset: 'Qgb6/iSQeuaE7sMJY4WI/Nqukn2lRqwGlyxsuvjCRVI=', 
+		asset: 'JY4RvlUGv0qWItikizmNOIjIYZeEciODOog8AzLju50=', 
 		paying_addresses: ["3VH6WZ4V5AD2U55MQLRQPHRRCYQCFDUI"],
 		change_address: "3VH6WZ4V5AD2U55MQLRQPHRRCYQCFDUI",
-		to_address: "C4HXVBEHNEMWBAADDLY2GZU7INUMSJ47",
-		amount: 5321, 
+		to_address: "ORKPD5QZFX4JDGYBQ7FV535LCRDOJQHK",
+		amount: 2111100000000000, 
 		tolerance_plus: 0, 
 		tolerance_minus: 0, 
 		signer: headlessWallet.signer, 

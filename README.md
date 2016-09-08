@@ -53,3 +53,6 @@ However, that is not enough.  If an attacker gets access to your server, he coul
 
 Don't keep more money than necessary on the server wallet, withdraw the excess using `pay` command in the chat interface.
 
+## Custom commands
+
+Payments are the central but not the only type of data that Byteball stores.  In [play/](play/) subdirectory, you will find many small scripts that demonstrate how to create other message types that are not available through the GUI wallet.  In particular, you can declare and issue your own assets, post data as an oracle, create polls and cast votes.  Just edit any of these scripts and run it.

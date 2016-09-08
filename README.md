@@ -31,9 +31,10 @@ If you want to change any defaults, refer to the documentation of [byteballcore]
 
 ## Remote control
 
-You can remotely control your wallet via chat interface from devices listed in `control_addresses`.  When the wallet starts, it prints out its pairing code.  Copy it, open your GUI wallet, menu button, paired devices, add a new device, accept invitation, paste the code.  Now your GUI wallet is paired to your headless wallet and you can find it in the list of correspondents (menu, paired devices) to start a chat.  There are two commands you can give:
+You can remotely control your wallet via chat interface from devices listed in `control_addresses`.  When the wallet starts, it prints out its pairing code.  Copy it, open your GUI wallet, menu button, paired devices, add a new device, accept invitation, paste the code.  Now your GUI wallet is paired to your headless wallet and you can find it in the list of correspondents (menu, paired devices) to start a chat.  There are three commands you can give:
 
 * `balance`: to request the current balance on the headless wallet;
+* `address`: to get to know one of the wallet's addresses, you use it to refill the wallet's balance;
 * `pay <amount in bytes>` to request withdrawal from the headless wallet to your `payout_address`.
 
 ![Chat with headless wallet](chat-with-headless.png)

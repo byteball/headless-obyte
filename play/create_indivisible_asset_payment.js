@@ -24,14 +24,14 @@ function createIndivisibleAssetPayment(){
 		callbacks: {
 			ifError: onError,
 			ifNotEnoughFunds: onError,
-			ifOk: function(objJoint, arrChains){
+			ifOk: function(objJoint, arrRecipientChains, arrCosignerChains){
 				network.broadcastJoint(objJoint);
-				if (arrChains){ // if the asset is private
+				if (arrRecipientChains){ // if the asset is private
 					// send directly to the receiver
-					//network.sendPrivatePayment('wss://example.org/bb', arrChains);
+					//network.sendPrivatePayment('wss://example.org/bb', arrRecipientChains);
 					
 					// or send to the receiver's device address through the receiver's hub
-					walletGeneral.sendPrivatePayments("0DTZZY6J27KSEVEXL4BIGTZXAELJ47OYW", arrChains);
+					walletGeneral.sendPrivatePayments("0DTZZY6J27KSEVEXL4BIGTZXAELJ47OYW", arrRecipientChains);
 				}
 			}
 		}

@@ -299,7 +299,7 @@ function handleText(from_address, text){
 					device.sendMessageToDevice(from_address, 'text', address);
 				});
 			else
-				walletDefinedByKeys.issueNextAddress(wallet_id, 0, function(addressInfo){
+				walletDefinedByKeys.issueOrSelectNextAddress(wallet_id, 0, function(addressInfo){
 					device.sendMessageToDevice(from_address, 'text', addressInfo.address);
 				});
 			break;

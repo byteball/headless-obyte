@@ -208,7 +208,7 @@ var signer = {
 			[address, signing_path],
 			function(rows){
 				if (rows.length !== 1)
-					throw "not 1 address";
+					throw Error(rows.length+" indexes for address "+address+" and signing path "+signing_path);
 				var row = rows[0];
 				signWithLocalPrivateKey(row.wallet, row.account, row.is_change, row.address_index, buf_to_sign, function(sig){
 					handleSignature(null, sig);
@@ -288,6 +288,13 @@ function issueChangeAddressAndSendPayment(asset, amount, to_address, device_addr
 	});
 }
 
+function issueOrSelectNextMainAddress(handleAddress){
+	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+	walletDefinedByKeys.issueOrSelectNextAddress(wallet_id, 0, function(objAddr){
+		handleAddress(objAddr.address);
+	});
+}
+
 function handleText(from_address, text){
 	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
 	var device = require('byteballcore/device.js');
@@ -351,6 +358,7 @@ exports.readSingleWallet = readSingleWallet;
 exports.readSingleAddress = readSingleAddress;
 exports.signer = signer;
 exports.isControlAddress = isControlAddress;
+exports.issueOrSelectNextMainAddress = issueOrSelectNextMainAddress;
 exports.issueChangeAddressAndSendPayment = issueChangeAddressAndSendPayment;
 exports.setupChatEventHandlers = setupChatEventHandlers;
 exports.handlePairing = handlePairing;

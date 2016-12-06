@@ -28,7 +28,9 @@ function replaceConsoleLog(){
 	console.log = function(){
 		writeStream.write(Date().toString()+': ');
 		writeStream.write(util.format.apply(null, arguments) + '\n');
-	}
+	};
+	console.warn = console.log;
+	console.info = console.log;
 }
 
 function readKeys(onDone){

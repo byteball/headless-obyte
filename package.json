@@ -23,8 +23,9 @@
     "secp256k1": "secp256k1/js"
   },
   "dependencies": {
-    "byteballcore": "^0.1.0",
+    "byteballcore": "^0.1.24",
     "bitcore-lib": "^0.13.14",
-    "bitcore-mnemonic": "~1.0.0"
+    "bitcore-mnemonic": "~1.0.0",
+    "json-rpc2": "^1.0.2"
   }
 }

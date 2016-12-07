@@ -270,11 +270,13 @@ function sendPayment(asset, amount, to_address, change_address, device_address, 
 		[], device_address, 
 		signWithLocalPrivateKey, 
 		function(err){
-			if (err)
-				device.sendMessageToDevice(device_address, 'text', "Failed to pay: "+err);
-			else
+			if (device_address) {
+				if (err)
+					device.sendMessageToDevice(device_address, 'text', "Failed to pay: " + err);
+				else
 				// if successful, the peer will also receive a payment notification
-				device.sendMessageToDevice(device_address, 'text', "paid");
+					device.sendMessageToDevice(device_address, 'text', "paid");
+			}
 			if (onDone)
 				onDone(err);
 		}

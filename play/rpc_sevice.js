@@ -38,11 +38,11 @@ function initRPC() {
 	/**
 	 * Returns address balance(stable and pending).
 	 * If address is invalid, then returns "invalid address".
-	 * If wallet doesn`t own address, then returns "address not found".
+	 * If your wallet doesn`t own the address, then returns "address not found".
 	 * @param {String} address
 	 * @return {"base":{"stable":{Integer},"pending":{Integer}}} balance
 	 * 
-	 * If not valid address suplied returns wallet balance(stable and pending).
+	 * If no address supplied, returns wallet balance(stable and pending).
 	 * @return {"base":{"stable":{Integer},"pending":{Integer}}} balance
 	 */
 	server.expose('getbalance', function(args, opt, cb) {
@@ -88,7 +88,7 @@ function initRPC() {
 	 * @param {String} address
 	 * @return [{"action":{'invalid','received','sent'},"amount":{Integer},"arrPayerAddresses":[{String}],"confirmations":{0,1},"unit":{String},"fee":{Integer},"time":{String},"level":{Integer},"asset":{String}}] transactions
 	 * 
-	 * If no address suplied returns wallet transaction list.
+	 * If no address suplied, returns wallet transaction list.
 	 * @return [{"action":{'invalid','received','sent'},"amount":{Integer},"arrPayerAddresses":[{String}],"confirmations":{0,1},"unit":{String},"fee":{Integer},"time":{String},"level":{Integer},"asset":{String}}] transactions
 	 */
 	server.expose('listtransactions', function(args, opt, cb) {
@@ -121,8 +121,8 @@ function initRPC() {
 		var toAddress = args[0];
 		if (amount && toAddress) {
 			if (validationUtils.isValidAddress(toAddress))
-				headlessWallet.issueChangeAddressAndSendPayment(null, amount, toAddress, null, function(err) {
-					cb(err, err ? undefined : "sent");
+				headlessWallet.issueChangeAddressAndSendPayment(null, amount, toAddress, null, function(err, unit) {
+					cb(err, err ? undefined : unit);
 				});
 			else
 				cb("invalid address");
@@ -131,8 +131,8 @@ function initRPC() {
 			cb("wrong parameters");
 	});
 
-	headlessWallet.readSingleWallet(function(handleWallet) {
-		wallet_id = handleWallet;
+	headlessWallet.readSingleWallet(function(_wallet_id) {
+		wallet_id = _wallet_id;
 		// listen creates an HTTP server on localhost only 
 		server.listen(conf.rpcPort, conf.rpcInterface);
 	});

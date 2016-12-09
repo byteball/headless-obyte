@@ -271,7 +271,7 @@ function sendPayment(asset, amount, to_address, change_address, device_address, 
 		asset, wallet_id, to_address, amount, change_address, 
 		[], device_address, 
 		signWithLocalPrivateKey, 
-		function(err){
+		function(err, unit){
 			if (device_address) {
 				if (err)
 					device.sendMessageToDevice(device_address, 'text', "Failed to pay: " + err);
@@ -280,7 +280,7 @@ function sendPayment(asset, amount, to_address, change_address, device_address, 
 					device.sendMessageToDevice(device_address, 'text', "paid");
 			}
 			if (onDone)
-				onDone(err);
+				onDone(err, unit);
 		}
 	);
 }

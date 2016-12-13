@@ -147,8 +147,8 @@ function readSingleAddress(handleAddress){
 }
 
 function prepareBalanceText(handleBalanceText){
-	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
-	walletDefinedByKeys.readBalance(wallet_id, function(assocBalances){
+	var Wallet = require('byteballcore/wallet.js');
+	Wallet.readBalance(wallet_id, function(assocBalances){
 		var arrLines = [];
 		for (var asset in assocBalances){
 			var total = assocBalances[asset].stable + assocBalances[asset].pending;
@@ -266,8 +266,8 @@ function handlePairing(from_address){
 
 function sendPayment(asset, amount, to_address, change_address, device_address, onDone){
 	var device = require('byteballcore/device.js');
-	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
-	walletDefinedByKeys.sendPaymentFromWallet(
+	var Wallet = require('byteballcore/wallet.js');
+	Wallet.sendPaymentFromWallet(
 		asset, wallet_id, to_address, amount, change_address, 
 		[], device_address, 
 		signWithLocalPrivateKey, 

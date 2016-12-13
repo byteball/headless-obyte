@@ -17,6 +17,7 @@ function initRPC() {
 
 	var rpc = require('json-rpc2');
 	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+	var Wallet = require('byteballcore/wallet.js');
 
 	var server = rpc.Server.$create({
 		'websocket': true, // is true by default 
@@ -77,7 +78,7 @@ function initRPC() {
 				cb("invalid address");
 		}
 		else
-			walletDefinedByKeys.readBalance(wallet_id, function(balances) {
+			Wallet.readBalance(wallet_id, function(balances) {
 				cb(null, balances);
 			});
 	});
@@ -95,14 +96,14 @@ function initRPC() {
 		var address = args[0];
 		if (address) {
 			if (validationUtils.isValidAddress(address))
-				walletDefinedByKeys.readTransactionHistory(address, null, function(result) {
+				Wallet.readTransactionHistory(address, null, function(result) {
 					cb(null, result);
 				});
 			else
 				cb("invalid address");
 		}
 		else
-			walletDefinedByKeys.readTransactionHistory(wallet_id, null, function(result) {
+			Wallet.readTransactionHistory(wallet_id, null, function(result) {
 				cb(null, result);
 			});
 

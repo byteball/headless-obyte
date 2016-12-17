@@ -96,14 +96,14 @@ function initRPC() {
 		var address = args[0];
 		if (address) {
 			if (validationUtils.isValidAddress(address))
-				Wallet.readTransactionHistory(address, null, function(result) {
+				Wallet.readTransactionHistory({address: address}, function(result) {
 					cb(null, result);
 				});
 			else
 				cb("invalid address");
 		}
 		else
-			Wallet.readTransactionHistory(wallet_id, null, function(result) {
+			Wallet.readTransactionHistory({wallet: wallet_id, limit: 200}, function(result) {
 				cb(null, result);
 			});
 

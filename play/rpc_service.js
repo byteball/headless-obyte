@@ -87,10 +87,10 @@ function initRPC() {
 	 * Returns transaction list.
 	 * If address is invalid, then returns "invalid address".
 	 * @param {String} address
-	 * @return [{"action":{'invalid','received','sent'},"amount":{Integer},"arrPayerAddresses":[{String}],"confirmations":{0,1},"unit":{String},"fee":{Integer},"time":{String},"level":{Integer},"asset":{String}}] transactions
+	 * @return [{"action":{'invalid','received','sent'},"amount":{Integer},"my_address":{String},"arrPayerAddresses":[{String}],"confirmations":{0,1},"unit":{String},"fee":{Integer},"time":{String},"level":{Integer},"asset":{String}}] transactions
 	 * 
 	 * If no address suplied, returns wallet transaction list.
-	 * @return [{"action":{'invalid','received','sent'},"amount":{Integer},"arrPayerAddresses":[{String}],"confirmations":{0,1},"unit":{String},"fee":{Integer},"time":{String},"level":{Integer},"asset":{String}}] transactions
+	 * @return [{"action":{'invalid','received','sent'},"amount":{Integer},"my_address":{String},"arrPayerAddresses":[{String}],"confirmations":{0,1},"unit":{String},"fee":{Integer},"time":{String},"level":{Integer},"asset":{String}}] transactions
 	 */
 	server.expose('listtransactions', function(args, opt, cb) {
 		var address = args[0];

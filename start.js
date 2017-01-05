@@ -20,7 +20,7 @@ var wallet_id;
 var xPrivKey;
 
 function replaceConsoleLog(){
-	var log_filename = appDataDir + '/log.txt';
+	var log_filename = conf.LOG_FILENAME || (appDataDir + '/log.txt');
 	var writeStream = fs.createWriteStream(log_filename);
 	console.log('---------------');
 	console.log('From this point, output will be redirected to '+log_filename);

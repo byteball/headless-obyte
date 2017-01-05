@@ -15,7 +15,7 @@ var Bitcore = require('bitcore-lib');
 var readline = require('readline');
 
 var appDataDir = desktopApp.getAppDataDir();
-var KEYS_FILENAME = appDataDir + '/' + conf.KEYS_FILENAME;
+var KEYS_FILENAME = appDataDir + '/' + (conf.KEYS_FILENAME || 'keys.json');
 var wallet_id;
 var xPrivKey;
 

@@ -52,6 +52,8 @@ Having the keys encrypted by a passphrase helps protect against the most trivial
 
 However, that is not enough.  If an attacker gets access to your server, he could also modify your conf.json and change `control_addresses` and `payout_address`, then wait that you restart the wallet and steal its entire balance.  To help you prevent such attacks, every time the wallet starts it prints out the current values of `control_addresses` and `payout_address`, please pay attention to these values before entering your passphrase.
 
+Use TOR ([conf.socksHost, conf.socksPort, and conf.socksLocalDNS](../../../byteballcore#confsockshost-confsocksport-and-confsockslocaldns)) to hide your server IP address from potential attackers.
+
 Don't keep more money than necessary on the server wallet, withdraw the excess using `pay` command in the chat interface.
 
 ## Custom commands

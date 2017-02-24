@@ -2,7 +2,7 @@
   "name": "headless-byteball",
   "description": "Byteball headless wallet",
   "author": "Byteball",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "start.js",
   "keywords": [
     "wallet",
@@ -23,7 +23,7 @@
     "secp256k1": "secp256k1/js"
   },
   "dependencies": {
-    "byteballcore": "^0.1.39",
+    "byteballcore": "^0.1.40",
     "bitcore-lib": "^0.13.14",
     "bitcore-mnemonic": "~1.0.0",
     "json-rpc2": "^1.0.2"

@@ -241,17 +241,28 @@ setTimeout(function(){
 			// global
 			wallet_id = wallet;
 			var device = require('byteballcore/device.js');
-			require('byteballcore/wallet.js'); // we don't need any of its functions but it listens for hub/* messages
 			device.setDevicePrivateKey(devicePrivKey);
-			device.setTempKeys(deviceTempPrivKey, devicePrevTempPrivKey, saveTempKeys);
-			device.setDeviceName(conf.deviceName);
-			device.setDeviceHub(conf.hub);
-			var my_device_pubkey = device.getMyDevicePubKey();
-			console.log("====== my device pubkey: "+my_device_pubkey);
-			if (conf.permanent_paring_secret)
-				console.log("my pairing code: "+my_device_pubkey+"@"+conf.hub+"#"+conf.permanent_paring_secret);
-			eventBus.emit('headless_wallet_ready');
-			setTimeout(replaceConsoleLog, 1000);
+			let my_device_address = device.getMyDeviceAddress();
+			db.query("SELECT 1 FROM extended_pubkeys WHERE device_address=?", [my_device_address], function(rows){
+				if (rows.length > 1)
+					throw Error("more than 1 extended_pubkey?");
+				if (rows.length === 0)
+					return setTimeout(function(){
+						console.log('passphrase is incorrect');
+						process.exit(0);
+					}, 1000);
+				require('byteballcore/wallet.js'); // we don't need any of its functions but it listens for hub/* messages
+				device.setTempKeys(deviceTempPrivKey, devicePrevTempPrivKey, saveTempKeys);
+				device.setDeviceName(conf.deviceName);
+				device.setDeviceHub(conf.hub);
+				let my_device_pubkey = device.getMyDevicePubKey();
+				console.log("====== my device address: "+my_device_address);
+				console.log("====== my device pubkey: "+my_device_pubkey);
+				if (conf.permanent_paring_secret)
+					console.log("====== my pairing code: "+my_device_pubkey+"@"+conf.hub+"#"+conf.permanent_paring_secret);
+				eventBus.emit('headless_wallet_ready');
+				setTimeout(replaceConsoleLog, 1000);
+			});
 		});
 	});
 }, 1000);

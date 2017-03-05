@@ -15,6 +15,7 @@ function createDivisibleAssetPayment(){
 	divisibleAsset.composeAndSaveDivisibleAssetPaymentJoint({
 		asset: 'gRUW3CkKYA9LNf2/gX4bnDdnDZyPY9TAd9wIATzXSwE=', 
 		paying_addresses: ["PYQJWUWRMUUUSUHKNJWFHSR5OADZMUYR"],
+		fee_paying_addresses: ["PYQJWUWRMUUUSUHKNJWFHSR5OADZMUYR"],
 		change_address: "PYQJWUWRMUUUSUHKNJWFHSR5OADZMUYR",
 		to_address: "GIBIFBPG42MJHN4KGY7RV4UTHTHKVRJE",
 		amount: 5000, 

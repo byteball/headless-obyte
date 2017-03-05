@@ -15,6 +15,7 @@ function createIndivisibleAssetPayment(){
 	indivisibleAsset.composeAndSaveIndivisibleAssetPaymentJoint({
 		asset: 'JY4RvlUGv0qWItikizmNOIjIYZeEciODOog8AzLju50=', 
 		paying_addresses: ["3VH6WZ4V5AD2U55MQLRQPHRRCYQCFDUI"],
+		fee_paying_addresses: ["3VH6WZ4V5AD2U55MQLRQPHRRCYQCFDUI"],
 		change_address: "3VH6WZ4V5AD2U55MQLRQPHRRCYQCFDUI",
 		to_address: "ORKPD5QZFX4JDGYBQ7FV535LCRDOJQHK",
 		amount: 2111100000000000, 

@@ -16,7 +16,7 @@
     "type": "git"
   },
   "bugs": {
-    "url": "https://github.com/byteball/headless--byteball/issues"
+    "url": "https://github.com/byteball/headless-byteball/issues"
   },
   "browser": {
     "request": "browser-request",

@@ -188,11 +188,8 @@ function signWithLocalPrivateKey(wallet_id, account, is_change, address_index, t
 }
 
 var signer = {
-	getSignatureLength: function(address, path){
-		return constants.SIG_LENGTH;
-	},
-	readSigningPaths: function(conn, address, handleSigningPaths){
-		handleSigningPaths(['r']);
+	readSigningPaths: function(conn, address, handleLengthsBySigningPaths){
+		handleLengthsBySigningPaths({r: constants.SIG_LENGTH});
 	},
 	readDefinition: function(conn, address, handleDefinition){
 		conn.query("SELECT definition FROM my_addresses WHERE address=?", [address], function(rows){

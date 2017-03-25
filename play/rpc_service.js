@@ -1,6 +1,12 @@
 /*jslint node: true */
+
+/*
+	Accept commands via JSON-RPC API.
+	The daemon listens on port 6332 by default.
+	See https://github.com/byteball/headless-byteball/wiki/Running-RPC-service for detailed description of the API
+*/
+
 "use strict";
-var async = require('async');
 var headlessWallet = require('../start.js');
 var conf = require('byteballcore/conf.js');
 var eventBus = require('byteballcore/event_bus.js');
@@ -89,7 +95,7 @@ function initRPC() {
 	 * @param {String} address
 	 * @return [{"action":{'invalid','received','sent','moved'},"amount":{Integer},"my_address":{String},"arrPayerAddresses":[{String}],"confirmations":{0,1},"unit":{String},"fee":{Integer},"time":{String},"level":{Integer},"asset":{String}}] transactions
 	 * 
-	 * If no address suplied, returns wallet transaction list.
+	 * If no address supplied, returns wallet transaction list.
 	 * @return [{"action":{'invalid','received','sent','moved'},"amount":{Integer},"my_address":{String},"arrPayerAddresses":[{String}],"confirmations":{0,1},"unit":{String},"fee":{Integer},"time":{String},"level":{Integer},"asset":{String}}] transactions
 	 */
 	server.expose('listtransactions', function(args, opt, cb) {

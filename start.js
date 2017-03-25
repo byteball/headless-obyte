@@ -257,6 +257,10 @@ setTimeout(function(){
 				console.log("====== my device pubkey: "+my_device_pubkey);
 				if (conf.permanent_paring_secret)
 					console.log("====== my pairing code: "+my_device_pubkey+"@"+conf.hub+"#"+conf.permanent_paring_secret);
+				if (conf.bLight){
+					var light_wallet = require('byteballcore/light_wallet.js');
+					light_wallet.setLightVendorHost(conf.hub);
+				}
 				eventBus.emit('headless_wallet_ready');
 				setTimeout(replaceConsoleLog, 1000);
 			});

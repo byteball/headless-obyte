@@ -11,6 +11,8 @@ var headlessWallet = require('../start.js');
 var conf = require('byteballcore/conf.js');
 var eventBus = require('byteballcore/event_bus.js');
 var db = require('byteballcore/db.js');
+var storage = require('byteballcore/storage.js');
+var constants = require('byteballcore/constants.js');
 var validationUtils = require("byteballcore/validation_utils.js");
 var wallet_id;
 
@@ -30,6 +32,24 @@ function initRPC() {
 		'headers': { // allow custom headers is empty by default 
 			'Access-Control-Allow-Origin': '*'
 		}
+	});
+
+	/**
+	 * Returns information about the current state.
+	 * @return { last_mci: {Integer}, last_stable_mci: {Integer}, count_unhandled: {Integer} }
+	 */
+	server.expose('getinfo', function(args, opt, cb) {
+		var response = {};
+		storage.readLastMainChainIndex(function(last_mci){
+			response.last_mci = last_mci;
+			storage.readLastStableMcIndex(db, function(last_stable_mci){
+				response.last_stable_mci = last_stable_mci;
+				db.query("SELECT COUNT(*) AS count_unhandled FROM unhandled_joints", function(rows){
+					response.count_unhandled = rows[0].count_unhandled;
+					cb(null, response);
+				});
+			});
+		});
 	});
 
 	/**
@@ -92,15 +112,15 @@ function initRPC() {
 	/**
 	 * Returns transaction list.
 	 * If address is invalid, then returns "invalid address".
-	 * @param {String} address
+	 * @param {String} address or {since_mci: {Integer}, unit: {String}} 
 	 * @return [{"action":{'invalid','received','sent','moved'},"amount":{Integer},"my_address":{String},"arrPayerAddresses":[{String}],"confirmations":{0,1},"unit":{String},"fee":{Integer},"time":{String},"level":{Integer},"asset":{String}}] transactions
 	 * 
 	 * If no address supplied, returns wallet transaction list.
 	 * @return [{"action":{'invalid','received','sent','moved'},"amount":{Integer},"my_address":{String},"arrPayerAddresses":[{String}],"confirmations":{0,1},"unit":{String},"fee":{Integer},"time":{String},"level":{Integer},"asset":{String}}] transactions
 	 */
 	server.expose('listtransactions', function(args, opt, cb) {
-		var address = args[0];
-		if (address) {
+		if (Array.isArray(args) && typeof args[0] === 'string') {
+			var address = args[0];
 			if (validationUtils.isValidAddress(address))
 				Wallet.readTransactionHistory({address: address}, function(result) {
 					cb(null, result);
@@ -108,10 +128,18 @@ function initRPC() {
 			else
 				cb("invalid address");
 		}
-		else
-			Wallet.readTransactionHistory({wallet: wallet_id, limit: 200}, function(result) {
+		else{
+			var opts = {wallet: wallet_id};
+			if (args.unit && validationUtils.isValidBase64(args.unit, constants.HASH_LENGTH))
+				opts.unit = args.unit;
+			else if (args.since_mci && validationUtils.isNonnegativeInteger(args.since_mci))
+				opts.since_mci = args.since_mci;
+			else
+				opts.limit = 200;
+			Wallet.readTransactionHistory(opts, function(result) {
 				cb(null, result);
 			});
+		}
 
 	});
 

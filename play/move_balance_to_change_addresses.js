@@ -31,6 +31,7 @@ function moveBalance(wallet){
 				console.error('done');
 				return setTimeout(() => { process.exit(0); }, 1000);
 			}
+			console.error('will move '+pay_amount+' bytes from', arrPayingAddresses);
 			walletDefinedByKeys.issueNextAddress(wallet, 1, function(objToAddr){
 				let to_address = objToAddr.address;
 				walletDefinedByKeys.issueNextAddress(wallet, 1, function(objChangeAddr){
@@ -44,7 +45,10 @@ function moveBalance(wallet){
 						outputs: arrOutputs, 
 						signer: headlessWallet.signer, 
 						callbacks: {
-							ifNotEnoughFunds: onError,
+							ifNotEnoughFunds: function(err){
+								console.error(err+', will retry in 1 min');
+								setTimeout(() => { moveBalance(wallet); }, 60*1000);
+							},
 							ifError: onError,
 							ifOk: function(objJoint){
 								network.broadcastJoint(objJoint);

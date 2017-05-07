@@ -21,7 +21,13 @@ function moveBalance(wallet){
 	var network = require('byteballcore/network.js');
 	db.query(
 		"SELECT address, SUM(amount) AS amount FROM my_addresses JOIN outputs USING(address) JOIN units USING(unit) \n\
-		WHERE wallet=? AND is_change=0 AND is_spent=0 AND sequence='good' AND is_stable=1 GROUP BY address LIMIT 10", 
+		WHERE wallet=? AND is_change=0 AND is_spent=0 AND sequence='good' AND is_stable=1 \n\
+		GROUP BY address \n\
+		ORDER BY EXISTS ( \n\
+			SELECT * FROM unit_authors JOIN units USING(unit) \n\
+			WHERE is_stable=0 AND unit_authors.address=outputs.address AND definition_chash IS NOT NULL \n\
+		) \n\
+		LIMIT 10", 
 		[wallet],
 		function(rows){
 			let arrPayingAddresses = rows.map(row => row.address);

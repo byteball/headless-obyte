@@ -31,9 +31,9 @@ function moveBalance(wallet){
 				console.error('done');
 				return setTimeout(() => { process.exit(0); }, 1000);
 			}
-			walletDefinedByKeys.issueOrSelectNextChangeAddress(wallet, function(objToAddr){
+			walletDefinedByKeys.issueNextAddress(wallet, 1, function(objToAddr){
 				let to_address = objToAddr.address;
-				walletDefinedByKeys.issueOrSelectNextChangeAddress(wallet, function(objChangeAddr){
+				walletDefinedByKeys.issueNextAddress(wallet, 1, function(objChangeAddr){
 					let change_address = objChangeAddr.address;
 					var arrOutputs = [
 						{address: change_address, amount: 0},      // the change

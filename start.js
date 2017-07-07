@@ -14,8 +14,6 @@ var Mnemonic = require('bitcore-mnemonic');
 var Bitcore = require('bitcore-lib');
 var readline = require('readline');
 
-require('byteballcore/network.js'); // we don't need any of its functions but it listens for hub/* messages
-
 var appDataDir = desktopApp.getAppDataDir();
 var KEYS_FILENAME = appDataDir + '/' + (conf.KEYS_FILENAME || 'keys.json');
 var wallet_id;
@@ -317,16 +315,14 @@ function handleText(from_address, text){
 	
 	text = text.trim();
 	var fields = text.split(/ /);
-	var wordOneOrg = fields[0].trim();
-	var wordOne = fields[0].trim().toLowerCase();
-	var wordTwo = '';
-	if (fields.length > 1) wordTwo = fields[1].trim();
-	var wordThree = '';
-	if (fields.length > 2) wordThree = fields[2].trim();
+	var command = fields[0].trim().toLowerCase();
+	var params =['',''];
+	if (fields.length > 1) params[0] = fields[1].trim();
+	if (fields.length > 2) params[1] = fields[2].trim();
 
 	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
 	var device = require('byteballcore/device.js');
-	switch(wordOne){
+	switch(command){
 		case 'address':
 			if (conf.bSingleAddress)
 				readSingleAddress(function(address){
@@ -345,7 +341,7 @@ function handleText(from_address, text){
 			break;
 			
 		case 'pay':
-			analyzePayParams(wordTwo, wordThree, function(asset, amount){
+			analyzePayParams(params[0], params[1], function(asset, amount){
 				if(asset==null && amount==null){
 					var msg = "syntax: pay [amount] [asset]";
 					msg +=	"\namount: digits only";
@@ -358,14 +354,31 @@ function handleText(from_address, text){
 					msg +=	"\nExample 5: 'pay 12345 ASSET_ID' pays 12345 of asset with ID ASSET_ID";
 					return device.sendMessageToDevice(from_address, 'text', msg);
 				}
+				
+				function payout(amount, asset){
+					if (conf.bSingleAddress)
+						readSingleAddress(function(address){
+							sendPayment(asset, amount, conf.payout_address, address, from_address);
+						});
+					else
+						// create a new change address or select first unused one
+						issueChangeAddressAndSendPayment(asset, amount, conf.payout_address, from_address);
+				};
 
-				if (conf.bSingleAddress)
-					readSingleAddress(function(address){
-						sendPayment(asset, amount, conf.payout_address, address, from_address);
+				if(asset!=null){
+					db.query("SELECT unit FROM assets WHERE unit=?", [asset], function(rows){
+						if(rows.length==1){
+							// asset exists
+							payout(amount, asset);
+						}else{
+							// unknown asset
+							device.sendMessageToDevice(from_address, 'text', 'unknown asset: '+asset);
+						}
 					});
-				else
-					// create a new change address or select first unused one
-					issueChangeAddressAndSendPayment(asset, amount, conf.payout_address, from_address);
+				}else{
+					payout(amount, asset);
+				}
+
 			});
 			break;
 
@@ -374,19 +387,19 @@ function handleText(from_address, text){
 	}
 }
 
-function analyzePayParams(p, q, cb){
+function analyzePayParams(amountText, assetText, cb){
 	// expected: 
-	// p = amount; only digits
-	// q = asset; '' -> whitebytes, 'bytes' -> whitebytes, 'blackbytes' -> blackbytes, '{asset-ID}' -> any asset
+	// amountText = amount; only digits
+	// assetText = asset; '' -> whitebytes, 'bytes' -> whitebytes, 'blackbytes' -> blackbytes, '{asset-ID}' -> any asset
 
-	if (p==''&&q=='') return cb(null, null);
+	if (amountText==''&&assetText=='') return cb(null, null);
 
 	var pattern = /^\d+$/;
-    if(pattern.test(p)){
+    if(pattern.test(amountText)){
 
-		var amount = parseInt(p);
+		var amount = parseInt(amountText);
 
-		var asset = q.toLowerCase();
+		var asset = assetText.toLowerCase();
 		switch(asset){
 			case '':
 			case 'bytes':
@@ -394,8 +407,8 @@ function analyzePayParams(p, q, cb){
 			case 'blackbytes':
 				return cb(constants.BLACKBYTES_ASSET, amount);
 			default:
-				// return original asset string because asset ID it is case sensitive
-				return cb(q, amount);
+				// return original assetText string because asset ID it is case sensitive
+				return cb(assetText, amount);
 		}
 
 	}else{

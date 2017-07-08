@@ -312,10 +312,17 @@ function issueOrSelectNextMainAddress(handleAddress){
 }
 
 function handleText(from_address, text){
+	
+	text = text.trim();
+	var fields = text.split(/ /);
+	var command = fields[0].trim().toLowerCase();
+	var params =['',''];
+	if (fields.length > 1) params[0] = fields[1].trim();
+	if (fields.length > 2) params[1] = fields[2].trim();
+
 	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
 	var device = require('byteballcore/device.js');
-	text = text.trim().toLowerCase();
-	switch(text){
+	switch(command){
 		case 'address':
 			if (conf.bSingleAddress)
 				readSingleAddress(function(address){
@@ -333,21 +340,82 @@ function handleText(from_address, text){
 			});
 			break;
 			
-		default:
-			var matches = text.match(/^pay\s+(\d+)$/i);
-			if (!matches)
-				return device.sendMessageToDevice(from_address, 'text', "unrecognized command");
-			var amount = parseInt(matches[1]);
-			if (!conf.payout_address)
-				return device.sendMessageToDevice(from_address, 'text', "payout address not defined");
+		case 'pay':
+			analyzePayParams(params[0], params[1], function(asset, amount){
+				if(asset===null && amount===null){
+					var msg = "syntax: pay [amount] [asset]";
+					msg +=	"\namount: digits only";
+					msg +=	"\nasset: one of '', 'bytes', 'blackbytes', ASSET_ID";
+					msg +=	"\n";
+					msg +=	"\nExample 1: 'pay 12345' pays 12345 bytes";
+					msg +=	"\nExample 2: 'pay 12345 bytes' pays 12345 bytes";
+					msg +=	"\nExample 3: 'pay 12345 blackbytes' pays 12345 blackbytes";
+					msg +=	"\nExample 4: 'pay 12345 qO2JsiuDMh/j+pqJYZw3u82O71WjCDf0vTNvsnntr8o=' pays 12345 blackbytes";
+					msg +=	"\nExample 5: 'pay 12345 ASSET_ID' pays 12345 of asset with ID ASSET_ID";
+					return device.sendMessageToDevice(from_address, 'text', msg);
+				}
+				
+				if (!conf.payout_address)
+					return device.sendMessageToDevice(from_address, 'text', "payout address not defined");
 
-			if (conf.bSingleAddress)
-				readSingleAddress(function(address){
-					sendPayment(null, amount, conf.payout_address, address, from_address);
-				});
-			else
-				// create a new change address or select first unused one
-				issueChangeAddressAndSendPayment(null, amount, conf.payout_address, from_address);
+				function payout(amount, asset){
+					if (conf.bSingleAddress)
+						readSingleAddress(function(address){
+							sendPayment(asset, amount, conf.payout_address, address, from_address);
+						});
+					else
+						// create a new change address or select first unused one
+						issueChangeAddressAndSendPayment(asset, amount, conf.payout_address, from_address);
+				};
+
+				if(asset!==null){
+					db.query("SELECT unit FROM assets WHERE unit=?", [asset], function(rows){
+						if(rows.length===1){
+							// asset exists
+							payout(amount, asset);
+						}else{
+							// unknown asset
+							device.sendMessageToDevice(from_address, 'text', 'unknown asset: '+asset);
+						}
+					});
+				}else{
+					payout(amount, asset);
+				}
+
+			});
+			break;
+
+		default:
+				return device.sendMessageToDevice(from_address, 'text', "unrecognized command");
+	}
+}
+
+function analyzePayParams(amountText, assetText, cb){
+	// expected: 
+	// amountText = amount; only digits
+	// assetText = asset; '' -> whitebytes, 'bytes' -> whitebytes, 'blackbytes' -> blackbytes, '{asset-ID}' -> any asset
+
+	if (amountText===''&&assetText==='') return cb(null, null);
+
+	var pattern = /^\d+$/;
+    if(pattern.test(amountText)){
+
+		var amount = parseInt(amountText);
+
+		var asset = assetText.toLowerCase();
+		switch(asset){
+			case '':
+			case 'bytes':
+				return cb(null, amount);
+			case 'blackbytes':
+				return cb(constants.BLACKBYTES_ASSET, amount);
+			default:
+				// return original assetText string because asset ID it is case sensitive
+				return cb(assetText, amount);
+		}
+
+	}else{
+		return cb(null, null);
 	}
 }
 

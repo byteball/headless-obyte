@@ -355,6 +355,9 @@ function handleText(from_address, text){
 					return device.sendMessageToDevice(from_address, 'text', msg);
 				}
 				
+				if (!conf.payout_address)
+					return device.sendMessageToDevice(from_address, 'text', "payout address not defined");
+
 				function payout(amount, asset){
 					if (conf.bSingleAddress)
 						readSingleAddress(function(address){

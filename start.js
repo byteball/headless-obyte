@@ -368,7 +368,7 @@ function handleText(from_address, text){
 						issueChangeAddressAndSendPayment(asset, amount, conf.payout_address, from_address);
 				};
 
-				if(asset!=null){
+				if(asset!==null){
 					db.query("SELECT unit FROM assets WHERE unit=?", [asset], function(rows){
 						if(rows.length===1){
 							// asset exists

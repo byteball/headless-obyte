@@ -342,7 +342,7 @@ function handleText(from_address, text){
 			
 		case 'pay':
 			analyzePayParams(params[0], params[1], function(asset, amount){
-				if(asset==null && amount==null){
+				if(asset===null && amount===null){
 					var msg = "syntax: pay [amount] [asset]";
 					msg +=	"\namount: digits only";
 					msg +=	"\nasset: one of '', 'bytes', 'blackbytes', ASSET_ID";
@@ -370,7 +370,7 @@ function handleText(from_address, text){
 
 				if(asset!=null){
 					db.query("SELECT unit FROM assets WHERE unit=?", [asset], function(rows){
-						if(rows.length==1){
+						if(rows.length===1){
 							// asset exists
 							payout(amount, asset);
 						}else{
@@ -395,7 +395,7 @@ function analyzePayParams(amountText, assetText, cb){
 	// amountText = amount; only digits
 	// assetText = asset; '' -> whitebytes, 'bytes' -> whitebytes, 'blackbytes' -> blackbytes, '{asset-ID}' -> any asset
 
-	if (amountText==''&&assetText=='') return cb(null, null);
+	if (amountText===''&&assetText==='') return cb(null, null);
 
 	var pattern = /^\d+$/;
     if(pattern.test(amountText)){

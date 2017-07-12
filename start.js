@@ -297,6 +297,25 @@ function sendPayment(asset, amount, to_address, change_address, device_address, 
 	);
 }
 
+function sendAllBytesFromSharedAddress(shared_address, to_address, recipient_device_address, onDone) {
+	var device = require('byteballcore/device.js');
+	var Wallet = require('byteballcore/wallet.js');
+	Wallet.sendMultiPayment({
+		asset: null,
+		to_address: to_address,
+		send_all: true,
+		paying_addresses: [shared_address],
+		change_address: shared_address,
+		shared_address: shared_address,
+		arrSigningDeviceAddresses: [device.getMyDeviceAddress()],
+		recipient_device_address: recipient_device_address,
+		signWithLocalPrivateKey: signWithLocalPrivateKey
+	}, (err, unit) => {
+		if(onDone)
+			onDone(err, unit);
+	});
+}
+
 function issueChangeAddressAndSendPayment(asset, amount, to_address, device_address, onDone){
 	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
 	walletDefinedByKeys.issueOrSelectNextChangeAddress(wallet_id, function(objAddr){

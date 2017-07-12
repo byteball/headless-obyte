@@ -466,6 +466,7 @@ exports.issueChangeAddressAndSendPayment = issueChangeAddressAndSendPayment;
 exports.setupChatEventHandlers = setupChatEventHandlers;
 exports.handlePairing = handlePairing;
 exports.handleText = handleText;
+exports.sendAllBytesFromSharedAddress = sendAllBytesFromSharedAddress;
 
 if (require.main === module)
 	setupChatEventHandlers();

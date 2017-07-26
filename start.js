@@ -316,7 +316,7 @@ function sendAllBytesFromSharedAddress(shared_address, to_address, recipient_dev
 	});
 }
 
-function sendAssetFromSharedAddress(amount, asset, fee_paying_wallet, shared_address, to_address, recipient_device_address, onDone) {
+function sendAssetFromSharedAddress(asset, amount, fee_paying_wallet, shared_address, to_address, recipient_device_address, onDone) {
 	var device = require('byteballcore/device.js');
 	var Wallet = require('byteballcore/wallet.js');
 	if (!fee_paying_wallet) fee_paying_wallet = wallet_id;

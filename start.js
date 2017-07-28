@@ -297,16 +297,14 @@ function sendPayment(asset, amount, to_address, change_address, device_address, 
 	);
 }
 
-function sendAllBytesFromSharedAddress(shared_address, to_address, recipient_device_address, onDone) {
+function sendAllBytesFromAddress(from_address, to_address, recipient_device_address, onDone) {
 	var device = require('byteballcore/device.js');
 	var Wallet = require('byteballcore/wallet.js');
 	Wallet.sendMultiPayment({
 		asset: null,
 		to_address: to_address,
 		send_all: true,
-		paying_addresses: [shared_address],
-		change_address: shared_address,
-		shared_address: shared_address,
+		paying_addresses: [from_address],
 		arrSigningDeviceAddresses: [device.getMyDeviceAddress()],
 		recipient_device_address: recipient_device_address,
 		signWithLocalPrivateKey: signWithLocalPrivateKey
@@ -316,18 +314,16 @@ function sendAllBytesFromSharedAddress(shared_address, to_address, recipient_dev
 	});
 }
 
-function sendAssetFromSharedAddress(asset, amount, fee_paying_wallet, shared_address, to_address, recipient_device_address, onDone) {
+function sendAssetFromAddress(asset, amount, from_address, to_address, recipient_device_address, onDone) {
 	var device = require('byteballcore/device.js');
 	var Wallet = require('byteballcore/wallet.js');
-	if (!fee_paying_wallet) fee_paying_wallet = wallet_id;
 	Wallet.sendMultiPayment({
-		fee_paying_wallet: fee_paying_wallet,
+		fee_paying_wallet: wallet_id,
 		asset: asset,
 		to_address: to_address,
 		amount: amount,
-		paying_addresses: [shared_address],
-		change_address: shared_address,
-		shared_address: shared_address,
+		paying_addresses: [from_address],
+		change_address: from_address,
 		arrSigningDeviceAddresses: [device.getMyDeviceAddress()],
 		recipient_device_address: recipient_device_address,
 		signWithLocalPrivateKey: signWithLocalPrivateKey
@@ -505,8 +501,8 @@ exports.issueChangeAddressAndSendPayment = issueChangeAddressAndSendPayment;
 exports.setupChatEventHandlers = setupChatEventHandlers;
 exports.handlePairing = handlePairing;
 exports.handleText = handleText;
-exports.sendAllBytesFromSharedAddress = sendAllBytesFromSharedAddress;
-exports.sendAssetFromSharedAddress = sendAssetFromSharedAddress;
+exports.sendAllBytesFromAddress = sendAllBytesFromAddress;
+exports.sendAssetFromAddress = sendAssetFromAddress;
 
 if (require.main === module)
 	setupChatEventHandlers();

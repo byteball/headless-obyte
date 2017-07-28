@@ -297,6 +297,46 @@ function sendPayment(asset, amount, to_address, change_address, device_address, 
 	);
 }
 
+function sendAllBytesFromSharedAddress(shared_address, to_address, recipient_device_address, onDone) {
+	var device = require('byteballcore/device.js');
+	var Wallet = require('byteballcore/wallet.js');
+	Wallet.sendMultiPayment({
+		asset: null,
+		to_address: to_address,
+		send_all: true,
+		paying_addresses: [shared_address],
+		change_address: shared_address,
+		shared_address: shared_address,
+		arrSigningDeviceAddresses: [device.getMyDeviceAddress()],
+		recipient_device_address: recipient_device_address,
+		signWithLocalPrivateKey: signWithLocalPrivateKey
+	}, (err, unit) => {
+		if(onDone)
+			onDone(err, unit);
+	});
+}
+
+function sendAssetFromSharedAddress(asset, amount, fee_paying_wallet, shared_address, to_address, recipient_device_address, onDone) {
+	var device = require('byteballcore/device.js');
+	var Wallet = require('byteballcore/wallet.js');
+	if (!fee_paying_wallet) fee_paying_wallet = wallet_id;
+	Wallet.sendMultiPayment({
+		fee_paying_wallet: fee_paying_wallet,
+		asset: asset,
+		to_address: to_address,
+		amount: amount,
+		paying_addresses: [shared_address],
+		change_address: shared_address,
+		shared_address: shared_address,
+		arrSigningDeviceAddresses: [device.getMyDeviceAddress()],
+		recipient_device_address: recipient_device_address,
+		signWithLocalPrivateKey: signWithLocalPrivateKey
+	}, (err, unit) => {
+		if (onDone)
+			onDone(err, unit);
+	});
+}
+
 function issueChangeAddressAndSendPayment(asset, amount, to_address, device_address, onDone){
 	if (conf.bStaticChangeAddress){
 		issueOrSelectStaticChangeAddress(function(change_address){
@@ -465,6 +505,8 @@ exports.issueChangeAddressAndSendPayment = issueChangeAddressAndSendPayment;
 exports.setupChatEventHandlers = setupChatEventHandlers;
 exports.handlePairing = handlePairing;
 exports.handleText = handleText;
+exports.sendAllBytesFromSharedAddress = sendAllBytesFromSharedAddress;
+exports.sendAssetFromSharedAddress = sendAssetFromSharedAddress;
 
 if (require.main === module)
 	setupChatEventHandlers();

@@ -26,6 +26,7 @@ function initRPC() {
 	var rpc = require('json-rpc2');
 	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
 	var Wallet = require('byteballcore/wallet.js');
+	var balances = require('byteballcore/balances.js');
 
 	var server = rpc.Server.$create({
 		'websocket': true, // is true by default 
@@ -107,6 +108,17 @@ function initRPC() {
 			Wallet.readBalance(wallet_id, function(balances) {
 				cb(null, balances);
 			});
+	});
+
+	/**
+	 * Returns wallet balance(stable and pending) without commissions earned from headers and witnessing.
+	 * 
+	 * @return {"base":{"stable":{Integer},"pending":{Integer}}} balance
+	 */
+	server.expose('getmainbalance', function(args, opt, cb) {
+		balances.readOutputsBalance(wallet_id, function(balances) {
+			cb(null, balances);
+		});
 	});
 
 	/**

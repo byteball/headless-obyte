@@ -497,6 +497,7 @@ exports.readSingleAddress = readSingleAddress;
 exports.signer = signer;
 exports.isControlAddress = isControlAddress;
 exports.issueOrSelectNextMainAddress = issueOrSelectNextMainAddress;
+exports.issueOrSelectStaticChangeAddress = issueOrSelectStaticChangeAddress;
 exports.issueChangeAddressAndSendPayment = issueChangeAddressAndSendPayment;
 exports.setupChatEventHandlers = setupChatEventHandlers;
 exports.handlePairing = handlePairing;

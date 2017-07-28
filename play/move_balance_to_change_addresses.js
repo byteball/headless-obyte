@@ -8,15 +8,28 @@ To be used by exchanges in order to move balance away from deposit addresses
 var headlessWallet = require('../start.js');
 var eventBus = require('byteballcore/event_bus.js');
 var db = require('byteballcore/db.js');
+var conf = require('byteballcore/conf.js');
 
 const MAX_FEES = 5000;
+
+var wallet;
 
 function onError(err){
 	throw Error(err);
 }
 
-function moveBalance(wallet){
-	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+function readNextChangeAddress(handleChangeAddress){
+	if (conf.bStaticChangeAddress)
+		headlessWallet.issueOrSelectStaticChangeAddress(handleChangeAddress);
+	else{
+		var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+		walletDefinedByKeys.issueNextAddress(wallet, 1, function(objAddr){
+			handleChangeAddress(objAddr.address);
+		});
+	}
+}
+
+function moveBalance(){
 	var composer = require('byteballcore/composer.js');
 	var network = require('byteballcore/network.js');
 	db.query(
@@ -38,10 +51,8 @@ function moveBalance(wallet){
 				return setTimeout(() => { process.exit(0); }, 1000);
 			}
 			console.error('will move '+pay_amount+' bytes from', arrPayingAddresses);
-			walletDefinedByKeys.issueNextAddress(wallet, 1, function(objToAddr){
-				let to_address = objToAddr.address;
-				walletDefinedByKeys.issueNextAddress(wallet, 1, function(objChangeAddr){
-					let change_address = objChangeAddr.address;
+			readNextChangeAddress(function(to_address){
+				readNextChangeAddress(function(change_address){
 					var arrOutputs = [
 						{address: change_address, amount: 0},      // the change
 						{address: to_address, amount: pay_amount}  // the receiver
@@ -53,13 +64,13 @@ function moveBalance(wallet){
 						callbacks: {
 							ifNotEnoughFunds: function(err){
 								console.error(err+', will retry in 1 min');
-								setTimeout(() => { moveBalance(wallet); }, 60*1000);
+								setTimeout(moveBalance, 60*1000);
 							},
 							ifError: onError,
 							ifOk: function(objJoint){
 								network.broadcastJoint(objJoint);
 								console.error("moved "+pay_amount+" bytes, unit "+objJoint.unit.unit);
-								moveBalance(wallet);
+								moveBalance();
 							}
 						}
 					});
@@ -70,5 +81,8 @@ function moveBalance(wallet){
 }
 
 eventBus.on('headless_wallet_ready', function(){
-	headlessWallet.readSingleWallet(moveBalance);
+	headlessWallet.readSingleWallet(function(_wallet){
+		wallet = _wallet;
+		moveBalance();
+	});
 });

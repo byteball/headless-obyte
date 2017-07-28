@@ -298,16 +298,34 @@ function sendPayment(asset, amount, to_address, change_address, device_address, 
 }
 
 function issueChangeAddressAndSendPayment(asset, amount, to_address, device_address, onDone){
-	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
-	walletDefinedByKeys.issueOrSelectNextChangeAddress(wallet_id, function(objAddr){
-		sendPayment(asset, amount, to_address, objAddr.address, device_address, onDone);
-	});
+	if (conf.bStaticChangeAddress){
+		issueOrSelectStaticChangeAddress(function(change_address){
+			sendPayment(asset, amount, to_address, change_address, device_address, onDone);
+		});
+	}
+	else{
+		var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+		walletDefinedByKeys.issueOrSelectNextChangeAddress(wallet_id, function(objAddr){
+			sendPayment(asset, amount, to_address, objAddr.address, device_address, onDone);
+		});
+	}
 }
 
 function issueOrSelectNextMainAddress(handleAddress){
 	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
 	walletDefinedByKeys.issueOrSelectNextAddress(wallet_id, 0, function(objAddr){
 		handleAddress(objAddr.address);
+	});
+}
+
+function issueOrSelectStaticChangeAddress(handleAddress){
+	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+	walletDefinedByKeys.readAddressByIndex(wallet_id, 1, 0, function(objAddr){
+		if (objAddr)
+			return handleAddress(objAddr.address);
+		walletDefinedByKeys.issueAddress(wallet_id, 1, 0, function(objAddr){
+			handleAddress(objAddr.address);
+		});
 	});
 }
 

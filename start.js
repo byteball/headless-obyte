@@ -218,10 +218,10 @@ var signer = {
 };
 
 
-if (conf.permanent_paring_secret)
+if (conf.permanent_pairing_secret)
 	db.query(
 		"INSERT "+db.getIgnore()+" INTO pairing_secrets (pairing_secret, is_permanent, expiry_date) VALUES (?, 1, '2038-01-01')", 
-		[conf.permanent_paring_secret]
+		[conf.permanent_pairing_secret]
 	);
 
 setTimeout(function(){
@@ -255,8 +255,8 @@ setTimeout(function(){
 				let my_device_pubkey = device.getMyDevicePubKey();
 				console.log("====== my device address: "+my_device_address);
 				console.log("====== my device pubkey: "+my_device_pubkey);
-				if (conf.permanent_paring_secret)
-					console.log("====== my pairing code: "+my_device_pubkey+"@"+conf.hub+"#"+conf.permanent_paring_secret);
+				if (conf.permanent_pairing_secret)
+					console.log("====== my pairing code: "+my_device_pubkey+"@"+conf.hub+"#"+conf.permanent_pairing_secret);
 				if (conf.bLight){
 					var light_wallet = require('byteballcore/light_wallet.js');
 					light_wallet.setLightVendorHost(conf.hub);

@@ -334,7 +334,12 @@ function sendAssetFromAddress(asset, amount, from_address, to_address, recipient
 }
 
 function issueChangeAddressAndSendPayment(asset, amount, to_address, device_address, onDone){
-	if (conf.bStaticChangeAddress){
+	if (conf.bSingleAddress){
+		readSingleAddress(function(change_address){
+			sendPayment(asset, amount, to_address, change_address, device_address, onDone);
+		});
+	}
+	else if (conf.bStaticChangeAddress){
 		issueOrSelectStaticChangeAddress(function(change_address){
 			sendPayment(asset, amount, to_address, change_address, device_address, onDone);
 		});

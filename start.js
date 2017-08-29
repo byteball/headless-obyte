@@ -60,8 +60,8 @@ function readKeys(onDone){
 						'Device name saved to '+userConfFile+', you can edit it later if you like.\n\nPassphrase for your private keys: ', 
 						function(passphrase){
 							rl.close();
-							process.stdout.moveCursor(0, -1);
-							process.stdout.clearLine();
+							if (process.stdout.moveCursor) process.stdout.moveCursor(0, -1);
+							if (process.stdout.clearLine)  process.stdout.clearLine();
 							var deviceTempPrivKey = crypto.randomBytes(32);
 							var devicePrevTempPrivKey = crypto.randomBytes(32);
 
@@ -84,8 +84,8 @@ function readKeys(onDone){
 		else{ // 2nd or later start
 			rl.question("Passphrase: ", function(passphrase){
 				rl.close();
-				process.stdout.moveCursor(0, -1);
-				process.stdout.clearLine();
+				if (process.stdout.moveCursor) process.stdout.moveCursor(0, -1);
+				if (process.stdout.clearLine)  process.stdout.clearLine();
 				var keys = JSON.parse(data);
 				var deviceTempPrivKey = Buffer(keys.temp_priv_key, 'base64');
 				var devicePrevTempPrivKey = Buffer(keys.prev_temp_priv_key, 'base64');

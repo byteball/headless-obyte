@@ -11,6 +11,7 @@ var headlessWallet = require('../start.js');
 var conf = require('byteballcore/conf.js');
 var eventBus = require('byteballcore/event_bus.js');
 var db = require('byteballcore/db.js');
+var mutex = require('byteballcore/mutex.js');
 var storage = require('byteballcore/storage.js');
 var constants = require('byteballcore/constants.js');
 var validationUtils = require("byteballcore/validation_utils.js");
@@ -58,8 +59,11 @@ function initRPC() {
 	 * @return {String} address
 	 */
 	server.expose('getnewaddress', function(args, opt, cb) {
-		walletDefinedByKeys.issueNextAddress(wallet_id, 0, function(addressInfo) {
-			cb(null, addressInfo.address);
+		mutex.lock(['rpc_getnewaddress'], function(unlock){
+			walletDefinedByKeys.issueNextAddress(wallet_id, 0, function(addressInfo) {
+				unlock();
+				cb(null, addressInfo.address);
+			});
 		});
 	});
 

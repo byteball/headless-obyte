@@ -359,6 +359,13 @@ function issueOrSelectNextMainAddress(handleAddress){
 	});
 }
 
+function issueNextMainAddress(handleAddress){
+	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+	walletDefinedByKeys.issueNextAddress(wallet_id, 0, function(objAddr){
+		handleAddress(objAddr.address);
+	});
+}
+
 function issueOrSelectStaticChangeAddress(handleAddress){
 	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
 	walletDefinedByKeys.readAddressByIndex(wallet_id, 1, 0, function(objAddr){
@@ -502,6 +509,7 @@ exports.readSingleAddress = readSingleAddress;
 exports.signer = signer;
 exports.isControlAddress = isControlAddress;
 exports.issueOrSelectNextMainAddress = issueOrSelectNextMainAddress;
+exports.issueNextMainAddress = issueNextMainAddress;
 exports.issueOrSelectStaticChangeAddress = issueOrSelectStaticChangeAddress;
 exports.issueChangeAddressAndSendPayment = issueChangeAddressAndSendPayment;
 exports.setupChatEventHandlers = setupChatEventHandlers;

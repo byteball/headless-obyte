@@ -263,6 +263,16 @@ setTimeout(function(){
 				}
 				eventBus.emit('headless_wallet_ready');
 				setTimeout(replaceConsoleLog, 1000);
+				if (conf.MAX_UNSPENT_OUTPUTS && conf.CONSOLIDATION_INTERVAL){
+					var consolidation = require('./consolidation.js');
+					var network = require('byteballcore/network.js');
+					function consolidate(){
+						if (!network.isCatchingUp())
+							consolidation.consolidate(wallet_id, signer);
+					}
+					setInterval(consolidate, conf.CONSOLIDATION_INTERVAL);
+					setTimeout(consolidate, 300*1000);
+				}
 			});
 		});
 	});

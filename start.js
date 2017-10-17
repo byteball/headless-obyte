@@ -125,6 +125,7 @@ function createWallet(xPrivKey, onDone){
 	device.setDevicePrivateKey(devicePrivKey); // we need device address before creating a wallet
 	var strXPubKey = Bitcore.HDPublicKey(xPrivKey.derive("m/44'/0'/0'")).toString();
 	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+	// we pass isSingleAddress=false because this flag is meant to be forwarded to cosigners and headless wallet doesn't support multidevice
 	walletDefinedByKeys.createWalletByDevices(strXPubKey, 0, 1, [], 'any walletName', false, function(wallet_id){
 		walletDefinedByKeys.issueNextAddress(wallet_id, 0, function(addressInfo){
 			onDone();

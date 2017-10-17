@@ -125,7 +125,7 @@ function createWallet(xPrivKey, onDone){
 	device.setDevicePrivateKey(devicePrivKey); // we need device address before creating a wallet
 	var strXPubKey = Bitcore.HDPublicKey(xPrivKey.derive("m/44'/0'/0'")).toString();
 	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
-	walletDefinedByKeys.createWalletByDevices(strXPubKey, 0, 1, [], 'any walletName', function(wallet_id){
+	walletDefinedByKeys.createWalletByDevices(strXPubKey, 0, 1, [], 'any walletName', false, function(wallet_id){
 		walletDefinedByKeys.issueNextAddress(wallet_id, 0, function(addressInfo){
 			onDone();
 		});

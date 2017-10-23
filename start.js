@@ -427,7 +427,7 @@ function issueOrSelectStaticChangeAddress(handleAddress){
 	});
 }
 
-function handleText(from_address, text){
+function handleText(from_address, text, onUnknown){
 	
 	text = text.trim();
 	var fields = text.split(/ /);
@@ -502,7 +502,11 @@ function handleText(from_address, text){
 			break;
 
 		default:
-				return device.sendMessageToDevice(from_address, 'text', "unrecognized command");
+			if (onUnknown){
+				onUnknown(from_address, text);
+			}else{
+				device.sendMessageToDevice(from_address, 'text', "unrecognized command");
+			}
 	}
 }
 

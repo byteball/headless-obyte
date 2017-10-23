@@ -57,7 +57,7 @@ function readKeys(onDone){
 					if (err)
 						throw Error('failed to write conf.json: '+err);
 					rl.question(
-						'Device name saved to '+userConfFile+', you can edit it later if you like.\n\nPassphrase for your private keys: ', 
+						'Device name saved to '+userConfFile+', you can edit it later if you like.\n\nPassphrase for your private keys: ',
 						function(passphrase){
 							rl.close();
 							if (process.stdout.moveCursor) process.stdout.moveCursor(0, -1);
@@ -204,7 +204,7 @@ var signer = {
 		db.query(
 			"SELECT wallet, account, is_change, address_index \n\
 			FROM my_addresses JOIN wallets USING(wallet) JOIN wallet_signing_paths USING(wallet) \n\
-			WHERE address=? AND signing_path=?", 
+			WHERE address=? AND signing_path=?",
 			[address, signing_path],
 			function(rows){
 				if (rows.length !== 1)
@@ -221,7 +221,7 @@ var signer = {
 
 if (conf.permanent_pairing_secret)
 	db.query(
-		"INSERT "+db.getIgnore()+" INTO pairing_secrets (pairing_secret, is_permanent, expiry_date) VALUES (?, 1, '2038-01-01')", 
+		"INSERT "+db.getIgnore()+" INTO pairing_secrets (pairing_secret, is_permanent, expiry_date) VALUES (?, 1, '2038-01-01')",
 		[conf.permanent_pairing_secret]
 	);
 
@@ -306,6 +306,45 @@ function sendPayment(asset, amount, to_address, change_address, device_address, 
 				onDone(err, unit);
 		}
 	);
+}
+
+function sendPaymentUsingOutputs(asset, outputs, change_address, onDone) {
+	var device = require('byteballcore/device.js');
+	var Wallet = require('byteballcore/wallet.js');
+	var opt = {
+		asset: asset,
+		wallet: wallet_id,
+		change_address: change_address,
+		arrSigningDeviceAddresses: [device.getMyDeviceAddress()],
+		recipient_device_address: null,
+		signWithLocalPrivateKey: signWithLocalPrivateKey
+	};
+	if(asset === 'base' || asset === null){
+		opt.base_outputs = outputs;
+	}else{
+		opt.asset_outputs = outputs;
+	}
+	Wallet.sendMultiPayment(opt, (err, unit) => {
+		if (onDone)
+			onDone(err, unit);
+	});
+}
+
+function sendAllBytes(to_address, recipient_device_address, onDone) {
+	var device = require('byteballcore/device.js');
+	var Wallet = require('byteballcore/wallet.js');
+	Wallet.sendMultiPayment({
+		asset: null,
+		to_address: to_address,
+		send_all: true,
+		wallet: wallet_id,
+		arrSigningDeviceAddresses: [device.getMyDeviceAddress()],
+		recipient_device_address: recipient_device_address,
+		signWithLocalPrivateKey: signWithLocalPrivateKey
+	}, (err, unit) => {
+		if (onDone)
+			onDone(err, unit);
+	});
 }
 
 function sendAllBytesFromAddress(from_address, to_address, recipient_device_address, onDone) {
@@ -431,7 +470,7 @@ function handleText(from_address, text){
 					msg +=	"\nExample 5: 'pay 12345 ASSET_ID' pays 12345 of asset with ID ASSET_ID";
 					return device.sendMessageToDevice(from_address, 'text', msg);
 				}
-				
+
 				if (!conf.payout_address)
 					return device.sendMessageToDevice(from_address, 'text', "payout address not defined");
 
@@ -468,7 +507,7 @@ function handleText(from_address, text){
 }
 
 function analyzePayParams(amountText, assetText, cb){
-	// expected: 
+	// expected:
 	// amountText = amount; only digits
 	// assetText = asset; '' -> whitebytes, 'bytes' -> whitebytes, 'blackbytes' -> blackbytes, '{asset-ID}' -> any asset
 
@@ -528,6 +567,8 @@ exports.handlePairing = handlePairing;
 exports.handleText = handleText;
 exports.sendAllBytesFromAddress = sendAllBytesFromAddress;
 exports.sendAssetFromAddress = sendAssetFromAddress;
+exports.sendAllBytes = sendAllBytes;
+exports.sendPaymentUsingOutputs = sendPaymentUsingOutputs;
 
 if (require.main === module)
 	setupChatEventHandlers();

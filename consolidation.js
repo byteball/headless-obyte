@@ -5,6 +5,16 @@ var conf = require('byteballcore/conf.js');
 var db = require('byteballcore/db.js');
 var mutex = require('byteballcore/mutex.js');
 
+const AUTHOR_SIZE = 3 // "sig"
+	+ 44  // pubkey
+	+ 88; // signature
+
+const TRANSFER_INPUT_SIZE = 0 // type: "transfer" omitted
+	+ 44 // unit
+	+ 8 // message_index
+	+ 8; // output_index
+
+
 function readLeastFundedAddresses(asset, wallet, handleFundedAddresses){
 	db.query(
 		"SELECT address, SUM(amount) AS total \n\
@@ -66,10 +76,10 @@ function consolidate(wallet, signer){
 						
 						// if all inputs are so small that they don't pay even for fees, add one more large input
 						function addLargeInputIfNecessary(onDone){
-							var target_amount = 1000 + 100*rows.length;
+							var target_amount = 1000 + TRANSFER_INPUT_SIZE*rows.length + AUTHOR_SIZE*arrAddresses.length;
 							if (input_amount > target_amount)
 								return onDone();
-							target_amount += 100;
+							target_amount += TRANSFER_INPUT_SIZE + AUTHOR_SIZE;
 							db.query(
 								"SELECT address, unit, message_index, output_index, amount \n\
 								FROM my_addresses \n\

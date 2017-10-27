@@ -2,7 +2,7 @@
   "name": "headless-byteball",
   "description": "Byteball headless wallet",
   "author": "Byteball",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "main": "start.js",
   "keywords": [
     "wallet",

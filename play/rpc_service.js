@@ -78,6 +78,7 @@ function initRPC() {
 	 * @return {"base":{"stable":{Integer},"pending":{Integer}}} balance
 	 */
 	server.expose('getbalance', function(args, opt, cb) {
+		let start_time = Date.now();
 		var address = args[0];
 		if (address) {
 			if (validationUtils.isValidAddress(address))
@@ -110,6 +111,7 @@ function initRPC() {
 		}
 		else
 			Wallet.readBalance(wallet_id, function(balances) {
+				console.log('getbalance took '+(Date.now()-start_time)+'ms');
 				cb(null, balances);
 			});
 	});
@@ -120,7 +122,9 @@ function initRPC() {
 	 * @return {"base":{"stable":{Integer},"pending":{Integer}}} balance
 	 */
 	server.expose('getmainbalance', function(args, opt, cb) {
+		let start_time = Date.now();
 		balances.readOutputsBalance(wallet_id, function(balances) {
+			console.log('getmainbalance took '+(Date.now()-start_time)+'ms');
 			cb(null, balances);
 		});
 	});
@@ -135,6 +139,7 @@ function initRPC() {
 	 * @return [{"action":{'invalid','received','sent','moved'},"amount":{Integer},"my_address":{String},"arrPayerAddresses":[{String}],"confirmations":{0,1},"unit":{String},"fee":{Integer},"time":{String},"level":{Integer},"asset":{String}}] transactions
 	 */
 	server.expose('listtransactions', function(args, opt, cb) {
+		let start_time = Date.now();
 		if (Array.isArray(args) && typeof args[0] === 'string') {
 			var address = args[0];
 			if (validationUtils.isValidAddress(address))
@@ -153,6 +158,7 @@ function initRPC() {
 			else
 				opts.limit = 200;
 			Wallet.readTransactionHistory(opts, function(result) {
+				console.log('listtransactions '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms');
 				cb(null, result);
 			});
 		}
@@ -167,12 +173,14 @@ function initRPC() {
 	 * @return {String} status
 	 */
 	server.expose('sendtoaddress', function(args, opt, cb) {
-		// return cb(null, null);
+		console.log('sendtoaddress '+JSON.stringify(args));
+		let start_time = Date.now();
 		var amount = args[1];
 		var toAddress = args[0];
 		if (amount && toAddress) {
 			if (validationUtils.isValidAddress(toAddress))
 				headlessWallet.issueChangeAddressAndSendPayment(null, amount, toAddress, null, function(err, unit) {
+					console.log('sendtoaddress '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms');
 					cb(err, err ? undefined : unit);
 				});
 			else

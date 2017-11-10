@@ -193,7 +193,8 @@ function initRPC() {
 	headlessWallet.readSingleWallet(function(_wallet_id) {
 		wallet_id = _wallet_id;
 		// listen creates an HTTP server on localhost only 
-		server.listen(conf.rpcPort, conf.rpcInterface);
+		var httpServer = server.listen(conf.rpcPort, conf.rpcInterface);
+		httpServer.timeout = 900*1000;
 	});
 }
 

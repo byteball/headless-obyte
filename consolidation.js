@@ -145,7 +145,8 @@ function consolidate(wallet, signer){
 											consolidate(wallet, signer); // do more if something's left
 										},
 										ifError: function(err){
-											throw Error('failed to compose consolidation transaction: '+err);
+											console.log('failed to compose consolidation transaction: '+err);
+											unlock();
 										},
 										ifNotEnoughFunds: function(err){
 											throw Error('not enough funds to compose consolidation transaction: '+err);

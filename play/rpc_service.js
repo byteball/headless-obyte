@@ -180,7 +180,7 @@ function initRPC() {
 		if (amount && toAddress) {
 			if (validationUtils.isValidAddress(toAddress))
 				headlessWallet.issueChangeAddressAndSendPayment(null, amount, toAddress, null, function(err, unit) {
-					console.log('sendtoaddress '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms');
+					console.log('sendtoaddress '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms, unit='+unit+', err='+err);
 					cb(err, err ? undefined : unit);
 				});
 			else

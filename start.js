@@ -195,7 +195,7 @@ var signer = {
 	readDefinition: function(conn, address, handleDefinition){
 		conn.query("SELECT definition FROM my_addresses WHERE address=?", [address], function(rows){
 			if (rows.length !== 1)
-				throw "definition not found";
+				throw Error("definition not found");
 			handleDefinition(null, JSON.parse(rows[0].definition));
 		});
 	},

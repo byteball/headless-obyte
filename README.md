@@ -63,3 +63,33 @@ Payments are the central but not the only type of data that Byteball stores.  In
 ## RPC service
 
 By default, no RPC service is enabled.  If you want to manage your headless wallet via JSON-RPC API, e.g. you run an exchange, run [play/rpc_service.js](play/rpc_service.js) instead.  See the [documentation about running RPC service](../../wiki/Running-RPC-service).
+
+
+## Generate headless wallet configurations
+
+To be able to programmatically generate headless wallet configurations use the function `generateHeadlessWalletConfig`. 
+
+The function will use the supplied configuration parameters and generate a new headless wallet configuration and an empty database in `dataDir`. 
+
+Make sure that the `dataDir` directory is empty and does not contain a previous configuration (e.g. on MacOS `/Users/<username>/Library/Application Support/headless-byteball`).
+
+See the usage example below:
+```
+// disable headless wallet autostart
+conf.bAutoStart = false;
+// dont connect to any hubs
+conf.hub = '';
+
+var headlessWallet = require('headless-wallet');
+headlessWallet.generateHeadlessWalletConfig("<wallet_name>", "<password>", function (mnemonicPhrase, passphrase, definition, address, dataDir) {
+    var finishedConfig = {
+        mnemonicPhrase: mnemonicPhrase,
+        passphrase: passphrase,
+        definition: definition,
+        address: address,
+        deviceName: deviceName,
+        appDataDir: dataDir
+    };
+    console.log("wallet configuration: %j", finishedConfig);
+});
+```

@@ -18,8 +18,8 @@ let opts = {
 };
 
 function pay(){
-	headlessWallet.issueChangeAddressAndSendMultiPayment(opts, (err, unit) => {
-		console.error("=== sent payment, unit="+unit+", err="+err);
+	headlessWallet.issueChangeAddressAndSendMultiPayment(opts, (err, unit, assocMnemonics) => {
+		console.error("=== sent payment, unit="+unit+", err="+err, assocMnemonics);
 	});
 }
 

@@ -294,7 +294,7 @@ function sendPayment(asset, amount, to_address, change_address, device_address, 
 		asset, wallet_id, to_address, amount, change_address, 
 		[], device_address, 
 		signWithLocalPrivateKey, 
-		function(err, unit){
+		function(err, unit, assocMnemonics){
 			if (device_address) {
 				if (err)
 					device.sendMessageToDevice(device_address, 'text', "Failed to pay: " + err);
@@ -303,7 +303,7 @@ function sendPayment(asset, amount, to_address, change_address, device_address, 
 					device.sendMessageToDevice(device_address, 'text', "paid");
 			}
 			if (onDone)
-				onDone(err, unit);
+				onDone(err, unit, assocMnemonics);
 		}
 	);
 }
@@ -314,9 +314,9 @@ function sendMultiPayment(opts, onDone){
 	opts.wallet = wallet_id;
 	opts.arrSigningDeviceAddresses = [device.getMyDeviceAddress()];
 	opts.signWithLocalPrivateKey = signWithLocalPrivateKey;
-	Wallet.sendMultiPayment(opts, (err, unit) => {
+	Wallet.sendMultiPayment(opts, (err, unit, assocMnemonics) => {
 		if (onDone)
-			onDone(err, unit);
+			onDone(err, unit, assocMnemonics);
 	});
 }
 
@@ -336,9 +336,9 @@ function sendPaymentUsingOutputs(asset, outputs, change_address, onDone) {
 	}else{
 		opt.asset_outputs = outputs;
 	}
-	Wallet.sendMultiPayment(opt, (err, unit) => {
+	Wallet.sendMultiPayment(opt, (err, unit, assocMnemonics) => {
 		if (onDone)
-			onDone(err, unit);
+			onDone(err, unit, assocMnemonics);
 	});
 }
 
@@ -353,9 +353,9 @@ function sendAllBytes(to_address, recipient_device_address, onDone) {
 		arrSigningDeviceAddresses: [device.getMyDeviceAddress()],
 		recipient_device_address: recipient_device_address,
 		signWithLocalPrivateKey: signWithLocalPrivateKey
-	}, (err, unit) => {
+	}, (err, unit, assocMnemonics) => {
 		if (onDone)
-			onDone(err, unit);
+			onDone(err, unit, assocMnemonics);
 	});
 }
 
@@ -370,9 +370,9 @@ function sendAllBytesFromAddress(from_address, to_address, recipient_device_addr
 		arrSigningDeviceAddresses: [device.getMyDeviceAddress()],
 		recipient_device_address: recipient_device_address,
 		signWithLocalPrivateKey: signWithLocalPrivateKey
-	}, (err, unit) => {
+	}, (err, unit, assocMnemonics) => {
 		if(onDone)
-			onDone(err, unit);
+			onDone(err, unit, assocMnemonics);
 	});
 }
 
@@ -389,9 +389,9 @@ function sendAssetFromAddress(asset, amount, from_address, to_address, recipient
 		arrSigningDeviceAddresses: [device.getMyDeviceAddress()],
 		recipient_device_address: recipient_device_address,
 		signWithLocalPrivateKey: signWithLocalPrivateKey
-	}, (err, unit) => {
+	}, (err, unit, assocMnemonics) => {
 		if (onDone)
-			onDone(err, unit);
+			onDone(err, unit, assocMnemonics);
 	});
 }
 

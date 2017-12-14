@@ -308,6 +308,18 @@ function sendPayment(asset, amount, to_address, change_address, device_address, 
 	);
 }
 
+function sendMultiPayment(opts, onDone){
+	var device = require('byteballcore/device.js');
+	var Wallet = require('byteballcore/wallet.js');
+	opts.wallet = wallet_id;
+	opts.arrSigningDeviceAddresses = [device.getMyDeviceAddress()];
+	opts.signWithLocalPrivateKey = signWithLocalPrivateKey;
+	Wallet.sendMultiPayment(opts, (err, unit) => {
+		if (onDone)
+			onDone(err, unit);
+	});
+}
+
 function sendPaymentUsingOutputs(asset, outputs, change_address, onDone) {
 	var device = require('byteballcore/device.js');
 	var Wallet = require('byteballcore/wallet.js');
@@ -384,22 +396,16 @@ function sendAssetFromAddress(asset, amount, from_address, to_address, recipient
 }
 
 function issueChangeAddressAndSendPayment(asset, amount, to_address, device_address, onDone){
-	if (conf.bSingleAddress){
-		readSingleAddress(function(change_address){
-			sendPayment(asset, amount, to_address, change_address, device_address, onDone);
-		});
-	}
-	else if (conf.bStaticChangeAddress){
-		issueOrSelectStaticChangeAddress(function(change_address){
-			sendPayment(asset, amount, to_address, change_address, device_address, onDone);
-		});
-	}
-	else{
-		var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
-		walletDefinedByKeys.issueOrSelectNextChangeAddress(wallet_id, function(objAddr){
-			sendPayment(asset, amount, to_address, objAddr.address, device_address, onDone);
-		});
-	}
+	issueChangeAddress(function(change_address){
+		sendPayment(asset, amount, to_address, change_address, device_address, onDone);
+	});
+}
+
+function issueChangeAddressAndSendMultiPayment(opts, onDone){
+	issueChangeAddress(function(change_address){
+		opts.change_address = change_address;
+		sendMultiPayment(opts, onDone);
+	});
 }
 
 function issueOrSelectNextMainAddress(handleAddress){
@@ -425,6 +431,19 @@ function issueOrSelectStaticChangeAddress(handleAddress){
 			handleAddress(objAddr.address);
 		});
 	});
+}
+
+function issueChangeAddress(handleAddress){
+	if (conf.bSingleAddress)
+		readSingleAddress(handleAddress);
+	else if (conf.bStaticChangeAddress)
+		issueOrSelectStaticChangeAddress(handleAddress);
+	else{
+		var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+		walletDefinedByKeys.issueOrSelectNextChangeAddress(wallet_id, function(objAddr){
+			handleAddress(objAddr.address);
+		});
+	}
 }
 
 function handleText(from_address, text, onUnknown){
@@ -573,6 +592,8 @@ exports.sendAllBytesFromAddress = sendAllBytesFromAddress;
 exports.sendAssetFromAddress = sendAssetFromAddress;
 exports.sendAllBytes = sendAllBytes;
 exports.sendPaymentUsingOutputs = sendPaymentUsingOutputs;
+exports.sendMultiPayment = sendMultiPayment;
+exports.issueChangeAddressAndSendMultiPayment = issueChangeAddressAndSendMultiPayment;
 
 if (require.main === module)
 	setupChatEventHandlers();

@@ -147,6 +147,16 @@ function readSingleAddress(handleAddress){
 	});
 }
 
+function readFirstAddress(handleAddress){
+	db.query("SELECT address FROM my_addresses WHERE wallet=? AND address_index=0 AND is_change=0", [wallet_id], function(rows){
+		if (rows.length === 0)
+			throw Error("no addresses");
+		if (rows.length > 1)
+			throw Error("more than 1 address");
+		handleAddress(rows[0].address);
+	});
+}
+
 function prepareBalanceText(handleBalanceText){
 	var Wallet = require('byteballcore/wallet.js');
 	Wallet.readBalance(wallet_id, function(assocBalances){
@@ -311,7 +321,8 @@ function sendPayment(asset, amount, to_address, change_address, device_address, 
 function sendMultiPayment(opts, onDone){
 	var device = require('byteballcore/device.js');
 	var Wallet = require('byteballcore/wallet.js');
-	opts.wallet = wallet_id;
+	if (!opts.paying_addresses)
+		opts.wallet = wallet_id;
 	opts.arrSigningDeviceAddresses = [device.getMyDeviceAddress()];
 	opts.signWithLocalPrivateKey = signWithLocalPrivateKey;
 	Wallet.sendMultiPayment(opts, (err, unit, assocMnemonics) => {
@@ -422,15 +433,19 @@ function issueNextMainAddress(handleAddress){
 	});
 }
 
-function issueOrSelectStaticChangeAddress(handleAddress){
+function issueOrSelectAddressByIndex(is_change, address_index, handleAddress){
 	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
-	walletDefinedByKeys.readAddressByIndex(wallet_id, 1, 0, function(objAddr){
+	walletDefinedByKeys.readAddressByIndex(wallet_id, is_change, address_index, function(objAddr){
 		if (objAddr)
 			return handleAddress(objAddr.address);
-		walletDefinedByKeys.issueAddress(wallet_id, 1, 0, function(objAddr){
+		walletDefinedByKeys.issueAddress(wallet_id, is_change, address_index, function(objAddr){
 			handleAddress(objAddr.address);
 		});
 	});
+}
+
+function issueOrSelectStaticChangeAddress(handleAddress){
+	issueOrSelectAddressByIndex(1, 0, handleAddress);
 }
 
 function issueChangeAddress(handleAddress){
@@ -579,10 +594,12 @@ function setupChatEventHandlers(){
 
 exports.readSingleWallet = readSingleWallet;
 exports.readSingleAddress = readSingleAddress;
+exports.readFirstAddress = readFirstAddress;
 exports.signer = signer;
 exports.isControlAddress = isControlAddress;
 exports.issueOrSelectNextMainAddress = issueOrSelectNextMainAddress;
 exports.issueNextMainAddress = issueNextMainAddress;
+exports.issueOrSelectAddressByIndex = issueOrSelectAddressByIndex;
 exports.issueOrSelectStaticChangeAddress = issueOrSelectStaticChangeAddress;
 exports.issueChangeAddressAndSendPayment = issueChangeAddressAndSendPayment;
 exports.setupChatEventHandlers = setupChatEventHandlers;

@@ -19,6 +19,10 @@ var KEYS_FILENAME = appDataDir + '/' + (conf.KEYS_FILENAME || 'keys.json');
 var wallet_id;
 var xPrivKey;
 
+if (typeof window === 'undefined') {
+    global.window = {}
+}
+
 function replaceConsoleLog(){
 	var log_filename = conf.LOG_FILENAME || (appDataDir + '/log.txt');
 	var writeStream = fs.createWriteStream(log_filename);

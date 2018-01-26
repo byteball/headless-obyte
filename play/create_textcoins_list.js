@@ -51,3 +51,13 @@ function createList(){
 }
 
 eventBus.on('headless_wallet_ready', createList);
+
+/*
+
+Stats:
+SELECT DATE(units.creation_date) AS date, COUNT(*) 
+FROM sent_mnemonics LEFT JOIN unit_authors USING(address) LEFT JOIN units ON unit_authors.unit=units.unit
+GROUP BY date
+
+*/
+

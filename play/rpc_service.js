@@ -55,6 +55,21 @@ function initRPC() {
 	});
 
 	/**
+	 * Validates address.
+	 * @return {boolean} is_valid
+	 */
+	server.expose('validateaddress', function(args, opt, cb) {
+		var address = args[0];
+		cb(null, validationUtils.isValidAddress(address));
+	});
+	
+	// alias for validateaddress
+	server.expose('verifyaddress', function(args, opt, cb) {
+		var address = args[0];
+		cb(null, validationUtils.isValidAddress(address));
+	});
+	
+	/**
 	 * Creates and returns new wallet address.
 	 * @return {String} address
 	 */

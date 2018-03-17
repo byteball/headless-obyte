@@ -95,6 +95,7 @@ function initRPC() {
 	server.expose('getbalance', function(args, opt, cb) {
 		let start_time = Date.now();
 		var address = args[0];
+		var asset = args[1];
 		if (address) {
 			if (validationUtils.isValidAddress(address))
 				db.query("SELECT COUNT(*) AS count FROM my_addresses WHERE address = ?", [address], function(rows) {
@@ -102,18 +103,17 @@ function initRPC() {
 						db.query(
 							"SELECT asset, is_stable, SUM(amount) AS balance \n\
 							FROM outputs JOIN units USING(unit) \n\
-							WHERE is_spent=0 AND address=? AND sequence='good' AND asset IS NULL \n\
+							WHERE is_spent=0 AND address=? AND sequence='good' AND asset "+(asset ? "="+db.escape(asset) : "IS NULL")+" \n\
 							GROUP BY is_stable", [address],
 							function(rows) {
-								var balance = {
-									base: {
-										stable: 0,
-										pending: 0
-									}
+								var balance = {};
+								balance[asset || 'base'] = {
+									stable: 0,
+									pending: 0
 								};
 								for (var i = 0; i < rows.length; i++) {
 									var row = rows[i];
-									balance.base[row.is_stable ? 'stable' : 'pending'] = row.balance;
+									balance[asset || 'base'][row.is_stable ? 'stable' : 'pending'] = row.balance;
 								}
 								cb(null, balance);
 							}
@@ -168,10 +168,15 @@ function initRPC() {
 			var opts = {wallet: wallet_id};
 			if (args.unit && validationUtils.isValidBase64(args.unit, constants.HASH_LENGTH))
 				opts.unit = args.unit;
-			else if (args.since_mci && validationUtils.isNonnegativeInteger(args.since_mci))
+			if (args.since_mci && validationUtils.isNonnegativeInteger(args.since_mci))
 				opts.since_mci = args.since_mci;
 			else
 				opts.limit = 200;
+			if (args.asset){
+				if (!validationUtils.isValidBase64(args.asset, constants.HASH_LENGTH))
+					return cb("bad asset: "+args.asset);
+				opts.asset = args.asset;
+			}
 			Wallet.readTransactionHistory(opts, function(result) {
 				console.log('listtransactions '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms');
 				cb(null, result);
@@ -192,9 +197,12 @@ function initRPC() {
 		let start_time = Date.now();
 		var amount = args[1];
 		var toAddress = args[0];
+		var asset = args[2];
+		if (asset && !validationUtils.isValidBase64(asset, constants.HASH_LENGTH))
+			return cb("bad asset: "+asset);
 		if (amount && toAddress) {
 			if (validationUtils.isValidAddress(toAddress))
-				headlessWallet.issueChangeAddressAndSendPayment(null, amount, toAddress, null, function(err, unit) {
+				headlessWallet.issueChangeAddressAndSendPayment(asset, amount, toAddress, null, function(err, unit) {
 					console.log('sendtoaddress '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms, unit='+unit+', err='+err);
 					cb(err, err ? undefined : unit);
 				});

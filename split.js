@@ -44,7 +44,7 @@ function checkAndSplitLargestOutput(address){
 	db.query( // see if the largest output is greater than the 1/10th of the total
 		"SELECT COUNT(*) AS count FROM outputs \n\
 		WHERE address=? AND is_spent=0 AND asset IS NULL \n\
-			AND amount>(SELECT SUM(amount)+10000 FROM outputs WHERE address=? AND is_spent=0 AND asset IS NULL)/?", 
+			AND amount>(SELECT SUM(amount)+10000 FROM outputs WHERE address=? AND is_spent=0 AND asset IS NULL)/(?/2)", 
 		[address, address, COUNT_CHUNKS], 
 		rows => {
 			if (rows[0].count > 0)

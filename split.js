@@ -13,6 +13,7 @@ function splitLargestOutput(address, asset){
 			return;
 		let opts = {
 			asset: asset || null,
+			paying_addresses: [address],
 			change_address: address
 		};
 		if (asset)

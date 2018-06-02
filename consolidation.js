@@ -4,6 +4,7 @@ var constants = require('byteballcore/constants.js');
 var conf = require('byteballcore/conf.js');
 var db = require('byteballcore/db.js');
 var mutex = require('byteballcore/mutex.js');
+const ValidationUtils = require('byteballcore/validation_utils');
 
 const AUTHOR_SIZE = 3 // "sig"
 	+ 44  // pubkey
@@ -16,6 +17,8 @@ const TRANSFER_INPUT_SIZE = 0 // type: "transfer" omitted
 
 
 function readLeastFundedAddresses(asset, wallet, handleFundedAddresses){
+	if (ValidationUtils.isValidAddress(wallet))
+		return handleFundedAddresses([wallet]);
 	db.query(
 		"SELECT address, SUM(amount) AS total \n\
 		FROM my_addresses CROSS JOIN outputs USING(address) \n\
@@ -34,9 +37,10 @@ function readLeastFundedAddresses(asset, wallet, handleFundedAddresses){
 }
 
 function determineCountOfOutputs(asset, wallet, handleCount){
+	let filter = ValidationUtils.isValidAddress(wallet) ? "address=?" : "wallet=?";
 	db.query(
 		"SELECT COUNT(*) AS count FROM my_addresses CROSS JOIN outputs USING(address) JOIN units USING(unit) \n\
-		WHERE wallet=? AND is_spent=0 AND "+(asset ? "asset="+db.escape(asset) : "asset IS NULL")+" AND is_stable=1 AND sequence='good'",
+		WHERE "+filter+" AND is_spent=0 AND "+(asset ? "asset="+db.escape(asset) : "asset IS NULL")+" AND is_stable=1 AND sequence='good'",
 		[wallet],
 		function(rows){
 			handleCount(rows[0].count);
@@ -45,6 +49,8 @@ function determineCountOfOutputs(asset, wallet, handleCount){
 }
 
 function readDestinationAddress(wallet, handleAddress){
+	if (ValidationUtils.isValidAddress(wallet))
+		return handleAddress(wallet);
 	db.query("SELECT address FROM my_addresses WHERE wallet=? ORDER BY is_change DESC, address_index ASC LIMIT 1", [wallet], rows => {
 		if (rows.length === 0)
 			throw Error('no dest address');
@@ -80,12 +86,13 @@ function consolidate(wallet, signer){
 							if (input_amount > target_amount)
 								return onDone();
 							target_amount += TRANSFER_INPUT_SIZE + AUTHOR_SIZE;
+							let filter = ValidationUtils.isValidAddress(wallet) ? "address=?" : "wallet=?";
 							db.query(
 								"SELECT address, unit, message_index, output_index, amount \n\
 								FROM my_addresses \n\
 								CROSS JOIN outputs USING(address) \n\
 								CROSS JOIN units USING(unit) \n\
-								WHERE wallet=? AND is_stable=1 AND sequence='good' \n\
+								WHERE "+filter+" AND is_stable=1 AND sequence='good' \n\
 									AND is_spent=0 AND "+(asset ? "asset="+db.escape(asset) : "asset IS NULL")+" \n\
 									AND NOT EXISTS ( \n\
 										SELECT * FROM units CROSS JOIN unit_authors USING(unit) \n\

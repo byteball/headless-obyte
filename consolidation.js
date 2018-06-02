@@ -152,7 +152,7 @@ function consolidate(wallet, signer, maxUnspentOutputs){
 										ifOk: function(objJoint){
 											network.broadcastJoint(objJoint);
 											unlock();
-											consolidate(wallet, signer); // do more if something's left
+											consolidate(wallet, signer, maxUnspentOutputs); // do more if something's left
 										},
 										ifError: function(err){
 											console.log('failed to compose consolidation transaction: '+err);

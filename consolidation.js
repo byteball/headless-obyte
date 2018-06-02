@@ -59,6 +59,9 @@ function readDestinationAddress(wallet, handleAddress){
 }
 
 function consolidate(wallet, signer){
+	const network = require('byteballcore/network.js');
+	if (network.isCatchingUp())
+		return;
 	var asset = null;
 	mutex.lock(['consolidate'], unlock => {
 		determineCountOfOutputs(asset, wallet, count => {
@@ -146,7 +149,6 @@ function consolidate(wallet, signer){
 									earned_headers_commission_recipients: [{address: dest_address, earned_headers_commission_share: 100}],
 									callbacks: composer.getSavingCallbacks({
 										ifOk: function(objJoint){
-											var network = require('byteballcore/network.js');
 											network.broadcastJoint(objJoint);
 											unlock();
 											consolidate(wallet, signer); // do more if something's left

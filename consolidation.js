@@ -1,7 +1,6 @@
 /*jslint node: true */
 "use strict";
 var constants = require('byteballcore/constants.js');
-var conf = require('byteballcore/conf.js');
 var db = require('byteballcore/db.js');
 var mutex = require('byteballcore/mutex.js');
 const ValidationUtils = require('byteballcore/validation_utils');
@@ -58,7 +57,9 @@ function readDestinationAddress(wallet, handleAddress){
 	});
 }
 
-function consolidate(wallet, signer){
+function consolidate(wallet, signer, maxUnspentOutputs){
+	if (!maxUnspentOutputs)
+		throw Error("no maxUnspentOutputs");
 	const network = require('byteballcore/network.js');
 	if (network.isCatchingUp())
 		return;
@@ -66,9 +67,9 @@ function consolidate(wallet, signer){
 	mutex.lock(['consolidate'], unlock => {
 		determineCountOfOutputs(asset, wallet, count => {
 			console.log(count+' unspent outputs');
-			if (count <= conf.MAX_UNSPENT_OUTPUTS)
+			if (count <= maxUnspentOutputs)
 				return unlock();
-			let count_to_spend = Math.min(count - conf.MAX_UNSPENT_OUTPUTS + 1, constants.MAX_INPUTS_PER_PAYMENT_MESSAGE - 1);
+			let count_to_spend = Math.min(count - maxUnspentOutputs + 1, constants.MAX_INPUTS_PER_PAYMENT_MESSAGE - 1);
 			readLeastFundedAddresses(asset, wallet, arrAddresses => {
 				db.query(
 					"SELECT address, unit, message_index, output_index, amount \n\
@@ -172,6 +173,16 @@ function consolidate(wallet, signer){
 	});
 }
 
-exports.consolidate = consolidate;
+function scheduleConsolidation(wallet, signer, maxUnspentOutputs, consolidationInterval){
+	if (!maxUnspentOutputs || !consolidationInterval)
+		return;
+	function doConsolidate(){
+		consolidate(wallet, signer, maxUnspentOutputs);
+	}
+	setInterval(doConsolidate, consolidationInterval);
+	setTimeout(doConsolidate, 300*1000);
+}
 
+exports.consolidate = consolidate;
+exports.scheduleConsolidation = scheduleConsolidation;
 

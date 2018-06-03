@@ -30,24 +30,30 @@ function splitLargestOutput(address, asset){
 
 function createSplitOutputs(address, asset, handleOutputs){
 	let asset_value = asset ? '='+db.escape(asset) : ' IS NULL';
-	db.query("SELECT amount FROM outputs WHERE address=? AND asset "+asset_value+" AND is_spent=0 ORDER BY amount DESC LIMIT 1", [address], function(rows){
-		if (rows.length === 0)
-			return handleOutputs();
-		var amount = rows[0].amount;
-		var chunk_amount = Math.round(amount/COUNT_CHUNKS);
-		var arrOutputs = [];
-		for (var i=1; i<COUNT_CHUNKS; i++) // 9 iterations
-			arrOutputs.push({amount: chunk_amount, address: address});
-		handleOutputs(arrOutputs);
-	});
+	db.query(
+		"SELECT amount FROM outputs CROSS JOIN units USING(unit) \n\
+		WHERE address=? AND asset "+asset_value+" AND is_spent=0 AND is_stable=1 \n\
+		ORDER BY amount DESC LIMIT 1",
+		[address],
+		function(rows){
+			if (rows.length === 0)
+				return handleOutputs();
+			var amount = rows[0].amount;
+			var chunk_amount = Math.round(amount/COUNT_CHUNKS);
+			var arrOutputs = [];
+			for (var i=1; i<COUNT_CHUNKS; i++) // 9 iterations
+				arrOutputs.push({amount: chunk_amount, address: address});
+			handleOutputs(arrOutputs);
+		}
+	);
 }
 
 // splits the largest output if it is greater than the 1/10th of the total
 function checkAndSplitLargestOutput(address, asset){
 	let asset_value = asset ? '='+db.escape(asset) : ' IS NULL';
 	db.query( // see if the largest output is greater than the 1/10th of the total
-		"SELECT COUNT(*) AS count FROM outputs \n\
-		WHERE address=? AND is_spent=0 AND asset "+asset_value+" \n\
+		"SELECT COUNT(*) AS count FROM outputs CROSS JOIN units USING(unit) \n\
+		WHERE address=? AND is_spent=0 AND asset "+asset_value+" AND is_stable=1 \n\
 			AND amount>(SELECT SUM(amount)+10000 FROM outputs WHERE address=? AND is_spent=0 AND asset "+asset_value+")/(?/2)", 
 		[address, address, COUNT_CHUNKS], 
 		rows => {

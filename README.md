@@ -35,7 +35,7 @@ You can remotely control your wallet via chat interface from devices listed in `
 
 * `balance`: to request the current balance on the headless wallet;
 * `address`: to get to know one of the wallet's addresses, you use it to refill the wallet's balance;
-* `pay <amount in bytes>` to request withdrawal from the headless wallet to your `payout_address`.
+* `pay <amount in bytes>` to request withdrawal from the headless wallet to your `payout_address`, or `pay <amount> <asset>` to withdraw another asset.
 
 ![Chat with headless wallet](chat-with-headless.png)
 

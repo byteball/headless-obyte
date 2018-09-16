@@ -19,8 +19,15 @@ var KEYS_FILENAME = appDataDir + '/' + (conf.KEYS_FILENAME || 'keys.json');
 var wallet_id;
 var xPrivKey;
 
+function datetime() {
+	let date = new Date();
+	return ''+ date.getFullYear() + (date.getMonth() < 10 ? '0' :'') + date.getMonth() +
+	(date.getDate() < 10 ? '0' :'') + date.getDate() + (date.getHours() < 10 ? '0' :'') + date.getHours() +
+	(date.getMinutes() < 10 ? '0' :'') + date.getMinutes() + ( date.getSeconds() < 10 ? '0' :'') + date.getSeconds()
+}
+
 function replaceConsoleLog(){
-	var log_filename = conf.LOG_FILENAME || (appDataDir + '/log.txt');
+	var log_filename = conf.LOG_FILENAME || (appDataDir + '/log'+datetime()+'.txt');
 	var writeStream = fs.createWriteStream(log_filename);
 	console.log('---------------');
 	console.log('From this point, output will be redirected to '+log_filename);

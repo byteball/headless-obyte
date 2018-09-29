@@ -23,7 +23,7 @@ function createDefinitionTemplate(){
 		["address", "$address"], 
 		["in data feed", [["MO7ZZIU5VXHRZGGHVSZWLWL64IEND5K2"], "timestamp", ">=", "$ts"]]
 	]];
-	composer.composeDedinitionTemplateJoint("PYQJWUWRMUUUSUHKNJWFHSR5OADZMUYR", definition_template, headlessWallet.signer, callbacks);
+	composer.composeDefinitionTemplateJoint("PYQJWUWRMUUUSUHKNJWFHSR5OADZMUYR", definition_template, headlessWallet.signer, callbacks);
 }
 
 eventBus.on('headless_wallet_ready', createDefinitionTemplate);

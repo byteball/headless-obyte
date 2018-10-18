@@ -10,6 +10,7 @@ var desktopApp = require('byteballcore/desktop_app.js');
 var db = require('byteballcore/db.js');
 var eventBus = require('byteballcore/event_bus.js');
 var ecdsaSig = require('byteballcore/signature.js');
+var storage = require('byteballcore/storage.js');
 var Mnemonic = require('bitcore-mnemonic');
 var Bitcore = require('bitcore-lib');
 var readline = require('readline');
@@ -534,6 +535,12 @@ function handleText(from_address, text, onUnknown){
 					payout(amount, asset);
 				}
 
+			});
+			break;
+
+		case 'mci':
+			storage.readLastMainChainIndex(function(last_mci){
+				device.sendMessageToDevice(from_address, 'text', last_mci.toString());
 			});
 			break;
 

@@ -249,6 +249,7 @@ setTimeout(function(){
 		readSingleWallet(function(wallet){
 			// global
 			wallet_id = wallet;
+			require('byteballcore/wallet.js'); // we don't need any of its functions but it listens for hub/* messages
 			var device = require('byteballcore/device.js');
 			device.setDevicePrivateKey(devicePrivKey);
 			let my_device_address = device.getMyDeviceAddress();
@@ -260,7 +261,6 @@ setTimeout(function(){
 						console.log('passphrase is incorrect');
 						process.exit(0);
 					}, 1000);
-				require('byteballcore/wallet.js'); // we don't need any of its functions but it listens for hub/* messages
 				device.setTempKeys(deviceTempPrivKey, devicePrevTempPrivKey, saveTempKeys);
 				device.setDeviceName(conf.deviceName);
 				device.setDeviceHub(conf.hub);

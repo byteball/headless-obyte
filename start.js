@@ -267,6 +267,15 @@ setTimeout(function(){
 				let my_device_pubkey = device.getMyDevicePubKey();
 				console.log("====== my device address: "+my_device_address);
 				console.log("====== my device pubkey: "+my_device_pubkey);
+				if (conf.bSingleAddress)
+					readSingleAddress(function(address){
+						console.log("====== my single address: "+address);
+					});
+				else
+					readFirstAddress(function(address){
+						console.log("====== my first address: "+address);
+					});
+
 				if (conf.permanent_pairing_secret)
 					console.log("====== my pairing code: "+my_device_pubkey+"@"+conf.hub+"#"+conf.permanent_pairing_secret);
 				if (conf.bLight){

@@ -26,7 +26,7 @@ If you want to change any defaults, refer to the documentation of [byteballcore]
 * `payout_address`: if you give `pay` command over chat interface, the money will be sent to this Byteball address.
 * `hub`: hub address without wss://, the default is `byteball.org/bb`.
 * `deviceName`: the name of your device as seen in the chat interface.
-* `permanent_paring_secret`: the pairing secret used to authenticate pairing requests when you pair your GUI wallet for remote control.  The pairing secret is the part of the pairing code after #.
+* `permanent_pairing_secret`: the pairing secret used to authenticate pairing requests when you pair your GUI wallet for remote control.  The pairing secret is the part of the pairing code after #.
 
 
 ## Remote control

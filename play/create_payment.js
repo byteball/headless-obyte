@@ -13,6 +13,10 @@ function createPayment(){
 	var callbacks = composer.getSavingCallbacks({
 		ifNotEnoughFunds: onError,
 		ifError: onError,
+	/*	preCommitCb: function (conn, objJoint, handle){ //In this optional callback you can add SQL queries to be executed atomically with the payment
+						conn.query("UPDATE my_table SET status='paid' WHERE transaction_id=?",[transaction_id]);
+						handle();
+					},*/
 		ifOk: function(objJoint){
 			network.broadcastJoint(objJoint);
 		}

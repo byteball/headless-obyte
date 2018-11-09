@@ -621,6 +621,7 @@ exports.issueOrSelectAddressByIndex = issueOrSelectAddressByIndex;
 exports.issueOrSelectStaticChangeAddress = issueOrSelectStaticChangeAddress;
 exports.issueChangeAddressAndSendPayment = issueChangeAddressAndSendPayment;
 exports.signMessage = signMessage;
+exports.signWithLocalPrivateKey = signWithLocalPrivateKey;
 exports.setupChatEventHandlers = setupChatEventHandlers;
 exports.handlePairing = handlePairing;
 exports.handleText = handleText;

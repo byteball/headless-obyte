@@ -302,19 +302,27 @@ function handlePairing(from_address){
 }
 
 function sendPayment(asset, amount, to_address, change_address, device_address, onDone){
+	if(!onDone) {
+		return new Promise((resolve, reject) => {
+			sendPayment(asset, amount, to_address, change_address, device_address, (err, unit, assocMnemonics) => {
+				if (err) return reject(new Error(err));
+				return resolve({unit, assocMnemonics});
+			});
+		});
+	}
 	var device = require('byteballcore/device.js');
 	var Wallet = require('byteballcore/wallet.js');
 	Wallet.sendPaymentFromWallet(
-		asset, wallet_id, to_address, amount, change_address, 
-		[], device_address, 
-		signWithLocalPrivateKey, 
+		asset, wallet_id, to_address, amount, change_address,
+		[], device_address,
+		signWithLocalPrivateKey,
 		function(err, unit, assocMnemonics){
 			if (device_address) {
 				if (err)
 					device.sendMessageToDevice(device_address, 'text', "Failed to pay: " + err);
-			//	else
+				//	else
 				// if successful, the peer will also receive a payment notification
-			//		device.sendMessageToDevice(device_address, 'text', "paid");
+				//		device.sendMessageToDevice(device_address, 'text', "paid");
 			}
 			if (onDone)
 				onDone(err, unit, assocMnemonics);
@@ -323,6 +331,14 @@ function sendPayment(asset, amount, to_address, change_address, device_address, 
 }
 
 function sendMultiPayment(opts, onDone){
+	if(!onDone) {
+		return new Promise((resolve, reject) => {
+			sendMultiPayment(opts, (err, unit, assocMnemonics) => {
+				if (err) return reject(new Error(err));
+				return resolve({unit, assocMnemonics});
+			});
+		});
+	}
 	var device = require('byteballcore/device.js');
 	var Wallet = require('byteballcore/wallet.js');
 	if (!opts.paying_addresses)
@@ -336,6 +352,14 @@ function sendMultiPayment(opts, onDone){
 }
 
 function sendPaymentUsingOutputs(asset, outputs, change_address, onDone) {
+	if(!onDone) {
+		return new Promise((resolve, reject) => {
+			sendPaymentUsingOutputs(asset, outputs, change_address, (err, unit, assocMnemonics) => {
+				if (err) return reject(new Error(err));
+				return resolve({unit, assocMnemonics});
+			});
+		});
+	}
 	var device = require('byteballcore/device.js');
 	var Wallet = require('byteballcore/wallet.js');
 	var opt = {
@@ -358,6 +382,14 @@ function sendPaymentUsingOutputs(asset, outputs, change_address, onDone) {
 }
 
 function sendAllBytes(to_address, recipient_device_address, onDone) {
+	if(!onDone) {
+		return new Promise((resolve, reject) => {
+			sendAllBytes(to_address, recipient_device_address, (err, unit, assocMnemonics) => {
+				if (err) return reject(new Error(err));
+				return resolve({unit, assocMnemonics});
+			});
+		});
+	}
 	var device = require('byteballcore/device.js');
 	var Wallet = require('byteballcore/wallet.js');
 	Wallet.sendMultiPayment({
@@ -375,6 +407,14 @@ function sendAllBytes(to_address, recipient_device_address, onDone) {
 }
 
 function sendAllBytesFromAddress(from_address, to_address, recipient_device_address, onDone) {
+	if(!onDone) {
+		return new Promise((resolve, reject) => {
+			sendAllBytesFromAddress(from_address, to_address, recipient_device_address, (err, unit, assocMnemonics) => {
+				if (err) return reject(new Error(err));
+				return resolve({unit, assocMnemonics});
+			});
+		});
+	}
 	var device = require('byteballcore/device.js');
 	var Wallet = require('byteballcore/wallet.js');
 	Wallet.sendMultiPayment({
@@ -392,6 +432,14 @@ function sendAllBytesFromAddress(from_address, to_address, recipient_device_addr
 }
 
 function sendAssetFromAddress(asset, amount, from_address, to_address, recipient_device_address, onDone) {
+	if(!onDone) {
+		return new Promise((resolve, reject) => {
+			sendAssetFromAddress(asset, amount, from_address, to_address, recipient_device_address, (err, unit, assocMnemonics) => {
+				if (err) return reject(new Error(err));
+				return resolve({unit, assocMnemonics});
+			});
+		});
+	}
 	var device = require('byteballcore/device.js');
 	var Wallet = require('byteballcore/wallet.js');
 	Wallet.sendMultiPayment({
@@ -411,12 +459,28 @@ function sendAssetFromAddress(asset, amount, from_address, to_address, recipient
 }
 
 function issueChangeAddressAndSendPayment(asset, amount, to_address, device_address, onDone){
+	if(!onDone) {
+		return new Promise((resolve, reject) => {
+			issueChangeAddressAndSendPayment(asset, amount, to_address, device_address, (err, unit, assocMnemonics) => {
+				if (err) return reject(new Error(err));
+				return resolve({unit, assocMnemonics});
+			});
+		});
+	}
 	issueChangeAddress(function(change_address){
 		sendPayment(asset, amount, to_address, change_address, device_address, onDone);
 	});
 }
 
 function issueChangeAddressAndSendMultiPayment(opts, onDone){
+	if(!onDone) {
+		return new Promise((resolve, reject) => {
+			issueChangeAddressAndSendMultiPayment(opts, (err, unit, assocMnemonics) => {
+				if (err) return reject(new Error(err));
+				return resolve({unit, assocMnemonics});
+			});
+		});
+	}
 	issueChangeAddress(function(change_address){
 		opts.change_address = change_address;
 		sendMultiPayment(opts, onDone);

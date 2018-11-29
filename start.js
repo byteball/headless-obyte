@@ -305,7 +305,7 @@ function sendPayment(asset, amount, to_address, change_address, device_address, 
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
 			sendPayment(asset, amount, to_address, change_address, device_address, (err, unit, assocMnemonics) => {
-				if (err) return reject(err);
+				if (err) return reject(new Error(err));
 				return resolve({unit, assocMnemonics});
 			});
 		});
@@ -334,7 +334,7 @@ function sendMultiPayment(opts, onDone){
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
 			sendMultiPayment(opts, (err, unit, assocMnemonics) => {
-				if (err) return reject(err);
+				if (err) return reject(new Error(err));
 				return resolve({unit, assocMnemonics});
 			});
 		});
@@ -355,7 +355,7 @@ function sendPaymentUsingOutputs(asset, outputs, change_address, onDone) {
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
 			sendPaymentUsingOutputs(asset, outputs, change_address, (err, unit, assocMnemonics) => {
-				if (err) return reject(err);
+				if (err) return reject(new Error(err));
 				return resolve({unit, assocMnemonics});
 			});
 		});
@@ -385,7 +385,7 @@ function sendAllBytes(to_address, recipient_device_address, onDone) {
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
 			sendAllBytes(to_address, recipient_device_address, (err, unit, assocMnemonics) => {
-				if (err) return reject(err);
+				if (err) return reject(new Error(err));
 				return resolve({unit, assocMnemonics});
 			});
 		});
@@ -410,7 +410,7 @@ function sendAllBytesFromAddress(from_address, to_address, recipient_device_addr
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
 			sendAllBytesFromAddress(from_address, to_address, recipient_device_address, (err, unit, assocMnemonics) => {
-				if (err) return reject(err);
+				if (err) return reject(new Error(err));
 				return resolve({unit, assocMnemonics});
 			});
 		});
@@ -435,7 +435,7 @@ function sendAssetFromAddress(asset, amount, from_address, to_address, recipient
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
 			sendAssetFromAddress(asset, amount, from_address, to_address, recipient_device_address, (err, unit, assocMnemonics) => {
-				if (err) return reject(err);
+				if (err) return reject(new Error(err));
 				return resolve({unit, assocMnemonics});
 			});
 		});
@@ -462,7 +462,7 @@ function issueChangeAddressAndSendPayment(asset, amount, to_address, device_addr
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
 			issueChangeAddressAndSendPayment(asset, amount, to_address, device_address, (err, unit, assocMnemonics) => {
-				if (err) return reject(err);
+				if (err) return reject(new Error(err));
 				return resolve({unit, assocMnemonics});
 			});
 		});
@@ -476,7 +476,7 @@ function issueChangeAddressAndSendMultiPayment(opts, onDone){
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
 			issueChangeAddressAndSendMultiPayment(opts, (err, unit, assocMnemonics) => {
-				if (err) return reject(err);
+				if (err) return reject(new Error(err));
 				return resolve({unit, assocMnemonics});
 			});
 		});

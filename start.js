@@ -77,8 +77,8 @@ function readKeys(onDone){
 				if (process.stdout.moveCursor) process.stdout.moveCursor(0, -1);
 				if (process.stdout.clearLine)  process.stdout.clearLine();
 				var keys = JSON.parse(data);
-				var deviceTempPrivKey = Buffer(keys.temp_priv_key, 'base64');
-				var devicePrevTempPrivKey = Buffer(keys.prev_temp_priv_key, 'base64');
+				var deviceTempPrivKey = Buffer.from(keys.temp_priv_key, 'base64');
+				var devicePrevTempPrivKey = Buffer.from(keys.prev_temp_priv_key, 'base64');
 				determineIfWalletExists(function(bWalletExists){
 					if (bWalletExists)
 						onDone(keys.mnemonic_phrase, passphrase, deviceTempPrivKey, devicePrevTempPrivKey);

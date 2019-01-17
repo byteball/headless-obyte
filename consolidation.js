@@ -1,9 +1,9 @@
 /*jslint node: true */
 "use strict";
-var constants = require('byteballcore/constants.js');
-var db = require('byteballcore/db.js');
-var mutex = require('byteballcore/mutex.js');
-const ValidationUtils = require('byteballcore/validation_utils');
+var constants = require('ocore/constants.js');
+var db = require('ocore/db.js');
+var mutex = require('ocore/mutex.js');
+const ValidationUtils = require('ocore/validation_utils');
 
 const AUTHOR_SIZE = 3 // "sig"
 	+ 44  // pubkey
@@ -60,7 +60,7 @@ function readDestinationAddress(wallet, handleAddress){
 function consolidate(wallet, signer, maxUnspentOutputs){
 	if (!maxUnspentOutputs)
 		throw Error("no maxUnspentOutputs");
-	const network = require('byteballcore/network.js');
+	const network = require('ocore/network.js');
 	if (network.isCatchingUp())
 		return;
 	var asset = null;
@@ -141,7 +141,7 @@ function consolidate(wallet, signer, maxUnspentOutputs){
 							}
 							let arrUsedAddresses = Object.keys(assocUsedAddresses);
 							readDestinationAddress(wallet, dest_address => {
-								var composer = require('byteballcore/composer.js');
+								var composer = require('ocore/composer.js');
 								composer.composeJoint({
 									paying_addresses: arrUsedAddresses,
 									outputs: [{address: dest_address, amount: 0}],

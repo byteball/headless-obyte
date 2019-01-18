@@ -1,18 +1,22 @@
 /*jslint node: true */
 "use strict";
 var headlessWallet = require('../start.js');
-var eventBus = require('byteballcore/event_bus.js');
+var eventBus = require('ocore/event_bus.js');
 
 function onError(err){
 	throw Error(err);
 }
 
 function createPayment(){
-	var composer = require('byteballcore/composer.js');
-	var network = require('byteballcore/network.js');
+	var composer = require('ocore/composer.js');
+	var network = require('ocore/network.js');
 	var callbacks = composer.getSavingCallbacks({
 		ifNotEnoughFunds: onError,
 		ifError: onError,
+	/*	preCommitCb: function (conn, objJoint, handle){ //In this optional callback you can add SQL queries to be executed atomically with the payment
+						conn.query("UPDATE my_table SET status='paid' WHERE transaction_id=?",[transaction_id]);
+						handle();
+					},*/
 		ifOk: function(objJoint){
 			network.broadcastJoint(objJoint);
 		}

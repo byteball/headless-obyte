@@ -1,16 +1,16 @@
 /*jslint node: true */
 "use strict";
 var headlessWallet = require('../start.js');
-var eventBus = require('byteballcore/event_bus.js');
+var eventBus = require('ocore/event_bus.js');
 
 function onError(err){
 	throw Error(err);
 }
 
 function createDivisibleAssetPayment(){
-	var network = require('byteballcore/network.js');
-	var divisibleAsset = require('byteballcore/divisible_asset.js');
-	var walletGeneral = require('byteballcore/wallet_general.js');
+	var network = require('ocore/network.js');
+	var divisibleAsset = require('ocore/divisible_asset.js');
+	var walletGeneral = require('ocore/wallet_general.js');
 	
 	divisibleAsset.composeAndSaveDivisibleAssetPaymentJoint({
 		asset: 'gRUW3CkKYA9LNf2/gX4bnDdnDZyPY9TAd9wIATzXSwE=', 

@@ -1,9 +1,9 @@
 /*jslint node: true */
 "use strict";
 var headlessWallet = require('../start.js');
-var eventBus = require('byteballcore/event_bus.js');
-var mail = require('byteballcore/mail.js');
-var conf = require('byteballcore/conf.js');
+var eventBus = require('ocore/event_bus.js');
+var mail = require('ocore/mail.js');
+var conf = require('ocore/conf.js');
 
 const asset = null;
 const amount = 1000;

@@ -3,18 +3,26 @@
 var fs = require('fs');
 var crypto = require('crypto');
 var util = require('util');
-var constants = require('byteballcore/constants.js');
-var conf = require('byteballcore/conf.js');
-var objectHash = require('byteballcore/object_hash.js');
-var desktopApp = require('byteballcore/desktop_app.js');
-var db = require('byteballcore/db.js');
-var eventBus = require('byteballcore/event_bus.js');
-var ecdsaSig = require('byteballcore/signature.js');
+var constants = require('ocore/constants.js');
+var desktopApp = require('ocore/desktop_app.js');
+var appDataDir = desktopApp.getAppDataDir();
+var path = require('path');
+
+if (require.main === module && !fs.existsSync(appDataDir) && fs.existsSync(path.dirname(appDataDir)+'/headless-byteball')){
+	console.log('=== will rename old data dir');
+	fs.renameSync(path.dirname(appDataDir)+'/headless-byteball', appDataDir);
+}
+
+var conf = require('ocore/conf.js');
+var objectHash = require('ocore/object_hash.js');
+var db = require('ocore/db.js');
+var eventBus = require('ocore/event_bus.js');
+var ecdsaSig = require('ocore/signature.js');
+var storage = require('ocore/storage.js');
 var Mnemonic = require('bitcore-mnemonic');
 var Bitcore = require('bitcore-lib');
 var readline = require('readline');
 
-var appDataDir = desktopApp.getAppDataDir();
 var KEYS_FILENAME = appDataDir + '/' + (conf.KEYS_FILENAME || 'keys.json');
 var wallet_id;
 var xPrivKey;
@@ -48,36 +56,25 @@ function readKeys(onDone){
 		});
 		if (err){ // first start
 			console.log('failed to read keys, will gen');
-			var suggestedDeviceName = require('os').hostname() || 'Headless';
-			rl.question("Please name this device ["+suggestedDeviceName+"]: ", function(deviceName){
-				if (!deviceName)
-					deviceName = suggestedDeviceName;
-				var userConfFile = appDataDir + '/conf.json';
-				fs.writeFile(userConfFile, JSON.stringify({deviceName: deviceName}, null, '\t'), 'utf8', function(err){
-					if (err)
-						throw Error('failed to write conf.json: '+err);
-					rl.question(
-						'Device name saved to '+userConfFile+', you can edit it later if you like.\n\nPassphrase for your private keys: ',
-						function(passphrase){
-							rl.close();
-							if (process.stdout.moveCursor) process.stdout.moveCursor(0, -1);
-							if (process.stdout.clearLine)  process.stdout.clearLine();
-							var deviceTempPrivKey = crypto.randomBytes(32);
-							var devicePrevTempPrivKey = crypto.randomBytes(32);
+			initConfJson(rl, function(){
+				rl.question('Passphrase for your private keys: ', function(passphrase){
+					rl.close();
+					if (process.stdout.moveCursor) process.stdout.moveCursor(0, -1);
+					if (process.stdout.clearLine)  process.stdout.clearLine();
+					var deviceTempPrivKey = crypto.randomBytes(32);
+					var devicePrevTempPrivKey = crypto.randomBytes(32);
 
-							var mnemonic = new Mnemonic(); // generates new mnemonic
-							while (!Mnemonic.isValid(mnemonic.toString()))
-								mnemonic = new Mnemonic();
+					var mnemonic = new Mnemonic(); // generates new mnemonic
+					while (!Mnemonic.isValid(mnemonic.toString()))
+						mnemonic = new Mnemonic();
 
-							writeKeys(mnemonic.phrase, deviceTempPrivKey, devicePrevTempPrivKey, function(){
-								console.log('keys created');
-								var xPrivKey = mnemonic.toHDPrivateKey(passphrase);
-								createWallet(xPrivKey, function(){
-									onDone(mnemonic.phrase, passphrase, deviceTempPrivKey, devicePrevTempPrivKey);
-								});
-							});
-						}
-					);
+					writeKeys(mnemonic.phrase, deviceTempPrivKey, devicePrevTempPrivKey, function(){
+						console.log('keys created');
+						var xPrivKey = mnemonic.toHDPrivateKey(passphrase);
+						createWallet(xPrivKey, function(){
+							onDone(mnemonic.phrase, passphrase, deviceTempPrivKey, devicePrevTempPrivKey);
+						});
+					});
 				});
 			});
 		}
@@ -87,8 +84,8 @@ function readKeys(onDone){
 				if (process.stdout.moveCursor) process.stdout.moveCursor(0, -1);
 				if (process.stdout.clearLine)  process.stdout.clearLine();
 				var keys = JSON.parse(data);
-				var deviceTempPrivKey = Buffer(keys.temp_priv_key, 'base64');
-				var devicePrevTempPrivKey = Buffer(keys.prev_temp_priv_key, 'base64');
+				var deviceTempPrivKey = Buffer.from(keys.temp_priv_key, 'base64');
+				var devicePrevTempPrivKey = Buffer.from(keys.prev_temp_priv_key, 'base64');
 				determineIfWalletExists(function(bWalletExists){
 					if (bWalletExists)
 						onDone(keys.mnemonic_phrase, passphrase, deviceTempPrivKey, devicePrevTempPrivKey);
@@ -102,6 +99,39 @@ function readKeys(onDone){
 				});
 			});
 		}
+	});
+}
+
+function initConfJson(rl, onDone){
+	var userConfFile = appDataDir + '/conf.json';
+	var confJson = null;
+	try {
+		confJson = require(userConfFile);
+	}
+	catch(e){
+	}
+	if (conf.deviceName && conf.deviceName !== 'Headless') // already set in conf.js or conf.json
+		return confJson ? onDone() : writeJson(userConfFile, {}, onDone);
+	// continue if device name not set
+	if (!confJson)
+		confJson = {};
+	var suggestedDeviceName = require('os').hostname() || 'Headless';
+	rl.question("Please name this device ["+suggestedDeviceName+"]: ", function(deviceName){
+		if (!deviceName)
+			deviceName = suggestedDeviceName;
+		confJson.deviceName = deviceName;
+		writeJson(userConfFile, confJson, function(){
+			console.log('Device name saved to '+userConfFile+', you can edit it later if you like.\n');
+			onDone();
+		});
+	});
+}
+
+function writeJson(filename, json, onDone){
+	fs.writeFile(filename, JSON.stringify(json, null, '\t'), 'utf8', function(err){
+		if (err)
+			throw Error('failed to write conf.json: '+err);
+		onDone();
 	});
 }
 
@@ -121,10 +151,10 @@ function writeKeys(mnemonic_phrase, deviceTempPrivKey, devicePrevTempPrivKey, on
 
 function createWallet(xPrivKey, onDone){
 	var devicePrivKey = xPrivKey.derive("m/1'").privateKey.bn.toBuffer({size:32});
-	var device = require('byteballcore/device.js');
+	var device = require('ocore/device.js');
 	device.setDevicePrivateKey(devicePrivKey); // we need device address before creating a wallet
 	var strXPubKey = Bitcore.HDPublicKey(xPrivKey.derive("m/44'/0'/0'")).toString();
-	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+	var walletDefinedByKeys = require('ocore/wallet_defined_by_keys.js');
 	// we pass isSingleAddress=false because this flag is meant to be forwarded to cosigners and headless wallet doesn't support multidevice
 	walletDefinedByKeys.createWalletByDevices(strXPubKey, 0, 1, [], 'any walletName', false, function(wallet_id){
 		walletDefinedByKeys.issueNextAddress(wallet_id, 0, function(addressInfo){
@@ -158,7 +188,7 @@ function readFirstAddress(handleAddress){
 }
 
 function prepareBalanceText(handleBalanceText){
-	var Wallet = require('byteballcore/wallet.js');
+	var Wallet = require('ocore/wallet.js');
 	Wallet.readBalance(wallet_id, function(assocBalances){
 		var arrLines = [];
 		for (var asset in assocBalances){
@@ -248,7 +278,8 @@ setTimeout(function(){
 		readSingleWallet(function(wallet){
 			// global
 			wallet_id = wallet;
-			var device = require('byteballcore/device.js');
+			require('ocore/wallet.js'); // we don't need any of its functions but it listens for hub/* messages
+			var device = require('ocore/device.js');
 			device.setDevicePrivateKey(devicePrivKey);
 			let my_device_address = device.getMyDeviceAddress();
 			db.query("SELECT 1 FROM extended_pubkeys WHERE device_address=?", [my_device_address], function(rows){
@@ -259,30 +290,32 @@ setTimeout(function(){
 						console.log('passphrase is incorrect');
 						process.exit(0);
 					}, 1000);
-				require('byteballcore/wallet.js'); // we don't need any of its functions but it listens for hub/* messages
 				device.setTempKeys(deviceTempPrivKey, devicePrevTempPrivKey, saveTempKeys);
 				device.setDeviceName(conf.deviceName);
 				device.setDeviceHub(conf.hub);
 				let my_device_pubkey = device.getMyDevicePubKey();
 				console.log("====== my device address: "+my_device_address);
 				console.log("====== my device pubkey: "+my_device_pubkey);
+				if (conf.bSingleAddress)
+					readSingleAddress(function(address){
+						console.log("====== my single address: "+address);
+					});
+				else
+					readFirstAddress(function(address){
+						console.log("====== my first address: "+address);
+					});
+
 				if (conf.permanent_pairing_secret)
 					console.log("====== my pairing code: "+my_device_pubkey+"@"+conf.hub+"#"+conf.permanent_pairing_secret);
 				if (conf.bLight){
-					var light_wallet = require('byteballcore/light_wallet.js');
+					var light_wallet = require('ocore/light_wallet.js');
 					light_wallet.setLightVendorHost(conf.hub);
 				}
 				eventBus.emit('headless_wallet_ready');
 				setTimeout(replaceConsoleLog, 1000);
 				if (conf.MAX_UNSPENT_OUTPUTS && conf.CONSOLIDATION_INTERVAL){
 					var consolidation = require('./consolidation.js');
-					var network = require('byteballcore/network.js');
-					function consolidate(){
-						if (!network.isCatchingUp())
-							consolidation.consolidate(wallet_id, signer);
-					}
-					setInterval(consolidate, conf.CONSOLIDATION_INTERVAL);
-					setTimeout(consolidate, 300*1000);
+					consolidation.scheduleConsolidation(wallet_id, signer, conf.MAX_UNSPENT_OUTPUTS, conf.CONSOLIDATION_INTERVAL);
 				}
 			});
 		});
@@ -291,26 +324,34 @@ setTimeout(function(){
 
 
 function handlePairing(from_address){
-	var device = require('byteballcore/device.js');
+	var device = require('ocore/device.js');
 	prepareBalanceText(function(balance_text){
 		device.sendMessageToDevice(from_address, 'text', balance_text);
 	});
 }
 
 function sendPayment(asset, amount, to_address, change_address, device_address, onDone){
-	var device = require('byteballcore/device.js');
-	var Wallet = require('byteballcore/wallet.js');
+	if(!onDone) {
+		return new Promise((resolve, reject) => {
+			sendPayment(asset, amount, to_address, change_address, device_address, (err, unit, assocMnemonics) => {
+				if (err) return reject(new Error(err));
+				return resolve({unit, assocMnemonics});
+			});
+		});
+	}
+	var device = require('ocore/device.js');
+	var Wallet = require('ocore/wallet.js');
 	Wallet.sendPaymentFromWallet(
-		asset, wallet_id, to_address, amount, change_address, 
-		[], device_address, 
-		signWithLocalPrivateKey, 
+		asset, wallet_id, to_address, amount, change_address,
+		[], device_address,
+		signWithLocalPrivateKey,
 		function(err, unit, assocMnemonics){
 			if (device_address) {
 				if (err)
 					device.sendMessageToDevice(device_address, 'text', "Failed to pay: " + err);
-				else
+				//	else
 				// if successful, the peer will also receive a payment notification
-					device.sendMessageToDevice(device_address, 'text', "paid");
+				//		device.sendMessageToDevice(device_address, 'text', "paid");
 			}
 			if (onDone)
 				onDone(err, unit, assocMnemonics);
@@ -319,8 +360,16 @@ function sendPayment(asset, amount, to_address, change_address, device_address, 
 }
 
 function sendMultiPayment(opts, onDone){
-	var device = require('byteballcore/device.js');
-	var Wallet = require('byteballcore/wallet.js');
+	if(!onDone) {
+		return new Promise((resolve, reject) => {
+			sendMultiPayment(opts, (err, unit, assocMnemonics) => {
+				if (err) return reject(new Error(err));
+				return resolve({unit, assocMnemonics});
+			});
+		});
+	}
+	var device = require('ocore/device.js');
+	var Wallet = require('ocore/wallet.js');
 	if (!opts.paying_addresses)
 		opts.wallet = wallet_id;
 	opts.arrSigningDeviceAddresses = [device.getMyDeviceAddress()];
@@ -332,8 +381,16 @@ function sendMultiPayment(opts, onDone){
 }
 
 function sendPaymentUsingOutputs(asset, outputs, change_address, onDone) {
-	var device = require('byteballcore/device.js');
-	var Wallet = require('byteballcore/wallet.js');
+	if(!onDone) {
+		return new Promise((resolve, reject) => {
+			sendPaymentUsingOutputs(asset, outputs, change_address, (err, unit, assocMnemonics) => {
+				if (err) return reject(new Error(err));
+				return resolve({unit, assocMnemonics});
+			});
+		});
+	}
+	var device = require('ocore/device.js');
+	var Wallet = require('ocore/wallet.js');
 	var opt = {
 		asset: asset,
 		wallet: wallet_id,
@@ -354,8 +411,16 @@ function sendPaymentUsingOutputs(asset, outputs, change_address, onDone) {
 }
 
 function sendAllBytes(to_address, recipient_device_address, onDone) {
-	var device = require('byteballcore/device.js');
-	var Wallet = require('byteballcore/wallet.js');
+	if(!onDone) {
+		return new Promise((resolve, reject) => {
+			sendAllBytes(to_address, recipient_device_address, (err, unit, assocMnemonics) => {
+				if (err) return reject(new Error(err));
+				return resolve({unit, assocMnemonics});
+			});
+		});
+	}
+	var device = require('ocore/device.js');
+	var Wallet = require('ocore/wallet.js');
 	Wallet.sendMultiPayment({
 		asset: null,
 		to_address: to_address,
@@ -371,8 +436,16 @@ function sendAllBytes(to_address, recipient_device_address, onDone) {
 }
 
 function sendAllBytesFromAddress(from_address, to_address, recipient_device_address, onDone) {
-	var device = require('byteballcore/device.js');
-	var Wallet = require('byteballcore/wallet.js');
+	if(!onDone) {
+		return new Promise((resolve, reject) => {
+			sendAllBytesFromAddress(from_address, to_address, recipient_device_address, (err, unit, assocMnemonics) => {
+				if (err) return reject(new Error(err));
+				return resolve({unit, assocMnemonics});
+			});
+		});
+	}
+	var device = require('ocore/device.js');
+	var Wallet = require('ocore/wallet.js');
 	Wallet.sendMultiPayment({
 		asset: null,
 		to_address: to_address,
@@ -388,8 +461,16 @@ function sendAllBytesFromAddress(from_address, to_address, recipient_device_addr
 }
 
 function sendAssetFromAddress(asset, amount, from_address, to_address, recipient_device_address, onDone) {
-	var device = require('byteballcore/device.js');
-	var Wallet = require('byteballcore/wallet.js');
+	if(!onDone) {
+		return new Promise((resolve, reject) => {
+			sendAssetFromAddress(asset, amount, from_address, to_address, recipient_device_address, (err, unit, assocMnemonics) => {
+				if (err) return reject(new Error(err));
+				return resolve({unit, assocMnemonics});
+			});
+		});
+	}
+	var device = require('ocore/device.js');
+	var Wallet = require('ocore/wallet.js');
 	Wallet.sendMultiPayment({
 		fee_paying_wallet: wallet_id,
 		asset: asset,
@@ -407,12 +488,28 @@ function sendAssetFromAddress(asset, amount, from_address, to_address, recipient
 }
 
 function issueChangeAddressAndSendPayment(asset, amount, to_address, device_address, onDone){
+	if(!onDone) {
+		return new Promise((resolve, reject) => {
+			issueChangeAddressAndSendPayment(asset, amount, to_address, device_address, (err, unit, assocMnemonics) => {
+				if (err) return reject(new Error(err));
+				return resolve({unit, assocMnemonics});
+			});
+		});
+	}
 	issueChangeAddress(function(change_address){
 		sendPayment(asset, amount, to_address, change_address, device_address, onDone);
 	});
 }
 
 function issueChangeAddressAndSendMultiPayment(opts, onDone){
+	if(!onDone) {
+		return new Promise((resolve, reject) => {
+			issueChangeAddressAndSendMultiPayment(opts, (err, unit, assocMnemonics) => {
+				if (err) return reject(new Error(err));
+				return resolve({unit, assocMnemonics});
+			});
+		});
+	}
 	issueChangeAddress(function(change_address){
 		opts.change_address = change_address;
 		sendMultiPayment(opts, onDone);
@@ -420,21 +517,21 @@ function issueChangeAddressAndSendMultiPayment(opts, onDone){
 }
 
 function issueOrSelectNextMainAddress(handleAddress){
-	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+	var walletDefinedByKeys = require('ocore/wallet_defined_by_keys.js');
 	walletDefinedByKeys.issueOrSelectNextAddress(wallet_id, 0, function(objAddr){
 		handleAddress(objAddr.address);
 	});
 }
 
 function issueNextMainAddress(handleAddress){
-	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+	var walletDefinedByKeys = require('ocore/wallet_defined_by_keys.js');
 	walletDefinedByKeys.issueNextAddress(wallet_id, 0, function(objAddr){
 		handleAddress(objAddr.address);
 	});
 }
 
 function issueOrSelectAddressByIndex(is_change, address_index, handleAddress){
-	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+	var walletDefinedByKeys = require('ocore/wallet_defined_by_keys.js');
 	walletDefinedByKeys.readAddressByIndex(wallet_id, is_change, address_index, function(objAddr){
 		if (objAddr)
 			return handleAddress(objAddr.address);
@@ -454,12 +551,20 @@ function issueChangeAddress(handleAddress){
 	else if (conf.bStaticChangeAddress)
 		issueOrSelectStaticChangeAddress(handleAddress);
 	else{
-		var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+		var walletDefinedByKeys = require('ocore/wallet_defined_by_keys.js');
 		walletDefinedByKeys.issueOrSelectNextChangeAddress(wallet_id, function(objAddr){
 			handleAddress(objAddr.address);
 		});
 	}
 }
+
+
+function signMessage(signing_address, message, cb) {
+	var device = require('ocore/device.js');
+	var Wallet = require('ocore/wallet.js');
+	Wallet.signMessage(signing_address, message, [device.getMyDeviceAddress()], signWithLocalPrivateKey, cb);
+}
+
 
 function handleText(from_address, text, onUnknown){
 	
@@ -470,8 +575,8 @@ function handleText(from_address, text, onUnknown){
 	if (fields.length > 1) params[0] = fields[1].trim();
 	if (fields.length > 2) params[1] = fields[2].trim();
 
-	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
-	var device = require('byteballcore/device.js');
+	var walletDefinedByKeys = require('ocore/wallet_defined_by_keys.js');
+	var device = require('ocore/device.js');
 	switch(command){
 		case 'address':
 			if (conf.bSingleAddress)
@@ -532,6 +637,12 @@ function handleText(from_address, text, onUnknown){
 					payout(amount, asset);
 				}
 
+			});
+			break;
+
+		case 'mci':
+			storage.readLastMainChainIndex(function(last_mci){
+				device.sendMessageToDevice(from_address, 'text', last_mci.toString());
 			});
 			break;
 
@@ -602,6 +713,8 @@ exports.issueNextMainAddress = issueNextMainAddress;
 exports.issueOrSelectAddressByIndex = issueOrSelectAddressByIndex;
 exports.issueOrSelectStaticChangeAddress = issueOrSelectStaticChangeAddress;
 exports.issueChangeAddressAndSendPayment = issueChangeAddressAndSendPayment;
+exports.signMessage = signMessage;
+exports.signWithLocalPrivateKey = signWithLocalPrivateKey;
 exports.setupChatEventHandlers = setupChatEventHandlers;
 exports.handlePairing = handlePairing;
 exports.handleText = handleText;

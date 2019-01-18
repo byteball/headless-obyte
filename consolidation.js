@@ -1,9 +1,9 @@
 /*jslint node: true */
 "use strict";
-var constants = require('byteballcore/constants.js');
-var conf = require('byteballcore/conf.js');
-var db = require('byteballcore/db.js');
-var mutex = require('byteballcore/mutex.js');
+var constants = require('ocore/constants.js');
+var db = require('ocore/db.js');
+var mutex = require('ocore/mutex.js');
+const ValidationUtils = require('ocore/validation_utils');
 
 const AUTHOR_SIZE = 3 // "sig"
 	+ 44  // pubkey
@@ -16,6 +16,8 @@ const TRANSFER_INPUT_SIZE = 0 // type: "transfer" omitted
 
 
 function readLeastFundedAddresses(asset, wallet, handleFundedAddresses){
+	if (ValidationUtils.isValidAddress(wallet))
+		return handleFundedAddresses([wallet]);
 	db.query(
 		"SELECT address, SUM(amount) AS total \n\
 		FROM my_addresses CROSS JOIN outputs USING(address) \n\
@@ -34,9 +36,10 @@ function readLeastFundedAddresses(asset, wallet, handleFundedAddresses){
 }
 
 function determineCountOfOutputs(asset, wallet, handleCount){
+	let filter = ValidationUtils.isValidAddress(wallet) ? "address=?" : "wallet=?";
 	db.query(
 		"SELECT COUNT(*) AS count FROM my_addresses CROSS JOIN outputs USING(address) JOIN units USING(unit) \n\
-		WHERE wallet=? AND is_spent=0 AND "+(asset ? "asset="+db.escape(asset) : "asset IS NULL")+" AND is_stable=1 AND sequence='good'",
+		WHERE "+filter+" AND is_spent=0 AND "+(asset ? "asset="+db.escape(asset) : "asset IS NULL")+" AND is_stable=1 AND sequence='good'",
 		[wallet],
 		function(rows){
 			handleCount(rows[0].count);
@@ -45,6 +48,8 @@ function determineCountOfOutputs(asset, wallet, handleCount){
 }
 
 function readDestinationAddress(wallet, handleAddress){
+	if (ValidationUtils.isValidAddress(wallet))
+		return handleAddress(wallet);
 	db.query("SELECT address FROM my_addresses WHERE wallet=? ORDER BY is_change DESC, address_index ASC LIMIT 1", [wallet], rows => {
 		if (rows.length === 0)
 			throw Error('no dest address');
@@ -52,14 +57,19 @@ function readDestinationAddress(wallet, handleAddress){
 	});
 }
 
-function consolidate(wallet, signer){
+function consolidate(wallet, signer, maxUnspentOutputs){
+	if (!maxUnspentOutputs)
+		throw Error("no maxUnspentOutputs");
+	const network = require('ocore/network.js');
+	if (network.isCatchingUp())
+		return;
 	var asset = null;
 	mutex.lock(['consolidate'], unlock => {
 		determineCountOfOutputs(asset, wallet, count => {
 			console.log(count+' unspent outputs');
-			if (count <= conf.MAX_UNSPENT_OUTPUTS)
+			if (count <= maxUnspentOutputs)
 				return unlock();
-			let count_to_spend = Math.min(count - conf.MAX_UNSPENT_OUTPUTS + 1, constants.MAX_INPUTS_PER_PAYMENT_MESSAGE - 1);
+			let count_to_spend = Math.min(count - maxUnspentOutputs + 1, constants.MAX_INPUTS_PER_PAYMENT_MESSAGE - 1);
 			readLeastFundedAddresses(asset, wallet, arrAddresses => {
 				db.query(
 					"SELECT address, unit, message_index, output_index, amount \n\
@@ -80,12 +90,13 @@ function consolidate(wallet, signer){
 							if (input_amount > target_amount)
 								return onDone();
 							target_amount += TRANSFER_INPUT_SIZE + AUTHOR_SIZE;
+							let filter = ValidationUtils.isValidAddress(wallet) ? "address=?" : "wallet=?";
 							db.query(
 								"SELECT address, unit, message_index, output_index, amount \n\
 								FROM my_addresses \n\
 								CROSS JOIN outputs USING(address) \n\
 								CROSS JOIN units USING(unit) \n\
-								WHERE wallet=? AND is_stable=1 AND sequence='good' \n\
+								WHERE "+filter+" AND is_stable=1 AND sequence='good' \n\
 									AND is_spent=0 AND "+(asset ? "asset="+db.escape(asset) : "asset IS NULL")+" \n\
 									AND NOT EXISTS ( \n\
 										SELECT * FROM units CROSS JOIN unit_authors USING(unit) \n\
@@ -130,7 +141,7 @@ function consolidate(wallet, signer){
 							}
 							let arrUsedAddresses = Object.keys(assocUsedAddresses);
 							readDestinationAddress(wallet, dest_address => {
-								var composer = require('byteballcore/composer.js');
+								var composer = require('ocore/composer.js');
 								composer.composeJoint({
 									paying_addresses: arrUsedAddresses,
 									outputs: [{address: dest_address, amount: 0}],
@@ -139,10 +150,9 @@ function consolidate(wallet, signer){
 									earned_headers_commission_recipients: [{address: dest_address, earned_headers_commission_share: 100}],
 									callbacks: composer.getSavingCallbacks({
 										ifOk: function(objJoint){
-											var network = require('byteballcore/network.js');
 											network.broadcastJoint(objJoint);
 											unlock();
-											consolidate(wallet, signer); // do more if something's left
+											consolidate(wallet, signer, maxUnspentOutputs); // do more if something's left
 										},
 										ifError: function(err){
 											console.log('failed to compose consolidation transaction: '+err);
@@ -163,6 +173,16 @@ function consolidate(wallet, signer){
 	});
 }
 
-exports.consolidate = consolidate;
+function scheduleConsolidation(wallet, signer, maxUnspentOutputs, consolidationInterval){
+	if (!maxUnspentOutputs || !consolidationInterval)
+		return;
+	function doConsolidate(){
+		consolidate(wallet, signer, maxUnspentOutputs);
+	}
+	setInterval(doConsolidate, consolidationInterval);
+	setTimeout(doConsolidate, 300*1000);
+}
 
+exports.consolidate = consolidate;
+exports.scheduleConsolidation = scheduleConsolidation;
 

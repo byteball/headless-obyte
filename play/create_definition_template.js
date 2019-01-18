@@ -1,15 +1,15 @@
 /*jslint node: true */
 "use strict";
 var headlessWallet = require('../start.js');
-var eventBus = require('byteballcore/event_bus.js');
+var eventBus = require('ocore/event_bus.js');
 
 function onError(err){
 	throw Error(err);
 }
 
 function createDefinitionTemplate(){
-	var composer = require('byteballcore/composer.js');
-	var network = require('byteballcore/network.js');
+	var composer = require('ocore/composer.js');
+	var network = require('ocore/network.js');
 	var callbacks = composer.getSavingCallbacks({
 		ifNotEnoughFunds: onError,
 		ifError: onError,
@@ -23,7 +23,7 @@ function createDefinitionTemplate(){
 		["address", "$address"], 
 		["in data feed", [["MO7ZZIU5VXHRZGGHVSZWLWL64IEND5K2"], "timestamp", ">=", "$ts"]]
 	]];
-	composer.composeDedinitionTemplateJoint("PYQJWUWRMUUUSUHKNJWFHSR5OADZMUYR", definition_template, headlessWallet.signer, callbacks);
+	composer.composeDefinitionTemplateJoint("PYQJWUWRMUUUSUHKNJWFHSR5OADZMUYR", definition_template, headlessWallet.signer, callbacks);
 }
 
 eventBus.on('headless_wallet_ready', createDefinitionTemplate);

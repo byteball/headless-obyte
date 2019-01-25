@@ -7,6 +7,16 @@
 */
 
 "use strict";
+var fs = require('fs');
+var desktopApp = require('ocore/desktop_app.js');
+var appDataDir = desktopApp.getAppDataDir();
+var path = require('path');
+
+if (require.main === module && !fs.existsSync(appDataDir) && fs.existsSync(path.dirname(appDataDir)+'/headless-byteball')){
+	console.log('=== will rename old data dir');
+	fs.renameSync(path.dirname(appDataDir)+'/headless-byteball', appDataDir);
+}
+
 var headlessWallet = require('../start.js');
 var conf = require('ocore/conf.js');
 var eventBus = require('ocore/event_bus.js');

@@ -3,7 +3,7 @@
 /*
 	Accept commands via JSON-RPC API.
 	The daemon listens on port 6332 by default.
-	See https://github.com/byteball/headless-byteball/wiki/Running-RPC-service for detailed description of the API
+	See https://developer.obyte.org/json-rpc/running-rpc-service for detailed description of the API
 */
 
 "use strict";

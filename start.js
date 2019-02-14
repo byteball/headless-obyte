@@ -669,22 +669,22 @@ function handleText(from_address, text, onUnknown){
 }
 
 function getFileSizes(rootDir, cb) {
-	fs.readdir(rootDir, function(err, files) { 
-			var fileSizes = {}; 
-			for (var index = 0; index < files.length; ++index) { 
-					var file = files[index]; 
-					if (file[0] !== '.') { 
-							var filePath = rootDir + '/' + file; 
-							fs.stat(filePath, function(err, stat) {
-									if (stat.isFile()) { 
-										fileSizes[this.file] = stat['size'];
-									} 
-									if (files.length === (this.index + 1)) { 
-											return cb(fileSizes); 
-									} 
-							}.bind({index: index, file: file})); 
+	fs.readdir(rootDir, function(err, files) {
+		var fileSizes = {};
+		for (var index = 0; index < files.length; ++index) {
+			var file = files[index];
+			if (file[0] !== '.') {
+				var filePath = rootDir + '/' + file;
+				fs.stat(filePath, function(err, stat) {
+					if (stat.isFile()) {
+						fileSizes[this.file] = stat['size'];
 					}
+					if (files.length === (this.index + 1)) {
+						return cb(fileSizes);
+					}
+				}.bind({index: index, file: file}));
 			}
+		}
 	});
 }
 

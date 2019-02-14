@@ -646,6 +646,19 @@ function handleText(from_address, text, onUnknown){
 			});
 			break;
 
+		case 'space':
+			getFileSizes(appDataDir, function(data) {
+				var total_space = 0;
+				var response = '';
+				Object.keys(data).forEach(function(key) {
+					total_space += data[key];
+					response += key +' '+ data[key] +"\n";
+				});
+				response += 'Total: '+ total_space;
+				device.sendMessageToDevice(from_address, 'text', response);
+			});
+			break;
+
 		default:
 			if (onUnknown){
 				onUnknown(from_address, text);
@@ -653,6 +666,26 @@ function handleText(from_address, text, onUnknown){
 				device.sendMessageToDevice(from_address, 'text', "unrecognized command");
 			}
 	}
+}
+
+function getFileSizes(rootDir, cb) {
+	fs.readdir(rootDir, function(err, files) {
+		var fileSizes = {};
+		for (var index = 0; index < files.length; ++index) {
+			var file = files[index];
+			if (file[0] !== '.') {
+				var filePath = rootDir + '/' + file;
+				fs.stat(filePath, function(err, stat) {
+					if (stat.isFile()) {
+						fileSizes[this.file] = stat['size'];
+					}
+					if (files.length === (this.index + 1)) {
+						return cb(fileSizes);
+					}
+				}.bind({index: index, file: file}));
+			}
+		}
+	});
 }
 
 function analyzePayParams(amountText, assetText, cb){

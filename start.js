@@ -670,17 +670,17 @@ function handleText(from_address, text, onUnknown){
 
 function getFileSizes(rootDir, cb) {
 	fs.readdir(rootDir, function(err, files) { 
-			var dirs = {}; 
+			var fileSizes = {}; 
 			for (var index = 0; index < files.length; ++index) { 
 					var file = files[index]; 
 					if (file[0] !== '.') { 
 							var filePath = rootDir + '/' + file; 
 							fs.stat(filePath, function(err, stat) {
 									if (stat.isFile()) { 
-											dirs[this.file] = stat['size'];
+										fileSizes[this.file] = stat['size'];
 									} 
 									if (files.length === (this.index + 1)) { 
-											return cb(dirs); 
+											return cb(fileSizes); 
 									} 
 							}.bind({index: index, file: file})); 
 					}

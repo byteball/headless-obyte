@@ -17,6 +17,8 @@ const myWitnesses = require('ocore/my_witnesses');
 const db = require('ocore/db.js');
 const async = require('async');
 const util = require('util');
+const argv = require('yargs').argv;
+
 
 let appDataDir = desktopApp.getAppDataDir();
 let KEYS_FILENAME = appDataDir + '/' + (conf.KEYS_FILENAME || 'keys.json');
@@ -137,7 +139,8 @@ setTimeout(() => {
 			process.exit(0);
 
 		} else {
-			throw 'Not found used addresses!';
+			console.error('Not found used addresses!');
+			process.exit(0);
 		}
 	})
 
@@ -151,7 +154,7 @@ async function generateAndCheckAddresses(xPrivKey) {
 	let strXPubKey = Bitcore.HDPublicKey(xPrivKey.derive("m/44'/0'/0'")).toString();
 	let firstCheck = true;
 	let lastActiveAddress = -1;
-	let emptyAddressLimit = 20;
+	let emptyAddressLimit = argv.limit || 20;
 	let currentIndex = -1;
 	let maxNotChangeAddress = -1;
 	let isChange = 0;
@@ -166,9 +169,8 @@ async function generateAndCheckAddresses(xPrivKey) {
 			currentIndex = 0;
 		} else {
 			if (currentIndex - lastActiveAddress < emptyAddressLimit) {
-				let rangeIndexes = (emptyAddressLimit - (currentIndex - lastActiveAddress)) < 20 ? emptyAddressLimit - (currentIndex - lastActiveAddress) : 20;
+				let rangeIndexes = (emptyAddressLimit - (currentIndex - lastActiveAddress)) < emptyAddressLimit ? emptyAddressLimit - (currentIndex - lastActiveAddress) : emptyAddressLimit;
 				let arrAddresses = [];
-
 				for (let i = 0; i < rangeIndexes; i++) {
 					let index = currentIndex + i + 1;
 					let address = objectHash.getChash160(["sig", {"pubkey": wallet_defined_by_keys.derivePubkey(strXPubKey, 'm/' + isChange + '/' + index)}]);

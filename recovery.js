@@ -7,7 +7,6 @@ const rl = readline.createInterface({
 const desktopApp = require('ocore/desktop_app.js');
 const conf = require('ocore/conf.js');
 const Mnemonic = require('bitcore-mnemonic');
-const eventBus = require('ocore/event_bus.js');
 const crypto = require('crypto');
 const objectHash = require('ocore/object_hash.js');
 const wallet_defined_by_keys = require('ocore/wallet_defined_by_keys.js');
@@ -46,7 +45,6 @@ function getKeys(callback) {
 			fs.readFile(KEYS_FILENAME, (err, data) => {
 				if (err) throw err;
 				rl.question("Passphrase: ", (passphrase) => {
-					rl.close();
 					if (process.stdout.moveCursor) process.stdout.moveCursor(0, -1);
 					if (process.stdout.clearLine) process.stdout.clearLine();
 					let keys = JSON.parse(data.toString());
@@ -109,38 +107,49 @@ setTimeout(() => {
 		const device = require('ocore/device.js');
 		device.setDevicePrivateKey(devicePrivKey);
 		let my_device_address = device.getMyDeviceAddress();
-		device.setTempKeys(deviceTempPrivKey, devicePrevTempPrivKey, saveTempKeys);
-		device.setDeviceName(conf.deviceName);
-		device.setDeviceHub(conf.hub);
-		let my_device_pubkey = device.getMyDevicePubKey();
-		console.log("====== my device address: " + my_device_address);
-		console.log("====== my device pubkey: " + my_device_pubkey);
-		if (conf.permanent_pairing_secret)
-			console.log("====== my pairing code: " + my_device_pubkey + "@" + conf.hub + "#" + conf.permanent_pairing_secret);
-		if (conf.bLight) {
-			const light_wallet = require('ocore/light_wallet.js');
-			light_wallet.setLightVendorHost(conf.hub);
-		}
-		replaceConsoleLog();
-		let result = await generateAndCheckAddresses(xPrivKey);
-		if (result.not_change >= 0) {
-			await removeAddressesAndWallets();
-			let wallet_id = await createWallet(xPrivKey);
-			for (let i = 0; i <= result.not_change; i++) {
-				await createAddress(wallet_id, 0, i);
+		checkPubkey((err) => {
+			rl.close();
+			if (err) {
+				console.error('Okay, you choose "No". Bye!');
+				return process.exit(0);
 			}
-			if (result.is_change >= 0) {
+			start().catch(console.error)
+		});
+
+		async function start() {
+			device.setTempKeys(deviceTempPrivKey, devicePrevTempPrivKey, saveTempKeys);
+			device.setDeviceName(conf.deviceName);
+			device.setDeviceHub(conf.hub);
+			let my_device_pubkey = device.getMyDevicePubKey();
+			console.log("====== my device address: " + my_device_address);
+			console.log("====== my device pubkey: " + my_device_pubkey);
+			if (conf.permanent_pairing_secret)
+				console.log("====== my pairing code: " + my_device_pubkey + "@" + conf.hub + "#" + conf.permanent_pairing_secret);
+			if (conf.bLight) {
+				const light_wallet = require('ocore/light_wallet.js');
+				light_wallet.setLightVendorHost(conf.hub);
+			}
+			replaceConsoleLog();
+			let result = await generateAndCheckAddresses(xPrivKey);
+			if (result.not_change >= 0) {
+				await removeAddressesAndWallets();
+				let wallet_id = await createWallet(xPrivKey);
 				for (let i = 0; i <= result.not_change; i++) {
-
-					await createAddress(wallet_id, 1, i);
+					await createAddress(wallet_id, 0, i);
 				}
-			}
-			console.error("Recovery successfully done!");
-			process.exit(0);
+				if (result.is_change >= 0) {
+					for (let i = 0; i <= result.not_change; i++) {
 
-		} else {
-			console.error('Not found used addresses!');
-			process.exit(0);
+						await createAddress(wallet_id, 1, i);
+					}
+				}
+				console.error("Recovery successfully done!");
+				process.exit(0);
+
+			} else {
+				console.error('Not found used addresses!');
+				process.exit(0);
+			}
 		}
 	})
 
@@ -229,6 +238,37 @@ async function generateAndCheckAddresses(xPrivKey) {
 	}
 }
 
+function checkPubkey(cb) {
+	const device = require('ocore/device.js');
+	db.query("SELECT * FROM extended_pubkeys", function (rows) {
+		let my_device_pubkey = device.getMyDevicePubKey();
+		if (rows.length === 0) {
+			cb(false)
+		} else {
+			if (rows[0].extended_pubkey === my_device_pubkey) {
+				cb(false)
+			} else {
+				question((result) => {
+					cb(!result)
+				})
+			}
+		}
+	});
+}
+
+function question(cb) {
+	rl.question('Another key found, delete it? (Yes / No)', (answer) => {
+		answer = answer.trim().toLowerCase();
+		if (answer === 'yes' || answer === 'y') {
+			cb(true);
+		} else if (answer === 'no' || answer === 'n') {
+			cb(false)
+		} else {
+			question(cb)
+		}
+	})
+}
+
 function removeAddressesAndWallets() {
 	return new Promise(resolve => {
 		let arrQueries = [];
@@ -241,7 +281,6 @@ function removeAddressesAndWallets() {
 		db.addQuery(arrQueries, "DELETE FROM extended_pubkeys");
 		db.addQuery(arrQueries, "DELETE FROM wallets");
 		db.addQuery(arrQueries, "DELETE FROM correspondent_devices");
-
 		async.series(arrQueries, resolve);
 	});
 }

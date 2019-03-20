@@ -96,7 +96,6 @@ function createAddress(wallet, is_change, index) {
 
 setTimeout(() => {
 	getKeys(async (mnemonic_phrase, passphrase, deviceTempPrivKey, devicePrevTempPrivKey) => {
-
 		let saveTempKeys = function (new_temp_key, new_prev_temp_key, onDone) {
 			writeKeys(mnemonic_phrase, new_temp_key, new_prev_temp_key, onDone);
 		};
@@ -107,52 +106,47 @@ setTimeout(() => {
 		const device = require('ocore/device.js');
 		device.setDevicePrivateKey(devicePrivKey);
 		let my_device_address = device.getMyDeviceAddress();
-		checkPubkey((err) => {
-			rl.close();
-			if (err) {
-				console.error('Okay, you choose "No". Bye!');
-				return process.exit(0);
-			}
-			start().catch(console.error)
-		});
+		let rErr = await checkPubkey();
+		rl.close();
+		if (rErr) {
+			console.error('Okay, you choose "No". Bye!');
+			return process.exit(0);
+		}
 
-		async function start() {
-			device.setTempKeys(deviceTempPrivKey, devicePrevTempPrivKey, saveTempKeys);
-			device.setDeviceName(conf.deviceName);
-			device.setDeviceHub(conf.hub);
-			let my_device_pubkey = device.getMyDevicePubKey();
-			console.log("====== my device address: " + my_device_address);
-			console.log("====== my device pubkey: " + my_device_pubkey);
-			if (conf.permanent_pairing_secret)
-				console.log("====== my pairing code: " + my_device_pubkey + "@" + conf.hub + "#" + conf.permanent_pairing_secret);
-			if (conf.bLight) {
-				const light_wallet = require('ocore/light_wallet.js');
-				light_wallet.setLightVendorHost(conf.hub);
+		device.setTempKeys(deviceTempPrivKey, devicePrevTempPrivKey, saveTempKeys);
+		device.setDeviceName(conf.deviceName);
+		device.setDeviceHub(conf.hub);
+		let my_device_pubkey = device.getMyDevicePubKey();
+		console.log("====== my device address: " + my_device_address);
+		console.log("====== my device pubkey: " + my_device_pubkey);
+		if (conf.permanent_pairing_secret)
+			console.log("====== my pairing code: " + my_device_pubkey + "@" + conf.hub + "#" + conf.permanent_pairing_secret);
+		if (conf.bLight) {
+			const light_wallet = require('ocore/light_wallet.js');
+			light_wallet.setLightVendorHost(conf.hub);
+		}
+		replaceConsoleLog();
+		let result = await generateAndCheckAddresses(xPrivKey);
+		if (result.not_change >= 0) {
+			await removeAddressesAndWallets();
+			let wallet_id = await createWallet(xPrivKey);
+			for (let i = 0; i <= result.not_change; i++) {
+				await createAddress(wallet_id, 0, i);
 			}
-			replaceConsoleLog();
-			let result = await generateAndCheckAddresses(xPrivKey);
-			if (result.not_change >= 0) {
-				await removeAddressesAndWallets();
-				let wallet_id = await createWallet(xPrivKey);
+			if (result.is_change >= 0) {
 				for (let i = 0; i <= result.not_change; i++) {
-					await createAddress(wallet_id, 0, i);
-				}
-				if (result.is_change >= 0) {
-					for (let i = 0; i <= result.not_change; i++) {
 
-						await createAddress(wallet_id, 1, i);
-					}
+					await createAddress(wallet_id, 1, i);
 				}
-				console.error("Recovery successfully done!");
-				process.exit(0);
-
-			} else {
-				console.error('Not found used addresses!');
-				process.exit(0);
 			}
+			console.error("Recovery successfully done!");
+			process.exit(0);
+
+		} else {
+			console.error('Not found used addresses!');
+			process.exit(0);
 		}
 	})
-
 }, 1000);
 
 
@@ -238,35 +232,38 @@ async function generateAndCheckAddresses(xPrivKey) {
 	}
 }
 
-function checkPubkey(cb) {
+async function checkPubkey() {
 	const device = require('ocore/device.js');
-	db.query("SELECT * FROM extended_pubkeys", function (rows) {
-		let my_device_pubkey = device.getMyDevicePubKey();
-		if (rows.length === 0) {
-			cb(false)
+	let rows = await db.query("SELECT * FROM extended_pubkeys");
+	let my_device_pubkey = device.getMyDevicePubKey();
+	if (rows.length === 0) {
+		return false;
+	} else if (rows.length > 1) {
+		throw Error("more than 1 extended_pubkey?");
+	} else {
+		if (rows[0].extended_pubkey === my_device_pubkey) {
+			return false;
 		} else {
-			if (rows[0].extended_pubkey === my_device_pubkey) {
-				cb(false)
-			} else {
-				question((result) => {
-					cb(!result)
-				})
-			}
+			let result = await question();
+			return !result;
 		}
-	});
+	}
+
 }
 
-function question(cb) {
-	rl.question('Another key found, delete it? (Yes / No)', (answer) => {
-		answer = answer.trim().toLowerCase();
-		if (answer === 'yes' || answer === 'y') {
-			cb(true);
-		} else if (answer === 'no' || answer === 'n') {
-			cb(false)
-		} else {
-			question(cb)
-		}
-	})
+function question() {
+	return new Promise(resolve => {
+		rl.question('Another key found, delete it? (Yes / No)', (answer) => {
+			answer = answer.trim().toLowerCase();
+			if (answer === 'yes' || answer === 'y') {
+				return resolve(true);
+			} else if (answer === 'no' || answer === 'n') {
+				return resolve(false);
+			} else {
+				return resolve(question());
+			}
+		})
+	});
 }
 
 function removeAddressesAndWallets() {

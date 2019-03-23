@@ -244,23 +244,23 @@ async function checkPubkey() {
 		if (rows[0].extended_pubkey === my_device_pubkey) {
 			return false;
 		} else {
-			let result = await question();
+			let result = await reqToDeleteCurrentData();
 			return !result;
 		}
 	}
 
 }
 
-function question() {
+function reqToDeleteCurrentData() {
 	return new Promise(resolve => {
-		rl.question('Another key found, delete it? (Yes / No)', (answer) => {
+		rl.question('Another key found, remove it? (Yes / No)', (answer) => {
 			answer = answer.trim().toLowerCase();
 			if (answer === 'yes' || answer === 'y') {
 				return resolve(true);
 			} else if (answer === 'no' || answer === 'n') {
 				return resolve(false);
 			} else {
-				return resolve(question());
+				return resolve(reqToDeleteCurrentData());
 			}
 		})
 	});

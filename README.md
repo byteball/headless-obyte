@@ -43,6 +43,8 @@ You can remotely control your wallet via chat interface from devices listed in `
 * `pay <amount in bytes>` to request withdrawal from the headless wallet to your `payout_address`, or `pay <amount> <asset>` to withdraw another asset.
 * `mci`: to get the last stable MCI on the headless wallet;
 * `space`: to get the file sizes of data folder;
+* `ip`: to get the IP address of the wallet;
+* `ip-proxy`: to get the IP address of the wallet through socks proxy;
 
 ![Chat with headless wallet](chat-with-headless.png)
 

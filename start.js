@@ -22,6 +22,8 @@ var storage = require('ocore/storage.js');
 var Mnemonic = require('bitcore-mnemonic');
 var Bitcore = require('bitcore-lib');
 var readline = require('readline');
+var request = require('request');
+var socks = process.browser ? null : require('socks'+'');
 
 var KEYS_FILENAME = appDataDir + '/' + (conf.KEYS_FILENAME || 'keys.json');
 var wallet_id;
@@ -659,6 +661,18 @@ function handleText(from_address, text, onUnknown){
 			});
 			break;
 
+		case 'ip':
+			getMyIPAddress(false, function(data) {
+				device.sendMessageToDevice(from_address, 'text', data);
+			});
+			break;
+
+		case 'ip-proxy':
+			getMyIPAddress(true, function(data) {
+				device.sendMessageToDevice(from_address, 'text', data);
+			});
+			break;
+
 		default:
 			if (onUnknown){
 				onUnknown(from_address, text);
@@ -699,6 +713,36 @@ function getFileSizes(rootDir, cb) {
 		}
 	});
 }
+
+function getMyIPAddress(testProxy, cb){
+	var options = {'url': 'https://api.ipify.org/?format=json', 'json': true, 'agent': null, 'timeout': 3000};
+	if (testProxy === true){
+		if (socks && conf.socksHost && conf.socksPort){
+			options.agent = new socks.Agent({
+				proxy: {
+					ipaddress: conf.socksHost,
+					port: conf.socksPort,
+					type: 5,
+					authentication: {
+						username: "dummy",
+						password: "dummy"
+					}
+				}
+			}, true);
+		} 
+		else {
+			return cb('Error, socks configuration missing.');
+		}
+	}
+	request(options, function(err, res, body){
+		if (!err && res.statusCode == 200){
+			return cb(body.ip);
+		} else {
+			return cb('Error requesting IP address.');
+		}
+	});
+}
+
 
 function analyzePayParams(amountText, assetText, cb){
 	// expected:

@@ -41,3 +41,4 @@ isolate-*-v8.log
 processed.txt
 
 .env
+package-lock.json

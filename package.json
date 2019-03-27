@@ -30,6 +30,6 @@
     "json-rpc2": "^1.0.2",
     "ocore": "git+https://github.com/byteball/ocore.git",
     "request": "^2.88.0",
-    "socks-proxy-agent": "^4.0.2"
+    "socks": "1.1.10"
   }
 }

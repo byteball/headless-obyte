@@ -23,7 +23,7 @@ var Mnemonic = require('bitcore-mnemonic');
 var Bitcore = require('bitcore-lib');
 var readline = require('readline');
 var request = require('request');
-var SocksProxyAgent = require('socks-proxy-agent');
+var socks = process.browser ? null : require('socks'+'');
 
 var KEYS_FILENAME = appDataDir + '/' + (conf.KEYS_FILENAME || 'keys.json');
 var wallet_id;
@@ -717,10 +717,22 @@ function getFileSizes(rootDir, cb) {
 function getMyIPAddress(testProxy, cb){
 	var options = {'url': 'https://api.ipify.org/?format=json', 'json': true, 'agent': null, 'timeout': 3000};
 	if (testProxy === true){
-		if (!conf.socksHost || !conf.socksPort){
+		if (socks && conf.socksHost && conf.socksPort){
+			options.agent = new socks.Agent({
+				proxy: {
+					ipaddress: conf.socksHost,
+					port: conf.socksPort,
+					type: 5,
+					authentication: {
+						username: "dummy",
+						password: "dummy"
+					}
+				}
+			}, true);
+		} 
+		else {
 			return cb('Error, socks configuration missing.');
 		}
-		options.agent = new SocksProxyAgent('socks://' + conf.socksHost + ':' + conf.socksPort, true);
 	}
 	request(options, function(err, res, body){
 		if (!err && res.statusCode == 200){

@@ -85,7 +85,7 @@ function createWallet(xPrivKey) {
 
 }
 
-function createAddress(wallet, is_change, index) {
+function addAddressToDatabase(wallet, is_change, index) {
 	return new Promise(resolve => {
 		wallet_defined_by_keys.issueAddress(wallet, is_change, index, function (addressInfo) {
 			return resolve()
@@ -102,25 +102,15 @@ setTimeout(() => {
 		let mnemonic = new Mnemonic(mnemonic_phrase);
 		let xPrivKey = mnemonic.toHDPrivateKey(passphrase);
 		let devicePrivKey = xPrivKey.derive("m/1'").privateKey.bn.toBuffer({size: 32});
-		require('ocore/wallet.js'); // we don't need any of its functions but it listens for hub/* messages
 		const device = require('ocore/device.js');
+		device.setTempKeys(deviceTempPrivKey, devicePrevTempPrivKey, saveTempKeys);
 		device.setDevicePrivateKey(devicePrivKey);
-		let my_device_address = device.getMyDeviceAddress();
-		let rErr = await checkPubkey();
+		let resultOfCheck = await checkPubkeyCountAndDeleteThem();
 		rl.close();
-		if (rErr) {
+		if (resultOfCheck) {
 			console.error('Okay, you choose "No". Bye!');
 			return process.exit(0);
 		}
-
-		device.setTempKeys(deviceTempPrivKey, devicePrevTempPrivKey, saveTempKeys);
-		device.setDeviceName(conf.deviceName);
-		device.setDeviceHub(conf.hub);
-		let my_device_pubkey = device.getMyDevicePubKey();
-		console.log("====== my device address: " + my_device_address);
-		console.log("====== my device pubkey: " + my_device_pubkey);
-		if (conf.permanent_pairing_secret)
-			console.log("====== my pairing code: " + my_device_pubkey + "@" + conf.hub + "#" + conf.permanent_pairing_secret);
 		if (conf.bLight) {
 			const light_wallet = require('ocore/light_wallet.js');
 			light_wallet.setLightVendorHost(conf.hub);
@@ -128,15 +118,13 @@ setTimeout(() => {
 		replaceConsoleLog();
 		let result = await generateAndCheckAddresses(xPrivKey);
 		if (result.not_change >= 0) {
-			await removeAddressesAndWallets();
 			let wallet_id = await createWallet(xPrivKey);
 			for (let i = 0; i <= result.not_change; i++) {
-				await createAddress(wallet_id, 0, i);
+				await addAddressToDatabase(wallet_id, 0, i);
 			}
 			if (result.is_change >= 0) {
-				for (let i = 0; i <= result.not_change; i++) {
-
-					await createAddress(wallet_id, 1, i);
+				for (let i = 0; i <= result.is_change; i++) {
+					await addAddressToDatabase(wallet_id, 1, i);
 				}
 			}
 			console.error("Recovery successfully done!");
@@ -156,7 +144,7 @@ async function generateAndCheckAddresses(xPrivKey) {
 	device.setDevicePrivateKey(devicePrivKey); // we need device address before creating a wallet
 	let strXPubKey = Bitcore.HDPublicKey(xPrivKey.derive("m/44'/0'/0'")).toString();
 	let firstCheck = true;
-	let lastActiveAddress = -1;
+	let lastActiveIndex = -1;
 	let emptyAddressLimit = argv.limit || 20;
 	let currentIndex = -1;
 	let maxNotChangeAddress = -1;
@@ -166,13 +154,13 @@ async function generateAndCheckAddresses(xPrivKey) {
 			firstCheck = false;
 			let address = objectHash.getChash160(["sig", {"pubkey": wallet_defined_by_keys.derivePubkey(strXPubKey, 'm/' + isChange + '/' + 0)}]);
 			if (await checkAddresses([address])) {
-				lastActiveAddress = 0;
+				lastActiveIndex = 0;
 
 			}
 			currentIndex = 0;
 		} else {
-			if (currentIndex - lastActiveAddress < emptyAddressLimit) {
-				let rangeIndexes = (emptyAddressLimit - (currentIndex - lastActiveAddress)) < emptyAddressLimit ? emptyAddressLimit - (currentIndex - lastActiveAddress) : emptyAddressLimit;
+			if (currentIndex - lastActiveIndex < emptyAddressLimit) {
+				let rangeIndexes = (emptyAddressLimit - (currentIndex - lastActiveIndex)) < emptyAddressLimit ? emptyAddressLimit - (currentIndex - lastActiveIndex) : emptyAddressLimit;
 				let arrAddresses = [];
 				for (let i = 0; i < rangeIndexes; i++) {
 					let index = currentIndex + i + 1;
@@ -181,7 +169,7 @@ async function generateAndCheckAddresses(xPrivKey) {
 				}
 				currentIndex += rangeIndexes;
 				if (arrAddresses.length && await checkAddresses(arrAddresses)) {
-					lastActiveAddress = currentIndex;
+					lastActiveIndex = currentIndex;
 
 				}
 			} else {
@@ -189,12 +177,12 @@ async function generateAndCheckAddresses(xPrivKey) {
 					isChange = 1;
 					firstCheck = true;
 					currentIndex = -1;
-					maxNotChangeAddress = lastActiveAddress;
-					lastActiveAddress = -1;
+					maxNotChangeAddress = lastActiveIndex;
+					lastActiveIndex = -1;
 				} else {
 					return {
 						not_change: maxNotChangeAddress,
-						is_change: lastActiveAddress,
+						is_change: lastActiveIndex,
 					};
 				}
 
@@ -232,26 +220,31 @@ async function generateAndCheckAddresses(xPrivKey) {
 	}
 }
 
-async function checkPubkey() {
+async function checkPubkeyCountAndDeleteThem() {
 	const device = require('ocore/device.js');
 	let rows = await db.query("SELECT * FROM extended_pubkeys");
 	let my_device_pubkey = device.getMyDevicePubKey();
 	if (rows.length === 0) {
+		await removeAddressesAndWallets();
 		return false;
 	} else if (rows.length > 1) {
 		throw Error("more than 1 extended_pubkey?");
 	} else {
 		if (rows[0].extended_pubkey === my_device_pubkey) {
+			await removeAddresses();
 			return false;
 		} else {
-			let result = await reqToDeleteCurrentData();
+			let result = await reqKeyAndRemoveData();
+			if (result) {
+				await removeAddressesAndWallets();
+			}
 			return !result;
 		}
 	}
 
 }
 
-function reqToDeleteCurrentData() {
+function reqKeyAndRemoveData() {
 	return new Promise(resolve => {
 		rl.question('Another key found, remove it? (Yes / No)', (answer) => {
 			answer = answer.trim().toLowerCase();
@@ -260,9 +253,22 @@ function reqToDeleteCurrentData() {
 			} else if (answer === 'no' || answer === 'n') {
 				return resolve(false);
 			} else {
-				return resolve(reqToDeleteCurrentData());
+				return resolve(reqKeyAndRemoveData());
 			}
 		})
+	});
+}
+
+
+function removeAddresses() {
+	return new Promise(resolve => {
+		let arrQueries = [];
+		db.addQuery(arrQueries, "DELETE FROM pending_shared_address_signing_paths");
+		db.addQuery(arrQueries, "DELETE FROM shared_address_signing_paths");
+		db.addQuery(arrQueries, "DELETE FROM pending_shared_addresses");
+		db.addQuery(arrQueries, "DELETE FROM shared_addresses");
+		db.addQuery(arrQueries, "DELETE FROM my_addresses");
+		async.series(arrQueries, resolve);
 	});
 }
 
@@ -294,5 +300,4 @@ function replaceConsoleLog() {
 	};
 	console.warn = console.log;
 	console.info = console.log;
-
 }

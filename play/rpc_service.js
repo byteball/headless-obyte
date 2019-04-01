@@ -3,31 +3,41 @@
 /*
 	Accept commands via JSON-RPC API.
 	The daemon listens on port 6332 by default.
-	See https://github.com/byteball/headless-byteball/wiki/Running-RPC-service for detailed description of the API
+	See https://developer.obyte.org/json-rpc/running-rpc-service for detailed description of the API
 */
 
 "use strict";
+var fs = require('fs');
+var desktopApp = require('ocore/desktop_app.js');
+var appDataDir = desktopApp.getAppDataDir();
+var path = require('path');
+
+if (require.main === module && !fs.existsSync(appDataDir) && fs.existsSync(path.dirname(appDataDir)+'/headless-byteball')){
+	console.log('=== will rename old data dir');
+	fs.renameSync(path.dirname(appDataDir)+'/headless-byteball', appDataDir);
+}
+
 var headlessWallet = require('../start.js');
-var conf = require('byteballcore/conf.js');
-var eventBus = require('byteballcore/event_bus.js');
-var db = require('byteballcore/db.js');
-var mutex = require('byteballcore/mutex.js');
-var storage = require('byteballcore/storage.js');
-var constants = require('byteballcore/constants.js');
-var validationUtils = require("byteballcore/validation_utils.js");
+var conf = require('ocore/conf.js');
+var eventBus = require('ocore/event_bus.js');
+var db = require('ocore/db.js');
+var mutex = require('ocore/mutex.js');
+var storage = require('ocore/storage.js');
+var constants = require('ocore/constants.js');
+var validationUtils = require("ocore/validation_utils.js");
 var wallet_id;
 
 if (conf.bSingleAddress)
 	throw Error('can`t run in single address mode');
 
 function initRPC() {
-	var composer = require('byteballcore/composer.js');
-	var network = require('byteballcore/network.js');
+	var composer = require('ocore/composer.js');
+	var network = require('ocore/network.js');
 
 	var rpc = require('json-rpc2');
-	var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
-	var Wallet = require('byteballcore/wallet.js');
-	var balances = require('byteballcore/balances.js');
+	var walletDefinedByKeys = require('ocore/wallet_defined_by_keys.js');
+	var Wallet = require('ocore/wallet.js');
+	var balances = require('ocore/balances.js');
 
 	var server = rpc.Server.$create({
 		'websocket': true, // is true by default 

@@ -4,25 +4,25 @@
 # don't forget to chmod a+x this file
 
 sudo mkdir -p /media/ramdrive
-mkdir -p ~/byteball
+mkdir -p ~/obyte
 sudo mount -t tmpfs -o size=31G tmpfs /media/ramdrive/
 cd /media/ramdrive
-mkdir /media/ramdrive/byteball_app_storage
+mkdir /media/ramdrive/obyte_app_storage
 
-rm -rf ./headless-byteball
-git clone https://github.com/byteball/headless-byteball.git
-cd headless-byteball
+rm -rf ./headless-obyte
+git clone https://github.com/byteball/headless-obyte.git
+cd headless-obyte
 yarn
 
-rm -rf ~/.config/headless-byteball
-ln -s /media/ramdrive/byteball_app_storage ~/.config/headless-byteball
+rm -rf ~/.config/headless-obyte
+ln -s /media/ramdrive/obyte_app_storage ~/.config/headless-obyte
 
 echo "exports.LOG_FILENAME = '/dev/null';" >> conf.js
 
 node start.js
 
 function finish {
-  rsync -rue --info=progress2 /media/ramdrive ~/byteball
+  rsync -rue --info=progress2 /media/ramdrive ~/obyte
 }
 
 trap finish EXIT

@@ -1,16 +1,16 @@
 /*jslint node: true */
 "use strict";
 var headlessWallet = require('../start.js');
-var eventBus = require('byteballcore/event_bus.js');
-var objectHash = require('byteballcore/object_hash.js');
+var eventBus = require('ocore/event_bus.js');
+var objectHash = require('ocore/object_hash.js');
 
 function onError(err){
 	throw Error(err);
 }
 
 function createDefinitionChange(){
-	var composer = require('byteballcore/composer.js');
-	var network = require('byteballcore/network.js');
+	var composer = require('ocore/composer.js');
+	var network = require('ocore/network.js');
 	var callbacks = composer.getSavingCallbacks({
 		ifNotEnoughFunds: onError,
 		ifError: onError,

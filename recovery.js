@@ -27,9 +27,6 @@ function getKeys(callback) {
 		if (err) {
 			rl.question('mnemonic:', (mnemonic_phrase) => {
 				mnemonic_phrase = mnemonic_phrase.trim().toLowerCase();
-				console.log(`New mnemonic_phrase: ${mnemonic_phrase}`);
-
-
 				if ((mnemonic_phrase.split(' ').length % 3 === 0) && Mnemonic.isValid(mnemonic_phrase)) {
 					let deviceTempPrivKey = crypto.randomBytes(32);
 					let devicePrevTempPrivKey = crypto.randomBytes(32);
@@ -39,7 +36,6 @@ function getKeys(callback) {
 				} else {
 					throw new Error('Incorrect mnemonic phrase!')
 				}
-
 			});
 		} else {
 			fs.readFile(KEYS_FILENAME, (err, data) => {
@@ -74,24 +70,19 @@ function writeKeys(mnemonic_phrase, deviceTempPrivKey, devicePrevTempPrivKey, on
 
 function createWallet(xPrivKey) {
 	return new Promise(resolve => {
-		let devicePrivKey = xPrivKey.derive("m/1'").privateKey.bn.toBuffer({size: 32});
-		const device = require('ocore/device.js');
-		device.setDevicePrivateKey(devicePrivKey); // we need device address before creating a wallet
 		let strXPubKey = Bitcore.HDPublicKey(xPrivKey.derive("m/44'/0'/0'")).toString();
 		wallet_defined_by_keys.createWalletByDevices(strXPubKey, 0, 1, [], 'any walletName', false, function (wallet_id) {
 			return resolve(wallet_id);
 		});
 	})
-
 }
 
-function addAddressToDatabase(wallet, is_change, index) { //addAddressInDB
+function addAddressToDatabase(wallet, is_change, index) {
 	return new Promise(resolve => {
 		wallet_defined_by_keys.issueAddress(wallet, is_change, index, function (addressInfo) {
 			return resolve()
 		});
 	});
-
 }
 
 setTimeout(() => {
@@ -116,7 +107,7 @@ setTimeout(() => {
 			light_wallet.setLightVendorHost(conf.hub);
 		}
 		replaceConsoleLog();
-		let result = await generateAndCheckAddresses(xPrivKey);
+		let result = await generateAndCheckAddresses(xPrivKey, devicePrivKey);
 		if (result.not_change >= 0) {
 			let wallet_id = await createWallet(xPrivKey);
 			for (let i = 0; i <= result.not_change; i++) {
@@ -129,7 +120,6 @@ setTimeout(() => {
 			}
 			console.error("Recovery successfully done!");
 			process.exit(0);
-
 		} else {
 			console.error('Not found used addresses!');
 			process.exit(0);
@@ -138,16 +128,13 @@ setTimeout(() => {
 }, 1000);
 
 
-async function generateAndCheckAddresses(xPrivKey) {
-	let devicePrivKey = xPrivKey.derive("m/1'").privateKey.bn.toBuffer({size: 32});
-	let device = require('ocore/device.js');
-	device.setDevicePrivateKey(devicePrivKey); // we need device address before creating a wallet
+async function generateAndCheckAddresses(xPrivKey, devicePrivKey) {
 	let strXPubKey = Bitcore.HDPublicKey(xPrivKey.derive("m/44'/0'/0'")).toString();
 	let firstCheck = true;
 	let lastActiveIndex = -1;
-	let emptyAddressLimit = argv.limit || 20;
+	let maxNotUsingAddresses = argv.limit || 20;
 	let currentIndex = -1;
-	let maxNotChangeAddress = -1;
+	let maxNotChangeAddressIndex = -1;
 	let isChange = 0;
 	while (true) {
 		if (firstCheck) {
@@ -155,12 +142,11 @@ async function generateAndCheckAddresses(xPrivKey) {
 			let address = objectHash.getChash160(["sig", {"pubkey": wallet_defined_by_keys.derivePubkey(strXPubKey, 'm/' + isChange + '/' + 0)}]);
 			if (await checkAddresses([address])) {
 				lastActiveIndex = 0;
-
 			}
 			currentIndex = 0;
 		} else {
-			if (currentIndex - lastActiveIndex < emptyAddressLimit) {
-				let rangeIndexes = (emptyAddressLimit - (currentIndex - lastActiveIndex)) < emptyAddressLimit ? emptyAddressLimit - (currentIndex - lastActiveIndex) : emptyAddressLimit;
+			if (currentIndex - lastActiveIndex < maxNotUsingAddresses) {
+				let rangeIndexes = (maxNotUsingAddresses - (currentIndex - lastActiveIndex)) < maxNotUsingAddresses ? maxNotUsingAddresses - (currentIndex - lastActiveIndex) : maxNotUsingAddresses;
 				let arrAddresses = [];
 				for (let i = 0; i < rangeIndexes; i++) {
 					let index = currentIndex + i + 1;
@@ -170,22 +156,20 @@ async function generateAndCheckAddresses(xPrivKey) {
 				currentIndex += rangeIndexes;
 				if (arrAddresses.length && await checkAddresses(arrAddresses)) {
 					lastActiveIndex = currentIndex;
-
 				}
 			} else {
 				if (isChange === 0) {
 					isChange = 1;
 					firstCheck = true;
 					currentIndex = -1;
-					maxNotChangeAddress = lastActiveIndex;
+					maxNotChangeAddressIndex = lastActiveIndex;
 					lastActiveIndex = -1;
 				} else {
 					return {
-						not_change: maxNotChangeAddress,
+						not_change: maxNotChangeAddressIndex,
 						is_change: lastActiveIndex,
 					};
 				}
-
 			}
 		}
 	}
@@ -215,7 +199,6 @@ async function generateAndCheckAddresses(xPrivKey) {
 					}
 				});
 			}
-
 		})
 	}
 }
@@ -245,7 +228,6 @@ async function checkPubkeyCountAndDeleteThem() {
 			return result;
 		}
 	}
-
 }
 
 function reqRemoveData() {

@@ -85,7 +85,7 @@ function createWallet(xPrivKey) {
 
 }
 
-function addAddressToDatabase(wallet, is_change, index) {
+function addAddressToDatabase(wallet, is_change, index) { //addAddressInDB
 	return new Promise(resolve => {
 		wallet_defined_by_keys.issueAddress(wallet, is_change, index, function (addressInfo) {
 			return resolve()
@@ -107,7 +107,7 @@ setTimeout(() => {
 		device.setDevicePrivateKey(devicePrivKey);
 		let resultOfCheck = await checkPubkeyCountAndDeleteThem();
 		rl.close();
-		if (resultOfCheck) {
+		if (!resultOfCheck) {
 			console.error('Okay, you choose "No". Bye!');
 			return process.exit(0);
 		}
@@ -226,25 +226,29 @@ async function checkPubkeyCountAndDeleteThem() {
 	let my_device_pubkey = device.getMyDevicePubKey();
 	if (rows.length === 0) {
 		await removeAddressesAndWallets();
-		return false;
+		return true;
 	} else if (rows.length > 1) {
-		throw Error("more than 1 extended_pubkey?");
+		let result = await reqRemoveData();
+		if (result) {
+			await removeAddressesAndWallets();
+		}
+		return result;
 	} else {
 		if (rows[0].extended_pubkey === my_device_pubkey) {
 			await removeAddresses();
-			return false;
+			return true;
 		} else {
-			let result = await reqKeyAndRemoveData();
+			let result = await reqRemoveData();
 			if (result) {
 				await removeAddressesAndWallets();
 			}
-			return !result;
+			return result;
 		}
 	}
 
 }
 
-function reqKeyAndRemoveData() {
+function reqRemoveData() {
 	return new Promise(resolve => {
 		rl.question('Another key found, remove it? (Yes / No)', (answer) => {
 			answer = answer.trim().toLowerCase();
@@ -253,7 +257,7 @@ function reqKeyAndRemoveData() {
 			} else if (answer === 'no' || answer === 'n') {
 				return resolve(false);
 			} else {
-				return resolve(reqKeyAndRemoveData());
+				return resolve(reqRemoveData());
 			}
 		})
 	});

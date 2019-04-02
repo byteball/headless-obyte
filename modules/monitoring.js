@@ -14,31 +14,31 @@ function printCompleteStatus(){
 		if (bfirstPrint)
 			bfirstPrint = false;
 		else
-			process.stderr.moveCursor(0, -2);
+			process.stdout.moveCursor(0, -2);
 
 		printConnections();
-		process.stderr.write("\n" + (lightWallet.isFirstHistoryReceived() ? "First history received and processed" : "History not received yet"));
-		process.stderr.clearLine(1);
+		process.stdout.write("\n" + (lightWallet.isFirstHistoryReceived() ? "First history received and processed" : "History not received yet"));
+		process.stdout.clearLine(1);
 
 	} else {
-		var network = require('ocore/network.js');
+		var device = require('ocore/device.js');
 		var storage = require('ocore/storage.js');
 
-		return network.requestFromHub("get_last_mci", null, false, function(ws, request, last_hub_mci){
+		return device.requestFromHub("get_last_mci", null, function(hubErr, last_hub_mci){
 
 			storage.readLastMainChainIndex(function(local_mci){
 				
 				if (bfirstPrint)
 					bfirstPrint = false;
 				else
-					process.stderr.moveCursor(0, -3)
+					process.stdout.moveCursor(0, -3)
 					
-				process.stderr.clearLine(0);
+				process.stdout.clearLine(0);
 				printConnections();
 				
-				if (typeof last_hub_mci == "number"){
-					process.stderr.write("\nHub MCI: " + last_hub_mci + " - Local MCI: " + local_mci);
-					process.stderr.clearLine(1);
+				if (!hubErr){
+					process.stdout.write("\nHub MCI: " + last_hub_mci + " - Local MCI: " + local_mci);
+					process.stdout.clearLine(1);
 					var ratio = local_mci/last_hub_mci;
 					if (ratio > 1){
 						console.log("local mci superior to hub mci");
@@ -47,13 +47,13 @@ function printCompleteStatus(){
 					var fullBarLength = 50;
 					var completedLength = Math.floor(ratio * fullBarLength) + 1;
 					var uncompletedLength = fullBarLength - completedLength + 1;
-					process.stderr.write("\n" + (completedLength >= 1 ? Array(completedLength).join('=') : "") + (uncompletedLength >=1 ? Array(uncompletedLength).join('-') : "") + " " +  (100*ratio).toFixed(2) + "%");
+					process.stdout.write("\n" + (completedLength >= 1 ? Array(completedLength).join('=') : "") + (uncompletedLength >=1 ? Array(uncompletedLength).join('-') : "") + " " +  (100*ratio).toFixed(2) + "%");
 				}else{
-					process.stderr.write("\nHub MCI: Unknown " + " - Local MCI: " + local_mci);
-					process.stderr.clearLine(1);
-					process.stderr.write("\nCouldn't get hub MCI level");
+					process.stdout.write("\nHub MCI: Unknown " + " - Local MCI: " + local_mci);
+					process.stdout.clearLine(1);
+					process.stdout.write("\nCouldn't get hub MCI level");
 				}
-				process.stderr.clearLine(1);
+				process.stdout.clearLine(1);
 			});
 		});
 	}
@@ -64,11 +64,11 @@ function printCompleteStatus(){
 function printConnections(){
 	var network = require('ocore/network.js');
 	var objConnectionStatus = network.getConnectionStatus();
-	process.stderr.cursorTo(0);
-	process.stderr.clearLine(0);
-	process.stderr.write("\n" + objConnectionStatus.incoming+" incoming connections, "+objConnectionStatus.outgoing+" outgoing connections, "+
+	process.stdout.cursorTo(0);
+	process.stdout.clearLine(0);
+	process.stdout.write("\n" + objConnectionStatus.incoming+" incoming connections, "+objConnectionStatus.outgoing+" outgoing connections, "+
 	objConnectionStatus.outgoing_being_opened+" outgoing connections being opened");
-	process.stderr.clearLine(1);
+	process.stdout.clearLine(1);
 }
 
 exports.start = start;

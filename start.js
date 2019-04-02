@@ -7,6 +7,7 @@ var constants = require('ocore/constants.js');
 var desktopApp = require('ocore/desktop_app.js');
 var appDataDir = desktopApp.getAppDataDir();
 var path = require('path');
+var monitoring = require('./modules/monitoring.js');
 
 if (require.main === module && !fs.existsSync(appDataDir) && fs.existsSync(path.dirname(appDataDir)+'/headless-byteball')){
 	console.log('=== will rename old data dir');
@@ -312,7 +313,10 @@ setTimeout(function(){
 					light_wallet.setLightVendorHost(conf.hub);
 				}
 				eventBus.emit('headless_wallet_ready');
-				setTimeout(replaceConsoleLog, 1000);
+				setTimeout(function(){
+					replaceConsoleLog();
+					monitoring.start();
+				}, 1000);
 				if (conf.MAX_UNSPENT_OUTPUTS && conf.CONSOLIDATION_INTERVAL){
 					var consolidation = require('./consolidation.js');
 					consolidation.scheduleConsolidation(wallet_id, signer, conf.MAX_UNSPENT_OUTPUTS, conf.CONSOLIDATION_INTERVAL);

@@ -32,7 +32,8 @@ function printCompleteStatus(){
 					bfirstPrint = false;
 				else
 					process.stderr.moveCursor(0, -3)
-					process.stderr.clearLine(0);
+					
+				process.stderr.clearLine(0);
 				printConnections();
 				
 				if (typeof last_hub_mci == "number"){

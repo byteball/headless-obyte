@@ -68,9 +68,17 @@ function writeKeys(mnemonic_phrase, deviceTempPrivKey, devicePrevTempPrivKey, on
 	});
 }
 
-function createWallet(xPrivKey) {
+async function getWalletId(strXPubKey) {
+	let rows = await db.query("SELECT * FROM extended_pubkeys WHERE extended_pubkey = ?", [strXPubKey]);
+	if (rows.length) {
+		return crypto.createHash("sha256").update(strXPubKey, "utf8").digest("base64");
+	} else {
+		return await createWallet(strXPubKey);
+	}
+}
+
+function createWallet(strXPubKey) {
 	return new Promise(resolve => {
-		let strXPubKey = Bitcore.HDPublicKey(xPrivKey.derive("m/44'/0'/0'")).toString();
 		wallet_defined_by_keys.createWalletByDevices(strXPubKey, 0, 1, [], 'any walletName', false, function (wallet_id) {
 			return resolve(wallet_id);
 		});
@@ -96,7 +104,8 @@ setTimeout(() => {
 		const device = require('ocore/device.js');
 		device.setTempKeys(deviceTempPrivKey, devicePrevTempPrivKey, saveTempKeys);
 		device.setDevicePrivateKey(devicePrivKey);
-		let resultOfCheck = await checkPubkeyCountAndDeleteThem();
+		let strXPubKey = Bitcore.HDPublicKey(xPrivKey.derive("m/44'/0'/0'")).toString();
+		let resultOfCheck = await checkPubkeyCountAndDeleteThem(strXPubKey);
 		rl.close();
 		if (!resultOfCheck) {
 			console.error('Okay, you choose "No". Bye!');
@@ -109,7 +118,7 @@ setTimeout(() => {
 		replaceConsoleLog();
 		let result = await generateAndCheckAddresses(xPrivKey, devicePrivKey);
 		if (result.not_change >= 0) {
-			let wallet_id = await createWallet(xPrivKey);
+			let wallet_id = await getWalletId(strXPubKey);
 			for (let i = 0; i <= result.not_change; i++) {
 				await addAddressToDatabase(wallet_id, 0, i);
 			}
@@ -132,7 +141,7 @@ async function generateAndCheckAddresses(xPrivKey, devicePrivKey) {
 	let strXPubKey = Bitcore.HDPublicKey(xPrivKey.derive("m/44'/0'/0'")).toString();
 	let firstCheck = true;
 	let lastActiveIndex = -1;
-	let maxNotUsingAddresses = argv.limit || 20;
+	let maxNotUsedAddresses = argv.limit || 20;
 	let currentIndex = -1;
 	let maxNotChangeAddressIndex = -1;
 	let isChange = 0;
@@ -145,8 +154,8 @@ async function generateAndCheckAddresses(xPrivKey, devicePrivKey) {
 			}
 			currentIndex = 0;
 		} else {
-			if (currentIndex - lastActiveIndex < maxNotUsingAddresses) {
-				let rangeIndexes = (maxNotUsingAddresses - (currentIndex - lastActiveIndex)) < maxNotUsingAddresses ? maxNotUsingAddresses - (currentIndex - lastActiveIndex) : maxNotUsingAddresses;
+			if (currentIndex - lastActiveIndex < maxNotUsedAddresses) {
+				let rangeIndexes = (maxNotUsedAddresses - (currentIndex - lastActiveIndex)) < maxNotUsedAddresses ? maxNotUsedAddresses - (currentIndex - lastActiveIndex) : maxNotUsedAddresses;
 				let arrAddresses = [];
 				for (let i = 0; i < rangeIndexes; i++) {
 					let index = currentIndex + i + 1;
@@ -203,10 +212,8 @@ async function generateAndCheckAddresses(xPrivKey, devicePrivKey) {
 	}
 }
 
-async function checkPubkeyCountAndDeleteThem() {
-	const device = require('ocore/device.js');
+async function checkPubkeyCountAndDeleteThem(strXPubKey) {
 	let rows = await db.query("SELECT * FROM extended_pubkeys");
-	let my_device_pubkey = device.getMyDevicePubKey();
 	if (rows.length === 0) {
 		await removeAddressesAndWallets();
 		return true;
@@ -217,8 +224,7 @@ async function checkPubkeyCountAndDeleteThem() {
 		}
 		return result;
 	} else {
-		if (rows[0].extended_pubkey === my_device_pubkey) {
-			await removeAddresses();
+		if (rows[0].extended_pubkey === strXPubKey) {
 			return true;
 		} else {
 			let result = await reqRemoveData();
@@ -242,19 +248,6 @@ function reqRemoveData() {
 				return resolve(reqRemoveData());
 			}
 		})
-	});
-}
-
-
-function removeAddresses() {
-	return new Promise(resolve => {
-		let arrQueries = [];
-		db.addQuery(arrQueries, "DELETE FROM pending_shared_address_signing_paths");
-		db.addQuery(arrQueries, "DELETE FROM shared_address_signing_paths");
-		db.addQuery(arrQueries, "DELETE FROM pending_shared_addresses");
-		db.addQuery(arrQueries, "DELETE FROM shared_addresses");
-		db.addQuery(arrQueries, "DELETE FROM my_addresses");
-		async.series(arrQueries, resolve);
 	});
 }
 

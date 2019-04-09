@@ -102,6 +102,8 @@ setTimeout(() => {
 		let xPrivKey = mnemonic.toHDPrivateKey(passphrase);
 		let devicePrivKey = xPrivKey.derive("m/1'").privateKey.bn.toBuffer({size: 32});
 		const device = require('ocore/device.js');
+		require('ocore/wallet.js'); // we don't need any of its functions but it listens for hub/* messages
+		device.setDeviceHub(conf.hub);
 		device.setTempKeys(deviceTempPrivKey, devicePrevTempPrivKey, saveTempKeys);
 		device.setDevicePrivateKey(devicePrivKey);
 		let strXPubKey = Bitcore.HDPublicKey(xPrivKey.derive("m/44'/0'/0'")).toString();
@@ -192,11 +194,11 @@ async function generateAndCheckAddresses(xPrivKey, devicePrivKey) {
 						witnesses: arrWitnesses
 					}, function (ws, request, response) {
 						if (response && response.error) {
-							return resolve(false);
+							throw Error(response.error);
 						}
 						return resolve(!!Object.keys(response).length);
 					})
-				})
+				}, 'wait')
 			} else {
 				db.query("SELECT 1 FROM outputs WHERE address IN(?) LIMIT 1", [addresses], function (outputsRows) {
 					if (outputsRows.length === 1)

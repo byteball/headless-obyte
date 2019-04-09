@@ -14,6 +14,12 @@ If you want to accept incoming connections, you'll need to set up a proxy, such 
 
 Run `cp .env.testnet .env` to connect to TESTNET hub. Backup and delete the database if you already ran it on MAINNET. Wallet app for [TESTNET can be downloaded from Obyte.org](https://obyte.org/testnet.html) website.
 
+## Recovery from seed
+If you already have keys.json file from past project copy in config folder.
+```sh
+node recovery.js --limit=20
+```
+limit - maximal count of unused addresses.
 ## Run
 ```sh
 node start.js

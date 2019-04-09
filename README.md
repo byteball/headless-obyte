@@ -14,12 +14,6 @@ If you want to accept incoming connections, you'll need to set up a proxy, such 
 
 Run `cp .env.testnet .env` to connect to TESTNET hub. Backup and delete the database if you already ran it on MAINNET. Wallet app for [TESTNET can be downloaded from Obyte.org](https://obyte.org/testnet.html) website.
 
-## Recovery from seed
-If you already have keys.json file from past project copy in config folder.
-```sh
-node recovery.js --limit=20
-```
-limit - maximal count of unused addresses.
 ## Run
 ```sh
 node start.js
@@ -27,6 +21,18 @@ node start.js
 The first time you run it, it will generate a new extended private key (BIP44) and ask you for a passphrase to encrypt it.  The BIP39 mnemonic will be saved to the file keys.json in the app data directory (see [ocore](../../../ocore) for its location), the passphrase is, of course, never saved.  Every time you start the wallet, you'll have to type the passphrase.  One implication of this is the wallet cannot be started automatically when your server restarts, you'll have to ssh the server and type the passphrase.
 
 After you enter the passphrase, the wallet redirects all output to a log file in your app data directory but it still holds the terminal window.  To release it, type Ctrl-Z, then bg to resume the wallet in the background.  After that, you can safely terminate the ssh session.
+
+## Backup
+
+If you run only a headless wallet, backing up `keys.json` (or just the mnemonic from this file) in your data folder is enough, the rest can be restored by syncing the node again (which takes several days) and running the below script.  If your headless wallet is included in a bigger application which stores its own data in addition to the public DAG data, you need to back up your entire data folder.
+
+## Recovery from seed (mnemonic)
+```sh
+node recovery.js --limit=20
+```
+The script generates your wallet addresses and stops when it finds `limit` (default 20) unused addresses in a row.  If using full wallet, your node should be synced before running the script.
+
+If you already have `keys.json` file, copy it to the data folder, otherwise the script will ask you about your mnemonic.
 
 ## Customize
 
@@ -75,4 +81,4 @@ Payments are the central but not the only type of data that Byteball stores.  In
 
 ## RPC service
 
-By default, no RPC service is enabled.  If you want to manage your headless wallet via JSON-RPC API, e.g. you run an exchange, run [play/rpc_service.js](play/rpc_service.js) instead.  See the [documentation about running RPC service](../../wiki/Running-RPC-service).
+By default, no RPC service is enabled.  If you want to manage your headless wallet via JSON-RPC API, e.g. you run an exchange, run [play/rpc_service.js](play/rpc_service.js) instead.  See the [documentation about running RPC service](https://developer.obyte.org/json-rpc/running-rpc-service).

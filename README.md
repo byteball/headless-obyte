@@ -28,6 +28,7 @@ If you run only a headless wallet, backing up `keys.json` (or just the mnemonic 
 
 ## Recovery from seed (mnemonic)
 ```sh
+cd tools
 node recovery.js --limit=20
 ```
 The script generates your wallet addresses and stops when it finds `limit` (default 20) unused addresses in a row.  If using full wallet, your node should be synced before running the script.

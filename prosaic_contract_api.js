@@ -167,15 +167,5 @@ function issueChangeAddress(cb) {
 	});
 }
 
-function readSingleWallet(handleWallet){
-	db.query("SELECT wallet FROM wallets", function(rows){
-		if (rows.length === 0)
-			throw Error("no wallets");
-		if (rows.length > 1)
-			throw Error("more than 1 wallet");
-		handleWallet(rows[0].wallet);
-	});
-}
-
 exports.offer = offer;
 exports.listenForPendingContracts = listenForPendingContracts;

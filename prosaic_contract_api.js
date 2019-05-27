@@ -1,15 +1,15 @@
 /*jslint node: true */
 "use strict";
-var prosaic_contract = require('./prosaic_contract.js');
-var eventBus = require('./event_bus.js');
-var device = require('./device.js');
-var objectHash = require('./object_hash.js');
-var wallet = require('./wallet.js');
+var prosaic_contract = require('ocore/prosaic_contract.js');
+var eventBus = require('ocore/event_bus.js');
+var device = require('ocore/device.js');
+var objectHash = require('ocore/object_hash.js');
+var wallet = require('ocore/wallet.js');
 var conf = require('ocore/conf.js');
-var db = require('./db.js');
-var ecdsaSig = require('./signature.js');
-var walletDefinedByAddresses = require('./wallet_defined_by_addresses.js');
-var walletDefinedByKeys = require('./wallet_defined_by_keys.js');
+var db = require('ocore/db.js');
+var ecdsaSig = require('ocore/signature.js');
+var walletDefinedByAddresses = require('ocore/wallet_defined_by_addresses.js');
+var walletDefinedByKeys = require('ocore/wallet_defined_by_keys.js');
 
 var contractsListened = [];
 var wallet_id;

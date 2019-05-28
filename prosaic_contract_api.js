@@ -14,20 +14,27 @@ var headlessWallet = require('./start.js');
 var contractsListened = [];
 var wallet_id;
 
-function offer(title, text, my_address, peer_address, peer_device_address, ttl, cosigners, signWithLocalPrivateKey, cb) {
+function offer(title, text, my_address, peer_address, peer_device_address, ttl, cosigners, signWithLocalPrivateKey, callbacks) {
 	var creation_date = new Date().toISOString().slice(0, 19).replace('T', ' ');
 	var hash = prosaic_contract.getHash({title:title, text:text, creation_date:creation_date});
 
 	prosaic_contract.createAndSend(hash, peer_address, peer_device_address, my_address, creation_date, ttl, title, text, cosigners, function(objContract){
-		listenForPendingContracts(signWithLocalPrivateKey);
-		if (cb)
-			cb(objContract);
+		listenForPendingContracts(signWithLocalPrivateKey, callbacks);
+		if (callbacks.onOfferCreated)
+			callbacks.onOfferCreated(objContract);
 	});
 }
 
-function listenForPendingContracts(signWithLocalPrivateKey) {
+function listenForPendingContracts(signWithLocalPrivateKey, callbacks) {
+	if (!callbacks)
+		callbacks = {};
+	if (!callbacks.onError)
+		callbacks.onError = console.error;
+
 	var start_listening = function(contract) {
-		var sendUnit = function(accepted, authors){
+		var sendUnit = function(accepted){
+			if (callbacks.onResponseReceived)
+					callbacks.onResponseReceived(accepted);
 			if (!accepted) {
 				return;
 			}
@@ -51,7 +58,7 @@ function listenForPendingContracts(signWithLocalPrivateKey) {
 			};
 			walletDefinedByAddresses.createNewSharedAddress(arrDefinition, assocSignersByPath, {
 				ifError: function(err){
-					console.error(err);
+					callbacks.onError(err);
 				},
 				ifOk: function(shared_address){
 					composeAndSend(shared_address);
@@ -76,11 +83,7 @@ function listenForPendingContracts(signWithLocalPrivateKey) {
 
 				headlessWallet.issueChangeAddressAndSendMultiPayment(opts, function(err){
 					if (err){
-						if (err.match(/device address/))
-							err = "This is a private asset, please send it only by clicking links from chat";
-						if (err.match(/no funded/))
-							err = "Not enough spendable funds, make sure all your funds are confirmed";
-						console.error(err);
+						callbacks.onError(err);
 						return;
 					}
 
@@ -100,7 +103,7 @@ function listenForPendingContracts(signWithLocalPrivateKey) {
 					}, function(err, unit) { // can take long if multisig
 						//indexScope.setOngoingProcess(gettext('proposing a contract'), false);
 						if (err) {
-							console.error(err);
+							callbacks.onError(err);
 							return;
 						}
 						prosaic_contract.setField(contract.hash, "unit", unit);
@@ -108,6 +111,9 @@ function listenForPendingContracts(signWithLocalPrivateKey) {
 						var url = 'https://explorer.obyte.org/#' + unit;
 						var text = "unit with contract hash for \""+ contract.title +"\" was posted into DAG " + url;
 						device.sendMessageToDevice(contract.peer_device_address, "text", text);
+
+						if (callbacks.onSigned)
+							callbacks.onSigned(contract);
 					});
 				});
 			}

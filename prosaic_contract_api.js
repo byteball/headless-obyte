@@ -4,12 +4,12 @@ var prosaic_contract = require('ocore/prosaic_contract.js');
 var eventBus = require('ocore/event_bus.js');
 var device = require('ocore/device.js');
 var objectHash = require('ocore/object_hash.js');
-var wallet = require('ocore/wallet.js');
 var conf = require('ocore/conf.js');
 var db = require('ocore/db.js');
 var ecdsaSig = require('ocore/signature.js');
 var walletDefinedByAddresses = require('ocore/wallet_defined_by_addresses.js');
 var walletDefinedByKeys = require('ocore/wallet_defined_by_keys.js');
+var headlessWallet = require('./start.js');
 
 var contractsListened = [];
 var wallet_id;
@@ -74,48 +74,40 @@ function listenForPendingContracts(signWithLocalPrivateKey) {
 					arrSigningDeviceAddresses: contract.cosigners
 				};
 
-				issueChangeAddress(function(change_address){
-					opts.change_address = change_address;
-					opts.wallet = wallet_id;
-					opts.arrSigningDeviceAddresses = [device.getMyDeviceAddress()];
-					opts.signWithLocalPrivateKey = signWithLocalPrivateKey;
-					wallet.sendMultiPayment(opts, function(err){
-						if (err){
-							if (err.match(/device address/))
-								err = "This is a private asset, please send it only by clicking links from chat";
-							if (err.match(/no funded/))
-								err = "Not enough spendable funds, make sure all your funds are confirmed";
+				headlessWallet.issueChangeAddressAndSendMultiPayment(opts, function(err){
+					if (err){
+						if (err.match(/device address/))
+							err = "This is a private asset, please send it only by clicking links from chat";
+						if (err.match(/no funded/))
+							err = "Not enough spendable funds, make sure all your funds are confirmed";
+						console.error(err);
+						return;
+					}
+
+					// post a unit with contract text hash and send it for signing to correspondent
+					var value = {"contract_text_hash": contract.hash};
+					var objMessage = {
+						app: "data",
+						payload_location: "inline",
+						payload_hash: objectHash.getBase64Hash(value),
+						payload: value
+					};
+
+					headlessWallet.issueChangeAddressAndSendMultiPayment({
+						arrSigningDeviceAddresses: contract.cosigners.length ? contract.cosigners.concat([contract.peer_device_address]) : [],
+						shared_address: shared_address,
+						messages: [objMessage]
+					}, function(err, unit) { // can take long if multisig
+						//indexScope.setOngoingProcess(gettext('proposing a contract'), false);
+						if (err) {
 							console.error(err);
 							return;
 						}
-
-						// post a unit with contract text hash and send it for signing to correspondent
-						var value = {"contract_text_hash": contract.hash};
-						var objMessage = {
-							app: "data",
-							payload_location: "inline",
-							payload_hash: objectHash.getBase64Hash(value),
-							payload: value
-						};
-
-						wallet.sendMultiPayment({
-							arrSigningDeviceAddresses: contract.cosigners.length ? contract.cosigners.concat([contract.peer_device_address]) : [],
-							paying_addresses: [shared_address],
-							change_address: shared_address,
-							messages: [objMessage],
-							signWithLocalPrivateKey: signWithLocalPrivateKey
-						}, function(err, unit) { // can take long if multisig
-							//indexScope.setOngoingProcess(gettext('proposing a contract'), false);
-							if (err) {
-								console.error(err);
-								return;
-							}
-							prosaic_contract.setField(contract.hash, "unit", unit);
-							device.sendMessageToDevice(contract.peer_device_address, "prosaic_contract_update", {hash: contract.hash, field: "unit", value: unit});
-							var url = 'https://explorer.obyte.org/#' + unit;
-							var text = "unit with contract hash for \""+ contract.title +"\" was posted into DAG " + url;
-							device.sendMessageToDevice(contract.peer_device_address, "text", text);
-						});
+						prosaic_contract.setField(contract.hash, "unit", unit);
+						device.sendMessageToDevice(contract.peer_device_address, "prosaic_contract_update", {hash: contract.hash, field: "unit", value: unit});
+						var url = 'https://explorer.obyte.org/#' + unit;
+						var text = "unit with contract hash for \""+ contract.title +"\" was posted into DAG " + url;
+						device.sendMessageToDevice(contract.peer_device_address, "text", text);
 					});
 				});
 			}
@@ -130,40 +122,6 @@ function listenForPendingContracts(signWithLocalPrivateKey) {
 				contractsListened.push(contract.hash);
 			}
 		});
-	});
-}
-
-function issueChangeAddress(cb) {
-	db.query("SELECT wallet FROM wallets", function(rows){
-		if (rows.length === 0)
-			throw Error("no wallets");
-		if (rows.length > 1)
-			throw Error("more than 1 wallet");
-		wallet_id = rows[0].wallet;
-
-		if (conf.bSingleAddress) {
-			db.query("SELECT address FROM my_addresses WHERE wallet=?", [wallet_id], function(rows){
-				if (rows.length === 0)
-					throw Error("no addresses");
-				if (rows.length > 1)
-					throw Error("more than 1 address");
-				cb(rows[0].address);
-			});
-		}
-		else if (conf.bStaticChangeAddress) {
-			walletDefinedByKeys.readAddressByIndex(wallet_id, 1, 0, function(objAddr){
-				if (objAddr)
-					return cb(objAddr.address);
-				walletDefinedByKeys.issueAddress(wallet_id, 1, 0, function(objAddr){
-					cb(objAddr.address);
-				});
-			});
-		}
-		else {
-			walletDefinedByKeys.issueOrSelectNextChangeAddress(wallet_id, function(objAddr){
-				cb(objAddr.address);
-			});
-		}
 	});
 }
 

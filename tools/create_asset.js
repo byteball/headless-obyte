@@ -15,6 +15,7 @@ function createAsset(){
 		ifError: onError,
 		ifOk: function(objJoint){
 			network.broadcastJoint(objJoint);
+			console.error('==== Asset ID:'+ objJoint.unit.unit);
 		}
 	});
 	var asset = {
@@ -23,7 +24,7 @@ function createAsset(){
 		is_private: true,
 		is_transferrable: true,
 		auto_destroy: false,
-		fixed_denominations: true,
+		fixed_denominations: true, // if true then it's IndivisibleAsset, if false then it's DivisibleAsset
 		issued_by_definer_only: true,
 		cosigned_by_definer: false,
 		spender_attested: false,
@@ -52,7 +53,9 @@ function createAsset(){
 		],
 		//attestors: ["X5ZHWBYBF4TUYS35HU3ROVDQJC772ZMG", "GZSEKMEQVOW2ZAHDZBABRTECDSDFBWVH", "2QLYLKHMUG237QG36Z6AWLVH4KQ4MEY6"].sort()
 	};
-	composer.composeAssetDefinitionJoint("3VH6WZ4V5AD2U55MQLRQPHRRCYQCFDUI", asset, headlessWallet.signer, callbacks);
+	headlessWallet.readFirstAddress(function(definer_address){
+		composer.composeAssetDefinitionJoint(definer_address, asset, headlessWallet.signer, callbacks);
+	});
 }
 
 eventBus.on('headless_wallet_ready', createAsset);

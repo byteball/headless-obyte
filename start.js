@@ -660,11 +660,11 @@ function handleText(from_address, text, onUnknown){
 			break;
 
 		default:
-			if (onUnknown){
+			if (onUnknown)
 				onUnknown(from_address, text);
-			}else{
+			else if (require.main === module)
 				device.sendMessageToDevice(from_address, 'text', "unrecognized command");
-			}
+			break;
 	}
 }
 

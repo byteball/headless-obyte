@@ -372,6 +372,8 @@ function sendMultiPayment(opts, onDone){
 	var Wallet = require('ocore/wallet.js');
 	if (!opts.paying_addresses)
 		opts.wallet = wallet_id;
+	if (!opts.change_address)
+		throw Error("no change address");
 	opts.arrSigningDeviceAddresses = [device.getMyDeviceAddress()];
 	opts.signWithLocalPrivateKey = signWithLocalPrivateKey;
 	Wallet.sendMultiPayment(opts, (err, unit, assocMnemonics) => {

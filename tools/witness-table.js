@@ -50,8 +50,8 @@ async function witnessTable() {
 	let index_length = 3;
 	// build empty table
 	Object.keys(witness_matrix).sort().forEach( (key) => {
-		witness_matrix[key].forEach( (witness) => {
-			Object.keys(witness_matrix).forEach( (key2) => {
+		witness_matrix[key].sort().forEach( (witness) => {
+			Object.keys(witness_matrix).sort().forEach( (key2) => {
 				let key_name = key.substr(0, index_length) +'...';
 				let witness_name = witness.substr(0, index_length) +'...';
 				let key_name2 = key2.substr(0, index_length) +'...';
@@ -74,8 +74,8 @@ async function witnessTable() {
 		});
 	});
 	// fill empty table cells
-	Object.keys(witness_matrix).forEach( (key) => {
-		witness_matrix[key].forEach( (witness) => {
+	Object.keys(witness_matrix).sort().forEach( (key) => {
+		witness_matrix[key].sort().forEach( (witness) => {
 			let key_name = key.substr(0, index_length) +'...';
 			let witness_name = witness.substr(0, index_length) +'...';
 			// just in case

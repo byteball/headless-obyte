@@ -13,25 +13,32 @@ async function witnessTable() {
 
 	// get current mci
 	let units = await db.query("SELECT max(main_chain_index) AS max_index FROM units;", []);
-	if (!units.length) return;
+	if (!units.length) return console.error('units - 0 results');
 
 	// witnesses who have been selected to witness past 1000 mci units
-	let witnessing_outputs = await db.query("SELECT address, count(*) AS total_count \
+	let witnessing_outputs = await db.query("SELECT main_chain_index AS mci, address \
 			FROM witnessing_outputs \
 			WHERE main_chain_index > ? AND main_chain_index <= ? \
-			GROUP BY address ORDER BY total_count DESC;", [units[0].max_index-1000, units[0].max_index]);
+			ORDER BY witnessing_outputs.rowid DESC;", [units[0].max_index-10000, units[0].max_index]);
+	if (!witnessing_outputs.length) return console.error('witnessing_outputs - 0 results');
 
-	// get the witness lists of the last transaction of those witnesses from above query
 	await witnessing_outputs.forEachAsync(async (witnessing_output) => {
-		console.log('witnessing_output', witnessing_output.address);
-		let unit_witnesses = await db.query("SELECT unit_witnesses.address, unit_witnesses.unit \
-				FROM witnessing_outputs \
-				JOIN units ON witnessing_outputs.main_chain_index = units.main_chain_index \
-				JOIN unit_witnesses ON (units.witness_list_unit = unit_witnesses.unit OR units.unit = unit_witnesses.unit) \
-				WHERE witnessing_outputs.address = ? \
-				ORDER BY witnessing_outputs.rowid DESC LIMIT 12;", [witnessing_output.address]);
-		if (!unit_witnesses.length) return;
-		console.log('witness_list_unit', unit_witnesses[0].unit);
+		// only do it for the latest output
+		if (witness_matrix[witnessing_output.address]) return;
+		// get the witness lists of the last transaction of those witnesses from above query
+		let witness_list = await db.query("SELECT units.witness_list_unit \
+				FROM units \
+				JOIN unit_authors ON units.unit = unit_authors.unit \
+				WHERE units.main_chain_index = ? AND unit_authors.address = ? \
+				LIMIT 1;", [witnessing_output.mci, witnessing_output.address]);
+		if (!witness_list.length) return; //console.error('witness_list - 0 results');
+
+		console.log('witness_list_unit', witnessing_output.address, witness_list[0].witness_list_unit);
+		// get the witnesses of these witness lists
+		let unit_witnesses = await db.query("SELECT address \
+				FROM unit_witnesses \
+				WHERE unit_witnesses.unit = ?;", [witness_list[0].witness_list_unit]);
+		if (!unit_witnesses.length) return console.error('unit_witnesses - 0 results');
 
 		// convert sqlite result to array
 		witness_matrix[witnessing_output.address] = unit_witnesses.map( (unit_witness) => {

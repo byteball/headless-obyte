@@ -10,6 +10,7 @@ witnessTable();
 
 async function witnessTable() {
 	let witness_matrix = {};
+	let witness_list_units = {};
 
 	// get current mci
 	let units = await db.query("SELECT max(main_chain_index) AS max_index FROM units;", []);
@@ -34,11 +35,20 @@ async function witnessTable() {
 		if (!witness_list.length) return; //console.error('witness_list - 0 results');
 
 		console.log('witness_list_unit', witnessing_output.address, witness_list[0].witness_list_unit);
-		// get the witnesses of these witness lists
-		let unit_witnesses = await db.query("SELECT address \
-				FROM unit_witnesses \
-				WHERE unit_witnesses.unit = ?;", [witness_list[0].witness_list_unit]);
-		if (!unit_witnesses.length) return console.error('unit_witnesses - 0 results');
+
+		let unit_witnesses = [];
+		if (witness_list_units[witness_list[0].witness_list_unit]) {
+			unit_witnesses = witness_list_units[witness_list[0].witness_list_unit];
+		}
+		else {
+			// get the witnesses of these witness lists
+			unit_witnesses = await db.query("SELECT address \
+					FROM unit_witnesses \
+					WHERE unit_witnesses.unit = ?;", [witness_list[0].witness_list_unit]);
+
+			witness_list_units[witness_list[0].witness_list_unit] = unit_witnesses;
+			if (!unit_witnesses.length) return console.error('unit_witnesses - 0 results');
+		}
 
 		// convert sqlite result to array
 		witness_matrix[witnessing_output.address] = unit_witnesses.map( (unit_witness) => {

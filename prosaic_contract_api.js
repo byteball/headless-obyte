@@ -108,8 +108,8 @@ function listenForPendingContracts(signWithLocalPrivateKey, callbacks) {
 						}
 						prosaic_contract.setField(contract.hash, "unit", unit);
 						device.sendMessageToDevice(contract.peer_device_address, "prosaic_contract_update", {hash: contract.hash, field: "unit", value: unit});
-						var url = 'https://explorer.obyte.org/#' + unit;
-						var text = "unit with contract hash for \""+ contract.title +"\" was posted into DAG " + url;
+						let explorer = (process.env.testnet ? 'https://testnetexplorer.obyte.org/#' : 'https://explorer.obyte.org/#');
+						var text = "unit with contract hash for \""+ contract.title +"\" was posted into DAG " + explorer + unit;
 						device.sendMessageToDevice(contract.peer_device_address, "text", text);
 
 						if (callbacks.onSigned)

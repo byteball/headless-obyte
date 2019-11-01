@@ -29,7 +29,7 @@ var xPrivKey;
 
 function replaceConsoleLog(){
 	var log_filename = conf.LOG_FILENAME || (appDataDir + '/log.txt');
-	var writeStream = fs.createWriteStream(log_filename);
+	var writeStream = fs.createWriteStream(log_filename, { flags: conf.appendLogfile ? 'a' : 'w' });
 	console.log('---------------');
 	console.log('From this point, output will be redirected to '+log_filename);
 	console.log("To release the terminal, type Ctrl-Z, then 'bg'");
@@ -80,6 +80,7 @@ function readKeys(onDone){
 			});
 		}
 		else{ // 2nd or later start
+			eventBus.emit('headless_wallet_need_pass')
 			rl.question("Passphrase: ", function(passphrase){
 				rl.close();
 				if (process.stdout.moveCursor) process.stdout.moveCursor(0, -1);

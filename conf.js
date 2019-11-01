@@ -20,6 +20,8 @@ exports.KEYS_FILENAME = 'keys.json';
 
 // where logs are written to (absolute path).  Default is log.txt in app data directory
 //exports.LOG_FILENAME = '/dev/null';
+// set true to append logs to logfile instead of overwriting it. Default is to overwrite
+// exports.appendLogfile = true;
 
 // consolidate unspent outputs when there are too many of them.  Value of 0 means do not try to consolidate
 exports.MAX_UNSPENT_OUTPUTS = 0;

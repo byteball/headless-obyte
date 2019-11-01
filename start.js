@@ -57,6 +57,7 @@ function readKeys(onDone){
 		if (err){ // first start
 			console.log('failed to read keys, will gen');
 			initConfJson(rl, function(){
+				eventBus.emit('headless_wallet_need_pass')
 				rl.question('Passphrase for your private keys: ', function(passphrase){
 					rl.close();
 					if (process.stdout.moveCursor) process.stdout.moveCursor(0, -1);
@@ -567,7 +568,7 @@ function signMessage(signing_address, message, cb) {
 
 
 function handleText(from_address, text, onUnknown){
-	
+
 	text = text.trim();
 	var fields = text.split(/ /);
 	var command = fields[0].trim().toLowerCase();
@@ -588,13 +589,13 @@ function handleText(from_address, text, onUnknown){
 					device.sendMessageToDevice(from_address, 'text', addressInfo.address);
 				});
 			break;
-			
+
 		case 'balance':
 			prepareBalanceText(function(balance_text){
 				device.sendMessageToDevice(from_address, 'text', balance_text);
 			});
 			break;
-			
+
 		case 'pay':
 			analyzePayParams(params[0], params[1], function(asset, amount){
 				if(asset===null && amount===null){
@@ -675,7 +676,7 @@ function niceBytes(x){
 	while(n >= 1024 && ++l)
 			n = n/1024;
 
-	//include a decimal point and a tenths-place digit if presenting 
+	//include a decimal point and a tenths-place digit if presenting
 	//less than ten of KB or greater units
 	return(n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l]);
 }

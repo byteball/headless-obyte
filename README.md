@@ -85,3 +85,19 @@ Payments are the central but not the only type of data that Byteball stores.  In
 ## RPC service
 
 By default, no RPC service is enabled.  If you want to manage your headless wallet via JSON-RPC API, e.g. you run an exchange, run [tools/rpc_service.js](tools/rpc_service.js) instead.  See the [documentation about running RPC service](https://developer.obyte.org/json-rpc/running-rpc-service).
+
+## Docker image
+
+You can build and run your own docker image.
+
+Build docker image code:
+```sh
+docker build -t headless-obyte:latest .
+```
+
+Run docker container code:
+```sh
+docker run --rm -i headless-obyte:latest
+```
+
+Docker container must run in interactive mode to input your device name and password.

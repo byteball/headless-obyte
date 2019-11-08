@@ -97,7 +97,7 @@ docker build -t headless-obyte:latest .
 
 Run docker container code:
 ```sh
-docker run --rm -i headless-obyte:latest
+docker run --rm -ti headless-obyte:latest
 ```
 
 Docker container must run in interactive mode to input your device name and password.

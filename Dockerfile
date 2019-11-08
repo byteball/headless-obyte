@@ -6,6 +6,8 @@ COPY package.json ./
 RUN npm install --production
 
 # ---- Copy files/build ----
-COPY start.js conf.js .en? ./
+COPY docker-entrypoint.sh start.js conf.js .en? ./
+RUN chmod +x docker-entrypoint.sh
+
 VOLUME ["/root"]
-CMD ["node", "start.js"]
+ENTRYPOINT ["/bin/bash", "docker-entrypoint.sh"]

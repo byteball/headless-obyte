@@ -6,6 +6,7 @@ let witnesses = [];
 if (!process.env.testnet) {
 	witnesses.push({'old': 'JEDZYC2HMGDBIDQKG3XSTXUSHMCBK725', 'new': '4GDZSXHEFVFMHCUCSHZVXBVF5T2LJHMU'}); // Rogier Eijkelhof
 	witnesses.push({'old': 'S7N5FE42F6ONPNDQLCF64E2MGFYKQR2I', 'new': 'FAB6TH7IRAVHDLK2AAWY5YBE6CEBUACF'}); // Fabien Marino
+	witnesses.push({'old': 'DJMMI5JYA5BWQYSXDPRZJVLW3UGL3GJS', 'new': '2TO6NYBGX3NF5QS24MQLFR7KXYAMCIE5'}); // Bosch
 }
 
 witnesses.forEach(function(replacement) {

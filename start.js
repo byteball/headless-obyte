@@ -41,6 +41,20 @@ function replaceConsoleLog(){
 	console.info = console.log;
 }
 
+function requestInput(prompt, cb) {
+	if (conf.bNoPassphrase)
+		return cb("");
+	var rl = readline.createInterface({
+		input: process.stdin,
+		output: process.stdout,
+		//terminal: true
+	});
+	rl.question(prompt, function (input) {
+		rl.close();
+		cb(input);
+	});
+}
+
 function readKeys(onDone){
 	console.log('-----------------------');
 	if (conf.control_addresses)
@@ -49,17 +63,11 @@ function readKeys(onDone){
 		console.log("payouts allowed to address: "+conf.payout_address);
 	console.log('-----------------------');
 	fs.readFile(KEYS_FILENAME, 'utf8', function(err, data){
-		var rl = readline.createInterface({
-			input: process.stdin,
-			output: process.stdout,
-			//terminal: true
-		});
 		if (err){ // first start
 			console.log('failed to read keys, will gen');
-			initConfJson(rl, function(){
+			initConfJson(function(){
 				eventBus.emit('headless_wallet_need_pass')
-				rl.question('Passphrase for your private keys: ', function(passphrase){
-					rl.close();
+				requestInput('Passphrase for your private keys: ', function(passphrase){
 					if (process.stdout.moveCursor) process.stdout.moveCursor(0, -1);
 					if (process.stdout.clearLine)  process.stdout.clearLine();
 					var deviceTempPrivKey = crypto.randomBytes(32);
@@ -81,8 +89,7 @@ function readKeys(onDone){
 		}
 		else{ // 2nd or later start
 			eventBus.emit('headless_wallet_need_pass')
-			rl.question("Passphrase: ", function(passphrase){
-				rl.close();
+			requestInput("Passphrase: ", function(passphrase){
 				if (process.stdout.moveCursor) process.stdout.moveCursor(0, -1);
 				if (process.stdout.clearLine)  process.stdout.clearLine();
 				var keys = JSON.parse(data);
@@ -104,7 +111,7 @@ function readKeys(onDone){
 	});
 }
 
-function initConfJson(rl, onDone){
+function initConfJson(onDone){
 	var userConfFile = appDataDir + '/conf.json';
 	var confJson = null;
 	try {
@@ -118,7 +125,7 @@ function initConfJson(rl, onDone){
 	if (!confJson)
 		confJson = {};
 	var suggestedDeviceName = require('os').hostname() || 'Headless';
-	rl.question("Please name this device ["+suggestedDeviceName+"]: ", function(deviceName){
+	requestInput("Please name this device ["+suggestedDeviceName+"]: ", function(deviceName){
 		if (!deviceName)
 			deviceName = suggestedDeviceName;
 		confJson.deviceName = deviceName;

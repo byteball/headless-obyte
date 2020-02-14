@@ -26,6 +26,17 @@ var readline = require('readline');
 var KEYS_FILENAME = appDataDir + '/' + (conf.KEYS_FILENAME || 'keys.json');
 var wallet_id;
 var xPrivKey;
+var bReady = false;
+
+function isReady() {
+	return bReady;
+}
+
+function waitTillReady() {
+	if (bReady)
+		return;
+	return new Promise(resolve => eventBus.once('headless_wallet_ready', resolve));
+}
 
 function replaceConsoleLog(){
 	var log_filename = conf.LOG_FILENAME || (appDataDir + '/log.txt');
@@ -320,6 +331,7 @@ setTimeout(function(){
 					var light_wallet = require('ocore/light_wallet.js');
 					light_wallet.setLightVendorHost(conf.hub);
 				}
+				bReady = true;
 				eventBus.emit('headless_wallet_ready');
 				setTimeout(replaceConsoleLog, 1000);
 				if (conf.MAX_UNSPENT_OUTPUTS && conf.CONSOLIDATION_INTERVAL){
@@ -757,6 +769,8 @@ function setupChatEventHandlers(){
 	});
 }
 
+exports.isReady = isReady;
+exports.waitTillReady = waitTillReady;
 exports.readSingleWallet = readSingleWallet;
 exports.readSingleAddress = readSingleAddress;
 exports.readFirstAddress = readFirstAddress;

@@ -26,19 +26,44 @@ var readline = require('readline');
 var KEYS_FILENAME = appDataDir + '/' + (conf.KEYS_FILENAME || 'keys.json');
 var wallet_id;
 var xPrivKey;
+var bReady = false;
+
+function isReady() {
+	return bReady;
+}
+
+function waitTillReady() {
+	if (bReady)
+		return;
+	return new Promise(resolve => eventBus.once('headless_wallet_ready', resolve));
+}
 
 function replaceConsoleLog(){
 	var log_filename = conf.LOG_FILENAME || (appDataDir + '/log.txt');
-	var writeStream = fs.createWriteStream(log_filename);
+	var writeStream = fs.createWriteStream(log_filename, { flags: conf.appendLogfile ? 'a' : 'w' });
 	console.log('---------------');
 	console.log('From this point, output will be redirected to '+log_filename);
-	console.log("To release the terminal, type Ctrl-Z, then 'bg'");
+	console.log(conf.bNoPassphrase ? "Press Enter to release the terminal if you started the daemon with &. Otherwise, type Ctrl-Z, then 'bg'." : "To release the terminal, type Ctrl-Z, then 'bg'");
 	console.log = function(){
 		writeStream.write(Date().toString()+': ');
 		writeStream.write(util.format.apply(null, arguments) + '\n');
 	};
 	console.warn = console.log;
 	console.info = console.log;
+}
+
+function requestInput(prompt, cb) {
+	if (conf.bNoPassphrase)
+		return cb("");
+	var rl = readline.createInterface({
+		input: process.stdin,
+		output: process.stdout,
+		//terminal: true
+	});
+	rl.question(prompt, function (input) {
+		rl.close();
+		cb(input);
+	});
 }
 
 function readKeys(onDone){
@@ -49,16 +74,11 @@ function readKeys(onDone){
 		console.log("payouts allowed to address: "+conf.payout_address);
 	console.log('-----------------------');
 	fs.readFile(KEYS_FILENAME, 'utf8', function(err, data){
-		var rl = readline.createInterface({
-			input: process.stdin,
-			output: process.stdout,
-			//terminal: true
-		});
 		if (err){ // first start
 			console.log('failed to read keys, will gen');
-			initConfJson(rl, function(){
-				rl.question('Passphrase for your private keys: ', function(passphrase){
-					rl.close();
+			initConfJson(function(){
+				eventBus.emit('headless_wallet_need_pass')
+				requestInput('Passphrase for your private keys: ', function(passphrase){
 					if (process.stdout.moveCursor) process.stdout.moveCursor(0, -1);
 					if (process.stdout.clearLine)  process.stdout.clearLine();
 					var deviceTempPrivKey = crypto.randomBytes(32);
@@ -79,8 +99,8 @@ function readKeys(onDone){
 			});
 		}
 		else{ // 2nd or later start
-			rl.question("Passphrase: ", function(passphrase){
-				rl.close();
+			eventBus.emit('headless_wallet_need_pass')
+			requestInput("Passphrase: ", function(passphrase){
 				if (process.stdout.moveCursor) process.stdout.moveCursor(0, -1);
 				if (process.stdout.clearLine)  process.stdout.clearLine();
 				var keys = JSON.parse(data);
@@ -102,7 +122,7 @@ function readKeys(onDone){
 	});
 }
 
-function initConfJson(rl, onDone){
+function initConfJson(onDone){
 	var userConfFile = appDataDir + '/conf.json';
 	var confJson = null;
 	try {
@@ -116,7 +136,7 @@ function initConfJson(rl, onDone){
 	if (!confJson)
 		confJson = {};
 	var suggestedDeviceName = require('os').hostname() || 'Headless';
-	rl.question("Please name this device ["+suggestedDeviceName+"]: ", function(deviceName){
+	requestInput("Please name this device ["+suggestedDeviceName+"]: ", function(deviceName){
 		if (!deviceName)
 			deviceName = suggestedDeviceName;
 		confJson.deviceName = deviceName;
@@ -311,6 +331,7 @@ setTimeout(function(){
 					var light_wallet = require('ocore/light_wallet.js');
 					light_wallet.setLightVendorHost(conf.hub);
 				}
+				bReady = true;
 				eventBus.emit('headless_wallet_ready');
 				setTimeout(replaceConsoleLog, 1000);
 				if (conf.MAX_UNSPENT_OUTPUTS && conf.CONSOLIDATION_INTERVAL){
@@ -569,7 +590,7 @@ function signMessage(signing_address, message, cb) {
 
 
 function handleText(from_address, text, onUnknown){
-	
+
 	text = text.trim();
 	var fields = text.split(/ /);
 	var command = fields[0].trim().toLowerCase();
@@ -590,13 +611,13 @@ function handleText(from_address, text, onUnknown){
 					device.sendMessageToDevice(from_address, 'text', addressInfo.address);
 				});
 			break;
-			
+
 		case 'balance':
 			prepareBalanceText(function(balance_text){
 				device.sendMessageToDevice(from_address, 'text', balance_text);
 			});
 			break;
-			
+
 		case 'pay':
 			analyzePayParams(params[0], params[1], function(asset, amount){
 				if(asset===null && amount===null){
@@ -677,7 +698,7 @@ function niceBytes(x){
 	while(n >= 1024 && ++l)
 			n = n/1024;
 
-	//include a decimal point and a tenths-place digit if presenting 
+	//include a decimal point and a tenths-place digit if presenting
 	//less than ten of KB or greater units
 	return(n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l]);
 }
@@ -750,6 +771,8 @@ function setupChatEventHandlers(){
 	});
 }
 
+exports.isReady = isReady;
+exports.waitTillReady = waitTillReady;
 exports.readSingleWallet = readSingleWallet;
 exports.readSingleAddress = readSingleAddress;
 exports.readFirstAddress = readFirstAddress;

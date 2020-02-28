@@ -188,6 +188,8 @@ function isControlAddress(device_address){
 }
 
 function readSingleAddress(handleAddress){
+	if (!handleAddress)
+		return new Promise(resolve => readSingleAddress(resolve));
 	db.query("SELECT address FROM my_addresses WHERE wallet=?", [wallet_id], function(rows){
 		if (rows.length === 0)
 			throw Error("no addresses");
@@ -198,6 +200,8 @@ function readSingleAddress(handleAddress){
 }
 
 function readFirstAddress(handleAddress){
+	if (!handleAddress)
+		return new Promise(resolve => readFirstAddress(resolve));
 	db.query("SELECT address FROM my_addresses WHERE wallet=? AND address_index=0 AND is_change=0", [wallet_id], function(rows){
 		if (rows.length === 0)
 			throw Error("no addresses");
@@ -224,6 +228,8 @@ function prepareBalanceText(handleBalanceText){
 }
 
 function readSingleWallet(handleWallet){
+	if (!handleWallet)
+		return new Promise(resolve => readSingleWallet(resolve));
 	db.query("SELECT wallet FROM wallets", function(rows){
 		if (rows.length === 0)
 			throw Error("no wallets");
@@ -242,6 +248,8 @@ function determineIfWalletExists(handleResult){
 }
 
 function signWithLocalPrivateKey(wallet_id, account, is_change, address_index, text_to_sign, handleSig){
+	if (!handleSig)
+		return new Promise(resolve => signWithLocalPrivateKey(wallet_id, account, is_change, address_index, text_to_sign, resolve));
 	var path = "m/44'/0'/" + account + "'/"+is_change+"/"+address_index;
 	var privateKey = xPrivKey.derive(path).privateKey;
 	var privKeyBuf = privateKey.bn.toBuffer({size:32}); // https://github.com/bitpay/bitcore-lib/issues/47
@@ -250,9 +258,13 @@ function signWithLocalPrivateKey(wallet_id, account, is_change, address_index, t
 
 var signer = {
 	readSigningPaths: function(conn, address, handleLengthsBySigningPaths){
+		if (!handleLengthsBySigningPaths)
+			return new Promise(resolve => signer.readSigningPaths(conn, address, resolve));
 		handleLengthsBySigningPaths({r: constants.SIG_LENGTH});
 	},
 	readDefinition: function(conn, address, handleDefinition){
+		if (!handleDefinition)
+			return new Promise(resolve => signer.readDefinition(conn, address, (err, arrDefinition) => resolve(arrDefinition)));
 		conn.query("SELECT definition FROM my_addresses WHERE address=?", [address], function(rows){
 			if (rows.length !== 1)
 				throw Error("definition not found");
@@ -260,6 +272,8 @@ var signer = {
 		});
 	},
 	sign: function(objUnsignedUnit, assocPrivatePayloads, address, signing_path, handleSignature){
+		if (!handleSignature)
+			return new Promise(resolve => signer.sign(objUnsignedUnit, assocPrivatePayloads, address, signing_path, (err, sig) => resolve(sig)));
 		var buf_to_sign = objectHash.getUnitHashToSign(objUnsignedUnit);
 		db.query(
 			"SELECT wallet, account, is_change, address_index \n\
@@ -540,6 +554,8 @@ function issueChangeAddressAndSendMultiPayment(opts, onDone){
 }
 
 function issueOrSelectNextMainAddress(handleAddress){
+	if (!handleAddress)
+		return new Promise(resolve => issueOrSelectNextMainAddress(resolve));
 	var walletDefinedByKeys = require('ocore/wallet_defined_by_keys.js');
 	walletDefinedByKeys.issueOrSelectNextAddress(wallet_id, 0, function(objAddr){
 		handleAddress(objAddr.address);
@@ -547,6 +563,8 @@ function issueOrSelectNextMainAddress(handleAddress){
 }
 
 function issueNextMainAddress(handleAddress){
+	if (!handleAddress)
+		return new Promise(resolve => issueNextMainAddress(resolve));
 	var walletDefinedByKeys = require('ocore/wallet_defined_by_keys.js');
 	walletDefinedByKeys.issueNextAddress(wallet_id, 0, function(objAddr){
 		handleAddress(objAddr.address);
@@ -554,6 +572,8 @@ function issueNextMainAddress(handleAddress){
 }
 
 function issueOrSelectAddressByIndex(is_change, address_index, handleAddress){
+	if (!handleAddress)
+		return new Promise(resolve => issueOrSelectAddressByIndex(is_change, address_index, resolve));
 	var walletDefinedByKeys = require('ocore/wallet_defined_by_keys.js');
 	walletDefinedByKeys.readAddressByIndex(wallet_id, is_change, address_index, function(objAddr){
 		if (objAddr)
@@ -565,10 +585,14 @@ function issueOrSelectAddressByIndex(is_change, address_index, handleAddress){
 }
 
 function issueOrSelectStaticChangeAddress(handleAddress){
+	if (!handleAddress)
+		return new Promise(resolve => issueOrSelectStaticChangeAddress(resolve));
 	issueOrSelectAddressByIndex(1, 0, handleAddress);
 }
 
 function issueChangeAddress(handleAddress){
+	if (!handleAddress)
+		return new Promise(resolve => issueChangeAddress(resolve));
 	if (conf.bSingleAddress)
 		readSingleAddress(handleAddress);
 	else if (conf.bStaticChangeAddress)

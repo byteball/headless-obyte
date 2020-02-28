@@ -605,11 +605,23 @@ function issueChangeAddress(handleAddress){
 	}
 }
 
-
+/*
 function signMessage(signing_address, message, cb) {
 	var device = require('ocore/device.js');
 	var Wallet = require('ocore/wallet.js');
 	Wallet.signMessage(signing_address, message, [device.getMyDeviceAddress()], signWithLocalPrivateKey, cb);
+}
+*/
+
+function signMessage(signing_address, message, cb) {
+	if (!cb)
+		return new Promise((resolve, reject) => signMessage(signing_address, message, (err, objUnit) => {
+			if (err)
+				return reject(new Error(err));
+			resolve(objUnit);
+		}));
+	var signed_message = require('ocore/signed_message.js');
+	signed_message.signMessage(message, signing_address, signer, false, cb);
 }
 
 

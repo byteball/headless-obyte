@@ -11,10 +11,22 @@ if (!process.env.testnet) {
 	witnesses.push({'old': 'BVVJ2K7ENPZZ3VYZFWQWK7ISPCATFIW3', 'new': 'DXYWHSZ72ZDNDZ7WYZXKWBBH425C6WZN'}); // Bind Creative
 }
 
-witnesses.forEach(function(replacement) {
-	if (replacement.old && replacement.new) {
-		db.query("UPDATE my_witnesses SET address = ? WHERE address = ?;", [replacement.new, replacement.old], (rows) => {
-			console.log(rows);
-		});
+async function asyncForEach(array, callback) {
+	for (let index = 0; index < array.length; index++) {
+		await callback(array[index], index, array);
 	}
-});
+}
+
+async function replace_witnesses() {
+	await asyncForEach(witnesses, async function(replacement) {
+		if (replacement.old && replacement.new) {
+			let result = await db.query("UPDATE my_witnesses SET address = ? WHERE address = ?;", [replacement.new, replacement.old]);
+			console.log(result);
+		}
+	});
+	db.close(function() {
+		console.log('===== done');
+		process.exit();
+	});
+}
+replace_witnesses();

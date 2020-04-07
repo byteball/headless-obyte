@@ -340,7 +340,7 @@ setTimeout(function(){
 					});
 
 				if (conf.permanent_pairing_secret)
-					console.log("====== my pairing code: "+my_device_pubkey+"@"+conf.hub+"#"+conf.permanent_pairing_secret);
+					console.log("====== my pairing code: "+my_device_pubkey+"@"+conf.hub+"#"+ (conf.permanent_pairing_secret === '*' ? '0000' : conf.permanent_pairing_secret));
 				if (conf.bLight){
 					var light_wallet = require('ocore/light_wallet.js');
 					light_wallet.setLightVendorHost(conf.hub);

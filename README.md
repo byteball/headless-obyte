@@ -97,7 +97,11 @@ docker build -t headless-obyte:latest .
 
 Run docker container code:
 ```sh
-docker run --rm -ti headless-obyte:latest
+docker run -it \
+  --name headless_obyte \
+  -v "$(pwd)"/docker/configs:/home/node/.config \
+  headless-obyte:latest
 ```
 
-Docker container must run in interactive mode to input your device name and password.
+The start.js script asks for the passphrase, so the user should input the passphrase
+and let the script running in the background. (hit Ctrl+P+Q)

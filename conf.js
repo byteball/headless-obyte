@@ -13,7 +13,7 @@ exports.storage = 'sqlite';
 
 exports.hub = process.env.testnet ? 'obyte.org/bb-test' : 'obyte.org/bb';
 exports.deviceName = 'Headless';
-exports.permanent_pairing_secret = 'randomstring';
+exports.permanent_pairing_secret = ''; // use '*' to allow any or generate random string
 exports.control_addresses = ['DEVICE ALLOWED TO CHAT'];
 exports.payout_address = 'WHERE THE MONEY CAN BE SENT TO';
 exports.KEYS_FILENAME = 'keys.json';

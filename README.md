@@ -92,7 +92,7 @@ You can build and run your own docker image.
 
 Build docker image code:
 ```sh
-docker build -t headless-obyte:latest .
+docker build -t headless-obyte:latest -f docker/Dockerfile .
 ```
 
 Run docker container code:
@@ -105,3 +105,20 @@ docker run -it \
 
 The start.js script asks for the passphrase, so the user should input the passphrase
 and let the script running in the background. (hit Ctrl+P+Q)
+
+### You can also use scripts
+
+Before running scripts, you must give permission to execute them:
+```sh
+chmod +x docker/build.sh docker/run.sh
+```
+
+Build docker image code:
+```sh
+docker/build.sh [tagname]
+```
+
+Run docker container code:
+```sh
+docker/run.sh [tagname] [volume_path]
+```

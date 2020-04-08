@@ -12,6 +12,7 @@ WORKDIR /home/node/obyte
 
 ## Dependencies
 COPY package*.json ./
+RUN ls -la
 RUN npm install --production
 
 ## Copy files/build

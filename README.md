@@ -140,5 +140,5 @@ docker/run.sh [tagname] [volume_path]
 
 To stop and remove the docker container run:
 ```sh
-dockre/stop.sh [tagname]
+docker/stop.sh [tagname]
 ```

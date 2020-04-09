@@ -125,7 +125,7 @@ docker rmi headless-obyte:latest
 
 Before running scripts, you must give permission to execute them:
 ```sh
-chmod +x docker/build.sh docker/run.sh
+chmod +x docker/*.sh
 ```
 
 To build the docker image run:
@@ -136,4 +136,9 @@ docker/build.sh [tagname]
 To run the docker container execute:
 ```sh
 docker/run.sh [tagname] [volume_path]
+```
+
+To stop and remove the docker container run:
+```sh
+dockre/stop.sh [tagname]
 ```

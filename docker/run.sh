@@ -4,7 +4,7 @@ DEFAULT_TAGNAME="latest"
 DEFAULT_VOLUME_PATH="$(pwd)/docker/configs"
 TAGNAME=${1:-$DEFAULT_TAGNAME}
 VOLUME_PATH=${2:-$DEFAULT_VOLUME_PATH}
-CONTAINER_NAME="headless_obyte_$TAGNAME"
+CONTAINER_NAME="headless-obyte-$TAGNAME"
 
 # remove container if it is still running
 docker rm -f $CONTAINER_NAME

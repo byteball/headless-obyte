@@ -98,7 +98,7 @@ docker build -t headless-obyte:latest -f docker/Dockerfile .
 To run the docker container execute:
 ```sh
 docker run -it \
-  --name headless_obyte \
+  --name headless-obyte \
   -v "$(pwd)"/docker/configs:/home/node/.config \
   headless-obyte:latest
 ```
@@ -108,12 +108,12 @@ and let the script running in the background. (hit Ctrl+P+Q)
 
 To stop the docker container run:
 ```sh
-docker stop headless_obyte
+docker stop headless-obyte
 ```
 
 To remove the stoped docker container run:
 ```sh
-docker rm headless_obyte
+docker rm headless-obyte
 ```
 
 To remove not used docker image run:

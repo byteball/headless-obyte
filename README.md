@@ -90,12 +90,12 @@ By default, no RPC service is enabled.  If you want to manage your headless wall
 
 You can build and run your own docker image.
 
-Build docker image code:
+To build the docker image run:
 ```sh
 docker build -t headless-obyte:latest -f docker/Dockerfile .
 ```
 
-Run docker container code:
+To run the docker container execute:
 ```sh
 docker run -it \
   --name headless_obyte \
@@ -106,6 +106,21 @@ docker run -it \
 The start.js script asks for the passphrase, so the user should input the passphrase
 and let the script running in the background. (hit Ctrl+P+Q)
 
+To stop the docker container run:
+```sh
+docker stop headless_obyte
+```
+
+To remove the stoped docker container run:
+```sh
+docker rm headless_obyte
+```
+
+To remove not used docker image run:
+```sh
+docker rmi headless-obyte:latest
+```
+
 ### You can also use scripts
 
 Before running scripts, you must give permission to execute them:
@@ -113,12 +128,12 @@ Before running scripts, you must give permission to execute them:
 chmod +x docker/build.sh docker/run.sh
 ```
 
-Build docker image code:
+To build the docker image run:
 ```sh
 docker/build.sh [tagname]
 ```
 
-Run docker container code:
+To run the docker container execute:
 ```sh
 docker/run.sh [tagname] [volume_path]
 ```

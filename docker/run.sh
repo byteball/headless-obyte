@@ -7,7 +7,7 @@ VOLUME_PATH=${2:-$DEFAULT_VOLUME_PATH}
 CONTAINER_NAME="headless-obyte-$TAGNAME"
 
 # remove container if it is still running
-docker rm -f $CONTAINER_NAME
+docker/stop.sh $TAGNAME
 # run container
 docker run -it \
   --name $CONTAINER_NAME \

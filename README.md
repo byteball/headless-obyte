@@ -85,3 +85,60 @@ Payments are the central but not the only type of data that Byteball stores.  In
 ## RPC service
 
 By default, no RPC service is enabled.  If you want to manage your headless wallet via JSON-RPC API, e.g. you run an exchange, run [tools/rpc_service.js](tools/rpc_service.js) instead.  See the [documentation about running RPC service](https://developer.obyte.org/json-rpc/running-rpc-service).
+
+## Docker image
+
+You can build and run your own docker image.
+
+To build the docker image run:
+```sh
+docker build -t headless-obyte:latest -f docker/Dockerfile .
+```
+
+To run the docker container execute:
+```sh
+docker run -it \
+  --name headless-obyte \
+  -v "$(pwd)"/docker/configs:/home/node/.config \
+  headless-obyte:latest
+```
+
+The start.js script asks for the passphrase, so the user should input the passphrase
+and let the script running in the background. (hit Ctrl+P+Q)
+
+To stop the docker container run:
+```sh
+docker stop headless-obyte
+```
+
+To remove the stoped docker container run:
+```sh
+docker rm headless-obyte
+```
+
+To remove not used docker image run:
+```sh
+docker rmi headless-obyte:latest
+```
+
+### You can also use scripts
+
+Before running scripts, you must give permission to execute them:
+```sh
+chmod +x docker/*.sh
+```
+
+To build the docker image run:
+```sh
+docker/build.sh [tagname]
+```
+
+To run the docker container execute:
+```sh
+docker/run.sh [tagname] [volume_path]
+```
+
+To stop and remove the docker container run:
+```sh
+docker/stop.sh [tagname]
+```

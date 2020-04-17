@@ -73,6 +73,11 @@ function readKeys(onDone){
 	if (conf.payout_address)
 		console.log("payouts allowed to address: "+conf.payout_address);
 	console.log('-----------------------');
+	if (process.env.mnemonic && conf.bNoPassphrase) {
+		var deviceTempPrivKey = crypto.randomBytes(32);
+		var devicePrevTempPrivKey = crypto.randomBytes(32);
+		return onDone(process.env.mnemonic, '', deviceTempPrivKey, devicePrevTempPrivKey);
+	}
 	fs.readFile(KEYS_FILENAME, 'utf8', function(err, data){
 		if (err){ // first start
 			console.log('failed to read keys, will gen');

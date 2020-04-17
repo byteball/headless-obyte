@@ -16,11 +16,19 @@ Run `cp .env.testnet .env` to connect to TESTNET hub. Backup and delete the data
 
 ## Run
 ```sh
-node start.js
+node start.js 2>errlog
 ```
 The first time you run it, it will generate a new extended private key (BIP44) and ask you for a passphrase to encrypt it.  The BIP39 mnemonic will be saved to the file keys.json in the app data directory (see [ocore](../../../ocore) for its location), the passphrase is, of course, never saved.  Every time you start the wallet, you'll have to type the passphrase.  One implication of this is the wallet cannot be started automatically when your server restarts, you'll have to ssh the server and type the passphrase.
 
 After you enter the passphrase, the wallet redirects all output to a log file in your app data directory but it still holds the terminal window.  To release it, type Ctrl-Z, then bg to resume the wallet in the background.  After that, you can safely terminate the ssh session.
+
+### Running non-interactively
+
+If you are unable to enter a passphrase every time the wallet starts and/or are willing to accept the security risks, set `bNoPassphrase` to `true` and daemonize the app when starting:
+```sh
+node start.js 1>log 2>errlog &
+```
+If you run the wallet in a non-permanent environment such as Heroku (where hard disks are ephemeral and deleted on each restart), supply your mnemonic as an environment variable `mnemonic` to ensure that the keys are not regenerated every time. Your private keys are derived from the mnemonic. Also set `bLight` and `bSingleAddress` to `true`. See below about conf options.
 
 ## Backup
 
@@ -39,7 +47,7 @@ If you already have `keys.json` file, copy it to the data folder, otherwise the 
 
 If you want to change any defaults, refer to the documentation of [ocore](../../../ocore), the core Obyte library `require()`'d from here.  Below are some headless wallet specific settings you might want to change:
 
-* `bLight`: some bots don't need to sync full node. If your bot is designed to work as light node or you just wish to get it working first, change `bLight` variable to `true` in configuration file. Changing this value will make it use different SQLite database next time you run it.
+* `bLight`: some bots don't need to sync full node. If your bot is designed to work as light node or you just wish to get it working first, change `bLight` variable to `true` in configuration file. Changing this value will make it use a different SQLite database next time you run it.
 * `bSingleAddress`: Should the wallet use single address or could generate new addresses?
 * `bStaticChangeAddress`: Should the wallet issue new change addresses or always use the same static one?
 * `control_addresses`: array of device addresses of your other (likely GUI) wallets that can chat with the wallet and give commands.  To learn the device address of your GUI wallet, click menu button, then Global preferences, and look for 'Device address'.  If your `control_addresses` is empty array or contains a single address that is invalid (this is the default), then nobody can remotely control your wallet.
@@ -47,6 +55,7 @@ If you want to change any defaults, refer to the documentation of [ocore](../../
 * `hub`: hub address without wss://, the default is `obyte.org/bb`.
 * `deviceName`: the name of your device as seen in the chat interface.
 * `permanent_pairing_secret`: the pairing secret used to authenticate pairing requests when you pair your GUI wallet for remote control.  The pairing secret is the part of the pairing code after #.
+* `bNoPassphrase`: don't ask for passphrase when starting the wallet, assume it is an empty string. This option weakens the security of your funds but allows to start the wallet non-interactively.
 
 
 ## Remote control

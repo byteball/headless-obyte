@@ -1,6 +1,6 @@
-# Headless wallet for Byteball network
+# Headless wallet for Obyte network
 
-This is a headless alternative of the [GUI wallet](../../../byteball) for Byteball network.  It is designed for an always-online deployment on a server.
+This is a headless alternative of the [GUI wallet](../../../obyte-gui-wallet) for Obyte network.  It is designed for an always-online deployment on a server.
 
 ## Install
 
@@ -37,14 +37,14 @@ If you already have `keys.json` file, copy it to the data folder, otherwise the 
 
 ## Customize
 
-If you want to change any defaults, refer to the documentation of [ocore](../../../ocore), the core Byteball library `require()`'d from here.  Below are some headless wallet specific settings you might want to change:
+If you want to change any defaults, refer to the documentation of [ocore](../../../ocore), the core Obyte library `require()`'d from here.  Below are some headless wallet specific settings you might want to change:
 
 * `bLight`: some bots don't need to sync full node. If your bot is designed to work as light node or you just wish to get it working first, change `bLight` variable to `true` in configuration file. Changing this value will make it use different SQLite database next time you run it.
 * `bSingleAddress`: Should the wallet use single address or could generate new addresses?
 * `bStaticChangeAddress`: Should the wallet issue new change addresses or always use the same static one?
 * `control_addresses`: array of device addresses of your other (likely GUI) wallets that can chat with the wallet and give commands.  To learn the device address of your GUI wallet, click menu button, then Global preferences, and look for 'Device address'.  If your `control_addresses` is empty array or contains a single address that is invalid (this is the default), then nobody can remotely control your wallet.
-* `payout_address`: if you give `pay` command over chat interface, the money will be sent to this Byteball address.
-* `hub`: hub address without wss://, the default is `byteball.org/bb`.
+* `payout_address`: if you give `pay` command over chat interface, the money will be sent to this Obyte address.
+* `hub`: hub address without wss://, the default is `obyte.org/bb`.
 * `deviceName`: the name of your device as seen in the chat interface.
 * `permanent_pairing_secret`: the pairing secret used to authenticate pairing requests when you pair your GUI wallet for remote control.  The pairing secret is the part of the pairing code after #.
 
@@ -80,7 +80,7 @@ Don't keep more money than necessary on the server wallet, withdraw the excess u
 
 ## Custom commands
 
-Payments are the central but not the only type of data that Byteball stores.  In [tools/](tools/) subdirectory, you will find many small scripts that demonstrate how to create other message types that are not available through the GUI wallet.  In particular, you can declare and issue your own assets, post data as an oracle, create polls and cast votes.  Just edit any of these scripts and run it.
+Payments are the central but not the only type of data that Obyte stores.  In [tools/](tools/) subdirectory, you will find many small scripts that demonstrate how to create other message types that are not available through the GUI wallet.  In particular, you can declare and issue your own assets, post data as an oracle, create polls and cast votes.  Just edit any of these scripts and run it.
 
 ## RPC service
 

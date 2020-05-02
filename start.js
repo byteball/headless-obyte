@@ -412,8 +412,12 @@ function sendMultiPayment(opts, onDone){
 	var Wallet = require('ocore/wallet.js');
 	if (!opts.paying_addresses)
 		opts.wallet = wallet_id;
-	if (!opts.change_address)
-		throw Error("no change address");
+	if (!opts.change_address) {
+		return readDefaultChangeAddress(change_address => {
+			opts.change_address = change_address;
+			sendMultiPayment(opts, onDone);
+		});
+	}
 	opts.arrSigningDeviceAddresses = [device.getMyDeviceAddress()];
 	opts.signWithLocalPrivateKey = signWithLocalPrivateKey;
 	Wallet.sendMultiPayment(opts, (err, unit, assocMnemonics) => {
@@ -529,6 +533,29 @@ function sendAssetFromAddress(asset, amount, from_address, to_address, recipient
 	});
 }
 
+function sendData(opts, onDone){
+	if (!opts.payload)
+		throw Error("no payload");
+	if(!onDone) {
+		return new Promise((resolve, reject) => {
+			sendData(opts, (err, unit) => {
+				if (err) return reject(new Error(err));
+				return resolve(unit);
+			});
+		});
+	}
+	let payment_opts = Object.assign({}, opts);
+	delete payment_opts.payload;
+	delete payment_opts.app;
+	let dataMessage = {
+		app: opts.app || 'data',
+		payload_location: 'inline',
+		payload: opts.payload,
+	};
+	payment_opts.messages = [dataMessage];
+	sendMultiPayment(payment_opts, onDone);
+}
+
 function issueChangeAddressAndSendPayment(asset, amount, to_address, device_address, onDone){
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
@@ -608,6 +635,17 @@ function issueChangeAddress(handleAddress){
 			handleAddress(objAddr.address);
 		});
 	}
+}
+
+function readDefaultChangeAddress(handleAddress) {
+	if (!handleAddress)
+		return new Promise(resolve => readDefaultChangeAddress(resolve));
+	if (conf.bSingleAddress)
+		readSingleAddress(handleAddress);
+	else if (conf.bStaticChangeAddress)
+		issueOrSelectStaticChangeAddress(handleAddress);
+	else
+		readFirstAddress(handleAddress);
 }
 
 /*
@@ -835,6 +873,7 @@ exports.sendAllBytes = sendAllBytes;
 exports.sendPaymentUsingOutputs = sendPaymentUsingOutputs;
 exports.sendMultiPayment = sendMultiPayment;
 exports.issueChangeAddressAndSendMultiPayment = issueChangeAddressAndSendMultiPayment;
+exports.sendData = sendData;
 
 if (require.main === module)
 	setupChatEventHandlers();

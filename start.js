@@ -45,7 +45,7 @@ function replaceConsoleLog(){
 	console.log('From this point, output will be redirected to '+log_filename);
 	console.log(conf.bNoPassphrase ? "Press Enter to release the terminal if you started the daemon with &. Otherwise, type Ctrl-Z, then 'bg'." : "To release the terminal, type Ctrl-Z, then 'bg'");
 	console.log = function(){
-		writeStream.write(Date().toString()+': ');
+		writeStream.write(new Date().toISOString()+': ');
 		writeStream.write(util.format.apply(null, arguments) + '\n');
 	};
 	console.warn = console.log;

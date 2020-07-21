@@ -2,7 +2,7 @@
   "name": "headless-obyte",
   "description": "Obyte headless wallet",
   "author": "Obyte",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "main": "start.js",
   "keywords": [
     "wallet",
@@ -29,6 +29,6 @@
     "bitcore-lib": "^0.13.14",
     "bitcore-mnemonic": "~1.0.0",
     "json-rpc2": "^1.0.2",
-	"yargs": "^13.2.2"
+    "yargs": "^13.2.2"
   }
 }

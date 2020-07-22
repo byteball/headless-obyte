@@ -3,7 +3,7 @@
 const headlessWallet = require('../start.js');
 const eventBus = require('ocore/event_bus.js');
 
-// this is an example for following Autonomous Agent, click definition to see it's code, testnet can be turned on with .env file
+// this is an example for posting data to Autonomous Agent below, click definition to see it's code, testnet can be turned on with .env file
 // https://explorer.obyte.org/#24WUKC3BDXCDUNKEZE52IT77S66OFW3L
 // https://testnetexplorer.obyte.org/#24WUKC3BDXCDUNKEZE52IT77S66OFW3L
 

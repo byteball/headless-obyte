@@ -1,10 +1,10 @@
 /*jslint node: true */
 "use strict";
-var headlessWallet = require('../start.js');
-var eventBus = require('ocore/event_bus.js');
+const headlessWallet = require('../start.js');
+const eventBus = require('ocore/event_bus.js');
 
 function sendDataToAA(){
-	headlessWallet.readFirstAddress(function(first_address) {
+	headlessWallet.readFirstAddress((first_address) => {
 		let payload = {};
 		//payload.d = {xx: 66.3,sub: 22.1};
 		//payload.sub = 22.1;
@@ -15,7 +15,7 @@ function sendDataToAA(){
 				{address: first_address},
 			]
 		};
-		var opts = {
+		let opts = {
 			paying_addresses: [first_address],
 			change_address: first_address,
 			messages: [

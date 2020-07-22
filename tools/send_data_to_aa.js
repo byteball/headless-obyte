@@ -22,7 +22,7 @@ function sendDataToAA(){
 
 		let opts = {
 			paying_addresses: [first_address], // first address pays the fees
-			change_address: first_address, // and first address gets back the chance
+			change_address: first_address, // and first address gets back the change
 			messages: [
 				{app: "data", payload},
 			],

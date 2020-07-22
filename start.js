@@ -790,9 +790,7 @@ function getFileSizes(rootDir, cb) {
 			if (file[0] !== '.') {
 				var filePath = rootDir + '/' + file;
 				fs.stat(filePath, function(err, stat) {
-					if (stat.isFile()) {
-						fileSizes[this.file] = stat['size'];
-					}
+					fileSizes[this.file + (stat.isFile() ? '' : '/')] = stat['size'];
 					if (files.length === (this.index + 1)) {
 						return cb(fileSizes);
 					}

@@ -4,6 +4,7 @@ const headlessWallet = require('../start.js');
 const eventBus = require('ocore/event_bus.js');
 
 function sendDataToAA(){
+	// lets get first address of the wallet, but this can be hard-coded too
 	headlessWallet.readFirstAddress((first_address) => {
 		let payload = {};
 		// different ways how this specific AA accepts data, enable all or disable all to see different results

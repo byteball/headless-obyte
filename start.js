@@ -28,6 +28,9 @@ var wallet_id;
 var xPrivKey;
 
 function replaceConsoleLog(){
+	if (conf.LogToStdOUT) {
+		return;
+	}
 	var log_filename = conf.LOG_FILENAME || (appDataDir + '/log.txt');
 	var writeStream = fs.createWriteStream(log_filename);
 	console.log('---------------');

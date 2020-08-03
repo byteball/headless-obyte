@@ -39,6 +39,9 @@ function waitTillReady() {
 }
 
 function replaceConsoleLog(){
+	if (conf.logToSTDOUT) {
+ 		return;
+ 	}
 	var log_filename = conf.LOG_FILENAME || (appDataDir + '/log.txt');
 	var writeStream = fs.createWriteStream(log_filename, { flags: conf.appendLogfile ? 'a' : 'w' });
 	console.log('---------------');

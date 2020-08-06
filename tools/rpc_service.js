@@ -48,10 +48,11 @@ function initRPC() {
 
 	/**
 	 * Returns information about the current state.
-	 * @return { last_mci: {Integer}, last_stable_mci: {Integer}, count_unhandled: {Integer} }
+	 * @return { connections: {Integer}, last_mci: {Integer}, last_stable_mci: {Integer}, count_unhandled: {Integer} }
 	 */
 	server.expose('getinfo', function(args, opt, cb) {
-		var response = {};
+		var connections = network.getConnectionStatus();
+		var response = {connections: connections.incoming+connections.outgoing};
 		storage.readLastMainChainIndex(function(last_mci){
 			response.last_mci = last_mci;
 			storage.readLastStableMcIndex(db, function(last_stable_mci){
@@ -61,6 +62,36 @@ function initRPC() {
 					cb(null, response);
 				});
 			});
+		});
+	});
+
+	/**
+	 * Returns the number of connections to other nodes.
+	 * @return {Integer} result
+	 */
+	server.expose('getconnectioncount', function(args, opt, cb) {
+		var connections = network.getConnectionStatus();
+		cb(null, connections.incoming+connections.outgoing);
+	});
+
+	/**
+	 * Returns information about the node's connection to the network.
+	 * @return {Object} result
+	 */
+	server.expose('getnetworkinfo', function(args, opt, cb) {
+		var connections = network.getConnectionStatus();
+		cb(null, {
+			"version": constants.minCoreVersion,
+			"subversion": conf.program +' '+ conf.program_version,
+			"protocolversion": constants.version,
+			"alt": constants.alt,
+			"connections": connections.incoming+connections.outgoing,
+			"bLight": conf.bLight,
+			"socksConfigured": !(!conf.socksHost || !conf.socksPort),
+			"COUNT_WITNESSES": constants.COUNT_WITNESSES,
+			"MAJORITY_OF_WITNESSES": constants.MAJORITY_OF_WITNESSES,
+			"GENESIS_UNIT": constants.GENESIS_UNIT,
+			"BLACKBYTES_ASSET": constants.BLACKBYTES_ASSET,
 		});
 	});
 

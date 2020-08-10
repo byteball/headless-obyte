@@ -31,7 +31,6 @@ if (conf.bSingleAddress)
 	throw Error('can`t run in single address mode');
 
 function initRPC() {
-	var composer = require('ocore/composer.js');
 	var network = require('ocore/network.js');
 
 	var rpc = require('json-rpc2');
@@ -48,7 +47,7 @@ function initRPC() {
 
 	/**
 	 * Returns information about the current state.
-	 * @return { connections: {Integer}, last_mci: {Integer}, last_stable_mci: {Integer}, count_unhandled: {Integer} }
+	 * @return {connections:{number}, last_mci:{number}, last_stable_mci:{number}, count_unhandled:{number}}
 	 */
 	server.expose('getinfo', function(args, opt, cb) {
 		var connections = network.getConnectionStatus();
@@ -67,7 +66,7 @@ function initRPC() {
 
 	/**
 	 * Returns the number of connections to other nodes.
-	 * @return {Integer} result
+	 * @return {number} result
 	 */
 	server.expose('getconnectioncount', function(args, opt, cb) {
 		var connections = network.getConnectionStatus();
@@ -76,7 +75,7 @@ function initRPC() {
 
 	/**
 	 * Returns information about the node's connection to the network.
-	 * @return {Object} result
+	 * @return {object} result
 	 */
 	server.expose('getnetworkinfo', function(args, opt, cb) {
 		var connections = network.getConnectionStatus();
@@ -97,22 +96,25 @@ function initRPC() {
 
 	/**
 	 * Validates address.
+	 * @param {string} address
+	 * @return {boolean} is_valid
+	 *
+	 * Accepts params as Object too
+	 * @param {address:{string}} args as Object
 	 * @return {boolean} is_valid
 	 */
-	server.expose('validateaddress', function(args, opt, cb) {
-		var address = args[0];
-		cb(null, validationUtils.isValidAddress(address));
-	});
-	
+	server.expose('validateaddress', validateaddres);
 	// alias for validateaddress
-	server.expose('verifyaddress', function(args, opt, cb) {
-		var address = args[0];
+	server.expose('verifyaddress', validateaddres);
+
+	function validateaddres(args, opt, cb) {
+		var address = Array.isArray(args) ? args[0] : args.address;
 		cb(null, validationUtils.isValidAddress(address));
-	});
-	
+	}
+
 	/**
 	 * Creates and returns new wallet address.
-	 * @return {String} address
+	 * @return {string} address
 	 */
 	server.expose('getnewaddress', function(args, opt, cb) {
 		mutex.lock(['rpc_getnewaddress'], function(unlock){
@@ -127,43 +129,47 @@ function initRPC() {
 	 * Returns address balance(stable and pending).
 	 * If address is invalid, then returns "invalid address".
 	 * If your wallet doesn`t own the address, then returns "address not found".
-	 * @param {String} address
-	 * @return {"base":{"stable":{Integer},"pending":{Integer}}} balance
-	 * 
 	 * If no address supplied, returns wallet balance(stable and pending).
-	 * @return {"base":{"stable":{Integer},"pending":{Integer}}} balance
+	 * @param {string} [address] - optional
+	 * @param {string} [asset] - optional
+	 * @return {"base":{"stable":{number},"pending":{number}}} balance
+	 *
+	 * Accepts params as Object too
+	 * @param {address?: {string}, asset?: {string}} [args] as Object - all are optional
+	 * @return {"base":{"stable":{number},"pending":{number}}} balance
 	 */
 	server.expose('getbalance', function(args, opt, cb) {
 		let start_time = Date.now();
-		var address = args[0];
-		var asset = args[1];
+		var {address, asset} = args;
+		if (Array.isArray(args))
+			[address, asset] = args;
 		if (address) {
-			if (validationUtils.isValidAddress(address))
-				db.query("SELECT COUNT(*) AS count FROM my_addresses WHERE address = ?", [address], function(rows) {
-					if (rows[0].count)
-						db.query(
-							"SELECT asset, is_stable, SUM(amount) AS balance \n\
-							FROM outputs JOIN units USING(unit) \n\
-							WHERE is_spent=0 AND address=? AND sequence='good' AND asset "+(asset ? "="+db.escape(asset) : "IS NULL")+" \n\
-							GROUP BY is_stable", [address],
-							function(rows) {
-								var balance = {};
-								balance[asset || 'base'] = {
-									stable: 0,
-									pending: 0
-								};
-								for (var i = 0; i < rows.length; i++) {
-									var row = rows[i];
-									balance[asset || 'base'][row.is_stable ? 'stable' : 'pending'] = row.balance;
-								}
-								cb(null, balance);
-							}
-						);
-					else
-						cb("address not found");
-				});
-			else
-				cb("invalid address");
+			if (!validationUtils.isValidAddress(address))
+				return cb("invalid address");
+			db.query("SELECT COUNT(*) AS count FROM my_addresses WHERE address = ?", [address], function(rows) {
+				if (!rows[0].count)
+					return cb("address not found");
+				if (asset && asset !== 'base' && !validationUtils.isValidBase64(asset, constants.HASH_LENGTH))
+					return cb("bad asset: "+asset);
+				db.query(
+					"SELECT asset, is_stable, SUM(amount) AS balance \n\
+					FROM outputs JOIN units USING(unit) \n\
+					WHERE is_spent=0 AND address=? AND sequence='good' AND asset "+((asset && asset !== 'base') ? "="+db.escape(asset) : "IS NULL")+" \n\
+					GROUP BY is_stable", [address],
+					function(rows) {
+						var balance = {};
+						balance[asset || 'base'] = {
+							stable: 0,
+							pending: 0
+						};
+						for (var i = 0; i < rows.length; i++) {
+							var row = rows[i];
+							balance[asset || 'base'][row.is_stable ? 'stable' : 'pending'] = row.balance;
+						}
+						cb(null, balance);
+					}
+				);
+			});
 		}
 		else
 			Wallet.readBalance(wallet_id, function(balances) {
@@ -175,7 +181,7 @@ function initRPC() {
 	/**
 	 * Returns wallet balance(stable and pending) without commissions earned from headers and witnessing.
 	 * 
-	 * @return {"base":{"stable":{Integer},"pending":{Integer}}} balance
+	 * @return {"base":{"stable":{number},"pending":{number}}} balance
 	 */
 	server.expose('getmainbalance', function(args, opt, cb) {
 		let start_time = Date.now();
@@ -186,73 +192,208 @@ function initRPC() {
 	});
 
 	/**
+	 * Returns transaction by unit ID.
+	 * @param {string} unit - transaction unit iD
+	 * @param {boolean} [verbose] - optional - includes unit definition if "verbose" is second parameter
+	 * @return {"action":{'invalid','received','sent','moved'},"amount":{number},"my_address":{string},"arrPayerAddresses":[{string}],"confirmations":{0,1},"unit":{string},"fee":{number},"time":{string},"level":{number},"asset":{string}} one transaction
+	 *
+	 * Accepts params as Object too
+	 * @param {unit?: {string}, verbose?: {boolean}} [args] as Object - verbose is optional
+	 * @return {"action":{'invalid','received','sent','moved'},"amount":{number},"my_address":{string},"arrPayerAddresses":[{string}],"confirmations":{0,1},"unit":{string},"fee":{number},"time":{string},"level":{number},"asset":{string}} one transaction
+	 */
+	server.expose('gettransaction', function(args, opt, cb) {
+		var {unit, verbose} = args;
+		if (Array.isArray(args))
+			[unit, verbose] = args;
+		listtransactions({unit}, opt, function(err, results) {
+			if (err)
+				return cb(err);
+			if (!verbose)
+				return cb(null, {unit, details:results});
+			storage.readJoint(db, unit, {
+				ifFound: function(objJoint){
+					cb(null, {unit, details:results, decoded:objJoint});
+				},
+				ifNotFound: function(){
+					cb(null, {unit, details:results, decoded:null});
+				}
+			});
+		});
+	});
+
+	/**
 	 * Returns transaction list.
 	 * If address is invalid, then returns "invalid address".
-	 * @param {String} address or {since_mci: {Integer}, unit: {String}} 
-	 * @return [{"action":{'invalid','received','sent','moved'},"amount":{Integer},"my_address":{String},"arrPayerAddresses":[{String}],"confirmations":{0,1},"unit":{String},"fee":{Integer},"time":{String},"level":{Integer},"asset":{String}}] transactions
-	 * 
 	 * If no address supplied, returns wallet transaction list.
-	 * @return [{"action":{'invalid','received','sent','moved'},"amount":{Integer},"my_address":{String},"arrPayerAddresses":[{String}],"confirmations":{0,1},"unit":{String},"fee":{Integer},"time":{String},"level":{Integer},"asset":{String}}] transactions
+	 * @param {string} [address] - optional
+	 * @param {string} [since_mci] - optional, counts only if no address
+	 * @param {string} [unit] - optional, counts only if no address
+	 * @param {string} [asset] - optional, counts only if no address
+	 * @return [{"action":{'invalid','received','sent','moved'},"amount":{number},"my_address":{string},"arrPayerAddresses":[{string}],"confirmations":{0,1},"unit":{string},"fee":{number},"time":{string},"level":{number},"asset":{string}}] transactions
+	 *
+	 * Accepts params as Object too
+	 * @param {address?: {string}, since_mci?: {number}, unit?: {string}, asset?: {string}} [args] as Object - all are optional
+	 * @return [{"action":{'invalid','received','sent','moved'},"amount":{number},"my_address":{string},"arrPayerAddresses":[{string}],"confirmations":{0,1},"unit":{string},"fee":{number},"time":{string},"level":{number},"asset":{string}}] transactions
 	 */
-	server.expose('listtransactions', function(args, opt, cb) {
+	server.expose('listtransactions', listtransactions);
+
+	function listtransactions(args, opt, cb) {
 		let start_time = Date.now();
-		if (Array.isArray(args) && typeof args[0] === 'string') {
-			var address = args[0];
-			if (validationUtils.isValidAddress(address))
-				Wallet.readTransactionHistory({address: address}, function(result) {
-					cb(null, result);
-				});
-			else
-				cb("invalid address");
+		var {address, since_mci, unit, asset} = args;
+		if (Array.isArray(args))
+			[address, since_mci, unit, asset] = args;
+		if (address) {
+			if (!validationUtils.isValidAddress(address))
+				return cb("invalid address");
+			Wallet.readTransactionHistory({address: address}, function(result) {
+				cb(null, result);
+			});
 		}
 		else{
 			var opts = {wallet: wallet_id};
-			if (args.unit && validationUtils.isValidBase64(args.unit, constants.HASH_LENGTH))
-				opts.unit = args.unit;
-			if (args.since_mci && validationUtils.isNonnegativeInteger(args.since_mci))
-				opts.since_mci = args.since_mci;
+			if (unit) {
+				if (!validationUtils.isValidBase64(unit, constants.HASH_LENGTH))
+					return cb('invalid unit');
+				opts.unit = unit;
+			}
+			if (since_mci) {
+				if (!validationUtils.isNonnegativeInteger(since_mci))
+					return cb('invalid since_mci');
+				opts.since_mci = since_mci;
+			}
 			else
 				opts.limit = 200;
-			if (args.asset){
-				if (!validationUtils.isValidBase64(args.asset, constants.HASH_LENGTH))
-					return cb("bad asset: "+args.asset);
-				opts.asset = args.asset;
+			if (asset){
+				if (asset !== 'base' && !validationUtils.isValidBase64(asset, constants.HASH_LENGTH))
+					return cb("bad asset: "+asset);
+				opts.asset = asset;
 			}
 			Wallet.readTransactionHistory(opts, function(result) {
-				console.log('listtransactions '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms');
+				console.log('listtransactions '+JSON.stringify({address, since_mci, unit, asset})+' took '+(Date.now()-start_time)+'ms');
 				cb(null, result);
 			});
 		}
 
-	});
+	}
 
 	/**
 	 * Send funds to address.
 	 * If address is invalid, then returns "invalid address".
-	 * @param {String} address
-	 * @param {Integer} amount
-	 * @return {String} status
+	 * @param {string} address - wallet address
+	 * @param {number} amount - amount in Bytes
+	 * @param {string} [asset] - optional
+	 * @return {string} unit ID
+	 *
+	 * Accepts params as Object too
+	 * @param {address:{string}, amount:{number}, asset?:{string}} args as Object - asset is optional
+ 	 * @return {string} unit ID
 	 */
 	server.expose('sendtoaddress', function(args, opt, cb) {
 		console.log('sendtoaddress '+JSON.stringify(args));
 		let start_time = Date.now();
-		var amount = args[1];
-		var toAddress = args[0];
-		var asset = args[2];
-		if (asset && !validationUtils.isValidBase64(asset, constants.HASH_LENGTH))
-			return cb("bad asset: "+asset);
-		if (amount && toAddress) {
-			if (validationUtils.isValidAddress(toAddress))
-				headlessWallet.issueChangeAddressAndSendPayment(asset, amount, toAddress, null, function(err, unit) {
-					console.log('sendtoaddress '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms, unit='+unit+', err='+err);
-					cb(err, err ? undefined : unit);
-				});
+		var {address, amount, asset} = args;
+		if (Array.isArray(args)) {
+			if (typeof args[0] === 'string' && typeof args[1] === 'number')
+				[address, amount, asset] = args;
 			else
-				cb("invalid address");
+				return cb('wallet must be string and amount must be whole number');
 		}
-		else
-			cb("wrong parameters");
+		if (asset && asset !== 'base' && !validationUtils.isValidBase64(asset, constants.HASH_LENGTH))
+			return cb("bad asset: "+asset);
+		if (!amount || !address)
+			return cb("wrong parameters");
+		if (!validationUtils.isValidAddress(address))
+			return cb("invalid address");
+		headlessWallet.issueChangeAddressAndSendPayment(asset, amount, address, null, function(err, unit) {
+			console.log('sendtoaddress '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms, unit='+unit+', err='+err);
+			cb(err, err ? undefined : unit);
+		});
 	});
+
+	/**
+	 * Signs a message with address.
+	 * @param {string} address - wallet that signs the message
+	 * @param {string|object} message - message to be signed
+	 * @return {string} base64 encoded signature of {version:{string}, signed_message:{string|object}, authors:{object}}
+	 *
+	 * Accepts params as Object too
+	 * @param {address?:{string}, message:{string|object}} args as Object - address is optional
+ 	 * @return {string} base64 encoded signature
+	 */
+	server.expose('signmessage', function(args, opt, cb) {
+		var {address, message} = args;
+		if (Array.isArray(args)) {
+			if (typeof args[0] === 'string' && args[1])
+				[address, message] = args;
+			else
+				return cb('address and message are mandatory');
+		}
+		if (address && !validationUtils.isValidAddress(address))
+			return cb('address is invalid');
+		if (!message)
+			return cb('message is mandatory');
+
+		headlessWallet.readFirstAddress((first_address) => {
+			address = address || first_address;
+			db.query("SELECT definition FROM my_addresses WHERE address=?", [address], function(rows){
+				if (rows.length !== 1)
+					return cb("definition not found");
+				headlessWallet.signMessage(address, message, function(err, objSignedMessage){
+					if (err)
+						return cb(err);
+					var signedMessageBase64 = Buffer.from(JSON.stringify(objSignedMessage)).toString('base64');
+					cb(null, signedMessageBase64);
+				});
+			});
+		});
+	});
+
+	/**
+	 * Verifies signed message.
+	 * @param {string} address - wallet that signed the message
+	 * @param {string} signature - base64 encoded signature
+	 * @param {string|object} [message] - the message that was signed (optional)
+ 	 * @return {version:{string}, signed_message:{string|object}, authors:{object}} objSignedMessage
+	 *
+	 * Accepts params as Object too
+	 * @param {address?:{string}, signature:{string}, message?:{string|object}} args as Object - address and message are optinal
+ 	 * @return {version:{string}, signed_message:{string|object}, authors:{object}} objSignedMessage
+	 */
+	server.expose('verifymessage', verifymessage);
+	// alias for verifymessage
+	server.expose('validatemessage', verifymessage);
+
+	function verifymessage(args, opt, cb) {
+		var {address, signature, message} = args;
+		if (Array.isArray(args)) {
+			if (typeof args[0] === 'string' && typeof args[1] === 'string')
+				[address, signature, message] = args;
+			else
+				return cb('address and signature are mandatory');
+		}
+		if (!validationUtils.isValidBase64(signature))
+			return cb('signature is not valid base64');
+		var signedMessageJson = Buffer.from(signature, 'base64').toString('utf8');
+		var objSignedMessage = {};
+		try {
+			objSignedMessage = JSON.parse(signedMessageJson);
+		}
+		catch(e) {
+			return cb(e);
+		}
+		var signed_message = require('ocore/signed_message.js');
+		signed_message.validateSignedMessage(db, objSignedMessage, address, function(err) {
+			if (err)
+				return cb(err);
+			if (message) {
+				if (typeof objSignedMessage.signed_message === "string" && objSignedMessage.signed_message !== message)
+					return cb("message strings don't match");
+				if (typeof objSignedMessage.signed_message === "object" && JSON.stringify(objSignedMessage.signed_message) !== JSON.stringify(message))
+					return cb("message objects don't match");
+			}
+			cb(null, objSignedMessage);
+		});
+	}
 
 	headlessWallet.readSingleWallet(function(_wallet_id) {
 		wallet_id = _wallet_id;

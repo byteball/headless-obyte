@@ -140,14 +140,9 @@ function initRPC() {
 	 */
 	server.expose('getbalance', function(args, opt, cb) {
 		let start_time = Date.now();
-		var address;
-		var asset;
+		var {address, asset} = args;
 		if (Array.isArray(args))
 			[address, asset] = args;
-		else {
-			address = args.address;
-			asset = args.asset;
-		}
 		if (address) {
 			if (!validationUtils.isValidAddress(address))
 				return cb("invalid address");
@@ -207,14 +202,9 @@ function initRPC() {
 	 * @return {"action":{'invalid','received','sent','moved'},"amount":{number},"my_address":{string},"arrPayerAddresses":[{string}],"confirmations":{0,1},"unit":{string},"fee":{number},"time":{string},"level":{number},"asset":{string}} one transaction
 	 */
 	server.expose('gettransaction', function(args, opt, cb) {
-		var unit;
-		var verbose;
+		var {unit, verbose} = args;
 		if (Array.isArray(args))
 			[unit, verbose] = args;
-		else {
-			unit = args.unit;
-			verbose = args.verbose;
-		}
 		listtransactions({unit}, opt, function(err, results) {
 			if (err)
 				return cb(err);
@@ -249,18 +239,9 @@ function initRPC() {
 
 	function listtransactions(args, opt, cb) {
 		let start_time = Date.now();
-		var address;
-		var since_mci;
-		var unit;
-		var asset;
+		var {address, since_mci, unit, asset} = args;
 		if (Array.isArray(args))
 			[address, since_mci, unit, asset] = args;
-		else {
-			address = args.address;
-			since_mci = args.since_mci;
-			unit = args.unit;
-			asset = args.asset;
-		}
 		if (address) {
 			if (!validationUtils.isValidAddress(address))
 				return cb("invalid address");
@@ -310,15 +291,12 @@ function initRPC() {
 	server.expose('sendtoaddress', function(args, opt, cb) {
 		console.log('sendtoaddress '+JSON.stringify(args));
 		let start_time = Date.now();
-		var address;
-		var amount;
-		var asset;
-		if (Array.isArray(args) && typeof args[0] === 'string' && typeof args[1] === 'number')
-			[address, amount, asset] = args;
-		else {
-			address = args.address;
-			amount = args.amount;
-			asset = args.asset;
+		var {address, amount, asset} = args;
+		if (Array.isArray(args)) {
+			if (typeof args[0] === 'string' && typeof args[1] === 'number')
+				[address, amount, asset] = args;
+			else
+				return cb('wallet must be string and amount must be whole number');
 		}
 		if (asset && asset !== 'base' && !validationUtils.isValidBase64(asset, constants.HASH_LENGTH))
 			return cb("bad asset: "+asset);
@@ -343,17 +321,12 @@ function initRPC() {
  	 * @return {string} base64 encoded signature
 	 */
 	server.expose('signmessage', function(args, opt, cb) {
-		var address;
-		var message;
+		var {address, message} = args;
 		if (Array.isArray(args)) {
 			if (typeof args[0] === 'string' && args[1])
 				[address, message] = args;
 			else
 				return cb('address and message are mandatory');
-		}
-		else {
-			address = args.address;
-			message = args.message;
 		}
 		if (address && !validationUtils.isValidAddress(address))
 			return cb('address is invalid');
@@ -391,19 +364,12 @@ function initRPC() {
 	server.expose('validatemessage', verifymessage);
 
 	function verifymessage(args, opt, cb) {
-		var address;
-		var signature;
-		var message;
+		var {address, signature, message} = args;
 		if (Array.isArray(args)) {
 			if (typeof args[0] === 'string' && typeof args[1] === 'string')
 				[address, signature, message] = args;
 			else
 				return cb('address and signature are mandatory');
-		}
-		else {
-			address = args.address;
-			signature = args.signature;
-			message = args.message;
 		}
 		if (!validationUtils.isValidBase64(signature))
 			return cb('signature is not valid base64');

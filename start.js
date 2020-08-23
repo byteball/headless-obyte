@@ -28,10 +28,45 @@ var wallet_id;
 var xPrivKey;
 var bReady = false;
 
+/**
+ * @callback resultCallback
+ * @param {string} result
+ */
+/**
+ * @callback paymentResultCallback
+ * @param {string} error
+ * @param {string} unit
+ * @param {string} assocMnemonics
+ */
+
+/**
+ * @typedef {Object} PaymentResult
+ * @property {string} unit
+ * @property {string} assocMnemonics
+ */
+
+/**
+ * Returns wallets status
+ *
+ * @return {boolean} is ready
+ *
+ * @example
+ * if (isReady()) {
+ *
+ * }
+ */
 function isReady() {
 	return bReady;
 }
 
+
+/**
+ * Waits for wallet to be ready
+ * @async
+ *
+ * @example
+ * await waitTillReady();
+ */
 function waitTillReady() {
 	if (bReady)
 		return;
@@ -191,10 +226,26 @@ function createWallet(xPrivKey, onDone){
 	});
 }
 
+/**
+ * Check device address in array of controlled addresses
+ * @param device_address
+ * @return {boolean}
+ * @example
+ * if (isControlAddress('0CUUZZ2UYM4ATP4HULSRH646B5V4G3JRW')) {
+ *
+ * }
+ */
 function isControlAddress(device_address){
 	return (conf.control_addresses && conf.control_addresses.indexOf(device_address) >= 0);
 }
 
+/**
+ * Returns address if the address is one in DB
+ * @param {resultCallback=} handleAddress
+ * @return {Promise<string>}
+ * @example
+ * const address = await readSingleAddress();
+ */
 function readSingleAddress(handleAddress){
 	if (!handleAddress)
 		return new Promise(resolve => readSingleAddress(resolve));
@@ -207,6 +258,13 @@ function readSingleAddress(handleAddress){
 	});
 }
 
+/**
+ * Returns first address
+ * @param {resultCallback=} handleAddress
+ * @return {Promise<string>}
+ * @example
+ * const address = await readFirstAddress();
+ */
 function readFirstAddress(handleAddress){
 	if (!handleAddress)
 		return new Promise(resolve => readFirstAddress(resolve));
@@ -235,6 +293,13 @@ function prepareBalanceText(handleBalanceText){
 	});
 }
 
+/**
+ * Returns wallet if the wallet is one in DB
+ * @param {resultCallback=} handleWallet
+ * @return {Promise<string>}
+ * @example
+ * const wallet = await readSingleWallet();
+ */
 function readSingleWallet(handleWallet){
 	if (!handleWallet)
 		return new Promise(resolve => readSingleWallet(resolve));
@@ -255,6 +320,23 @@ function determineIfWalletExists(handleResult){
 	});
 }
 
+/**
+ * @callback signWithLocalPrivateKeyCB
+ * @param {string} result
+ */
+/**
+ * Signs a message using a private key
+ * @param {string} wallet_id
+ * @param {number} account
+ * @param {number} is_change
+ * @param {number} address_index
+ * @param {string} text_to_sign
+ * @param {signWithLocalPrivateKeyCB=} handleSig
+ * @return {Promise<string>}
+ * @example
+ * const walletId = '+lCx+8UGlbwdXC8ZlnQeuQZ2cKI5fyaWyxzGFXUEnbA=';
+ * const sign = await signWithLocalPrivateKey(walletId, 0, 0, 0, 'hello');
+ */
 function signWithLocalPrivateKey(wallet_id, account, is_change, address_index, text_to_sign, handleSig){
 	if (!handleSig)
 		return new Promise(resolve => signWithLocalPrivateKey(wallet_id, account, is_change, address_index, text_to_sign, resolve));
@@ -402,6 +484,19 @@ function sendPayment(asset, amount, to_address, change_address, device_address, 
 	);
 }
 
+/**
+ * Sends payment with specified parameters
+ * @param {Object} opts
+ * @param {paymentResultCallback=} onDone
+ * @return {Promise<PaymentResult>}
+ * @example
+ * const opts = {};
+ * opts.paying_addresses = 'FCNQIGCW7JIYTARK6M54NMSCPFVIY25E';
+ * opts.change_address = 'FCNQIGCW7JIYTARK6M54NMSCPFVIY25E';
+ * opts.amount = 10000;
+ * opts.toAddress = '2T35YT6L53OYFEUKIOXBQRKUZD4B3CYW';
+ * const {unit, assocMnemonics} = await sendPaymentUsingOutputs(opts);
+ */
 function sendMultiPayment(opts, onDone){
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
@@ -429,6 +524,21 @@ function sendMultiPayment(opts, onDone){
 	});
 }
 
+/**
+ * Sends payment using outputs
+ * @param asset
+ * @param outputs
+ * @param change_address
+ * @param {paymentResultCallback=} onDone
+ * @return {Promise<PaymentResult>}
+ * @example
+ * const address = await issueOrSelectStaticChangeAddress();
+ * const outputs = [
+ *     {amount: 10000, address: 'FCNQIGCW7JIYTARK6M54NMSCPFVIY25E'},
+ *     {amount: 0, address: address}
+ * ];
+ * const {unit, assocMnemonics} = await sendPaymentUsingOutputs(null, outputs, address);
+ */
 function sendPaymentUsingOutputs(asset, outputs, change_address, onDone) {
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
@@ -459,6 +569,17 @@ function sendPaymentUsingOutputs(asset, outputs, change_address, onDone) {
 	});
 }
 
+/**
+ * Sends all bytes from all addresses
+ * @param {string} to_address
+ * @param {string|null} recipient_device_address
+ * @param {paymentResultCallback=} onDone
+ * @return {Promise<PaymentResult>}
+ * @example
+ * const peerAddress = '2T35YT6L53OYFEUKIOXBQRKUZD4B3CYW';
+ * const peerDeviceAddress = '0CUUZZ2UYM4ATP4HULSRH646B5V4G3JRW';
+ * const {unit, assocMnemonics} = await sendAssetFromAddress(peerAddress, peerDeviceAddress);
+ */
 function sendAllBytes(to_address, recipient_device_address, onDone) {
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
@@ -484,6 +605,19 @@ function sendAllBytes(to_address, recipient_device_address, onDone) {
 	});
 }
 
+/**
+ * Sends all bytes from the specified address
+ * @param {string} from_address
+ * @param {string} to_address
+ * @param {string|null} recipient_device_address
+ * @param {paymentResultCallback=} onDone
+ * @return {Promise<PaymentResult>}
+ * @example
+ * const myAddress = 'FCNQIGCW7JIYTARK6M54NMSCPFVIY25E';
+ * const peerAddress = '2T35YT6L53OYFEUKIOXBQRKUZD4B3CYW';
+ * const peerDeviceAddress = '0CUUZZ2UYM4ATP4HULSRH646B5V4G3JRW';
+ * const {unit, assocMnemonics} = await sendAllBytesFromAddress(myAddress, peerAddress, peerDeviceAddress);
+ */
 function sendAllBytesFromAddress(from_address, to_address, recipient_device_address, onDone) {
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
@@ -509,6 +643,21 @@ function sendAllBytesFromAddress(from_address, to_address, recipient_device_addr
 	});
 }
 
+/**
+ * Sends a payment with specified asset and address
+ * @param {string|null} asset
+ * @param {number} amount
+ * @param {string} from_address
+ * @param {string} to_address
+ * @param {string|null} recipient_device_address
+ * @param {paymentResultCallback=} onDone
+ * @return {Promise<PaymentResult>}
+ * @example
+ * const myAddress = 'FCNQIGCW7JIYTARK6M54NMSCPFVIY25E';
+ * const peerAddress = '2T35YT6L53OYFEUKIOXBQRKUZD4B3CYW';
+ * const peerDeviceAddress = '0CUUZZ2UYM4ATP4HULSRH646B5V4G3JRW';
+ * const {unit, assocMnemonics} = await sendAssetFromAddress(null, 10000, myAddress, peerAddress, peerDeviceAddress);
+ */
 function sendAssetFromAddress(asset, amount, from_address, to_address, recipient_device_address, onDone) {
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
@@ -536,6 +685,18 @@ function sendAssetFromAddress(asset, amount, from_address, to_address, recipient
 	});
 }
 
+/**
+ * Publish data to DAG
+ * @param {Object} opts
+ * @param {paymentResultCallback=} onDone
+ * @return {Promise<string>}
+ * @example
+ * const opts = {
+ *   app: 'text',
+ *   payload: 'hello Obyte!'
+ * };
+ * const unit = await sendData(opts);
+ */
 function sendData(opts, onDone){
 	if (!opts.payload)
 		throw Error("no payload");
@@ -559,6 +720,19 @@ function sendData(opts, onDone){
 	sendMultiPayment(payment_opts, onDone);
 }
 
+/**
+ * Issue change address and send payment
+ * @param {string|null} asset
+ * @param {number} amount
+ * @param {string} to_address
+ * @param {string|null} device_address
+ * @param {paymentResultCallback=} onDone
+ * @return {Promise<PaymentResult>}
+ * @example
+ * const address = '2T35YT6L53OYFEUKIOXBQRKUZD4B3CYW';
+ * const deviceAddress = '0CUUZZ2UYM4ATP4HULSRH646B5V4G3JRW';
+ * const {unit, assocMnemonics} = await issueChangeAddressAndSendPayment(null, 10000, address, deviceAddress);
+ */
 function issueChangeAddressAndSendPayment(asset, amount, to_address, device_address, onDone){
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
@@ -573,6 +747,18 @@ function issueChangeAddressAndSendPayment(asset, amount, to_address, device_addr
 	});
 }
 
+/**
+ * Issue change address and send payment with specified parameters
+ * @param {Object} opts
+ * @param {paymentResultCallback=} onDone
+ * @return {Promise<PaymentResult>}
+ * @example
+ * const opts = {};
+ * opts.paying_addresses = 'FCNQIGCW7JIYTARK6M54NMSCPFVIY25E';
+ * opts.amount = 10000;
+ * opts.toAddress = '2T35YT6L53OYFEUKIOXBQRKUZD4B3CYW';
+ * const {unit, assocMnemonics} = await issueChangeAddressAndSendMultiPayment(opts);
+ */
 function issueChangeAddressAndSendMultiPayment(opts, onDone){
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
@@ -588,6 +774,13 @@ function issueChangeAddressAndSendMultiPayment(opts, onDone){
 	});
 }
 
+/**
+ * Returns next main address
+ * @param {resultCallback=} handleAddress
+ * @return {Promise<string>}
+ * @example
+ * const address = await issueOrSelectNextMainAddress();
+ */
 function issueOrSelectNextMainAddress(handleAddress){
 	if (!handleAddress)
 		return new Promise(resolve => issueOrSelectNextMainAddress(resolve));
@@ -597,6 +790,13 @@ function issueOrSelectNextMainAddress(handleAddress){
 	});
 }
 
+/**
+ * Issue next main address
+ * @param {resultCallback=} handleAddress
+ * @return {Promise<string>}
+ * @example
+ * const address = await issueNextMainAddress();
+ */
 function issueNextMainAddress(handleAddress){
 	if (!handleAddress)
 		return new Promise(resolve => issueNextMainAddress(resolve));
@@ -606,6 +806,15 @@ function issueNextMainAddress(handleAddress){
 	});
 }
 
+/**
+ * Returns address by change and index. If address not exists address will be created
+ * @param is_change {number}
+ * @param address_index {number}
+ * @param {resultCallback=} handleAddress
+ * @return {Promise<string>}
+ * @example
+ * const address = await issueOrSelectAddressByIndex(0, 0);
+ */
 function issueOrSelectAddressByIndex(is_change, address_index, handleAddress){
 	if (!handleAddress)
 		return new Promise(resolve => issueOrSelectAddressByIndex(is_change, address_index, resolve));
@@ -619,6 +828,14 @@ function issueOrSelectAddressByIndex(is_change, address_index, handleAddress){
 	});
 }
 
+
+/**
+ * Return static change address. If address not exists address will be created
+ * @param {resultCallback=} handleAddress
+ * @return {Promise<string>}
+ * @example
+ * const address = await issueOrSelectStaticChangeAddress();
+ */
 function issueOrSelectStaticChangeAddress(handleAddress){
 	if (!handleAddress)
 		return new Promise(resolve => issueOrSelectStaticChangeAddress(resolve));
@@ -659,6 +876,20 @@ function signMessage(signing_address, message, cb) {
 }
 */
 
+/**
+ * @callback signMessageCB
+ * @param {string} error
+ * @param {Object|undefined} objUnit
+ */
+/**
+ * Signs message
+ * @param signing_address
+ * @param message
+ * @param {signMessageCB=} cb
+ * @return {Promise<Object>} objUnit
+ * @example
+ * const objUnit = await signMessage('2T35YT6L53OYFEUKIOXBQRKUZD4B3CYW', 'hello');
+ */
 function signMessage(signing_address, message, cb) {
 	if (!cb)
 		return new Promise((resolve, reject) => signMessage(signing_address, message, (err, objUnit) => {

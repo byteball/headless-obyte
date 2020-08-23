@@ -42,3 +42,4 @@ isolate-*-v8.log
 processed.txt
 
 .env
+docs

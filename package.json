@@ -4,6 +4,9 @@
   "author": "Obyte",
   "version": "0.1.10",
   "main": "start.js",
+  "scripts": {
+    "generate-docs": "node_modules/.bin/jsdoc -c jsdoc.json --readme ./README.md"
+  },
   "keywords": [
     "wallet",
     "headless",
@@ -25,10 +28,14 @@
     "secp256k1": "secp256k1/js"
   },
   "dependencies": {
-    "ocore": "git+https://github.com/byteball/ocore.git",
     "bitcore-lib": "^0.13.14",
     "bitcore-mnemonic": "~1.0.0",
     "json-rpc2": "^1.0.2",
+    "ocore": "git+https://github.com/byteball/ocore.git",
     "yargs": "^13.2.2"
+  },
+  "devDependencies": {
+    "docdash": "^1.2.0",
+    "jsdoc": "^3.6.5"
   }
 }

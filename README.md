@@ -65,7 +65,7 @@ You can remotely control your wallet via chat interface from devices listed in `
 * `balance`: to request the current balance on the headless wallet;
 * `address`: to get to know one of the wallet's addresses, you use it to refill the wallet's balance;
 * `pay <amount in bytes>` to withdraw Bytes to your `payout_address`;
-* `pay all bytes` to withdraw all Bytes (including commissions) to your `payout_address`;
+* `pay all bytes` to withdraw all Bytes (including earned commissions) to your `payout_address`;
 * `pay <amount> <asset>` to withdraw specific asset to your `payout_address`;
 * `pay all <asset>` to withdraw all of specific asset to your `payout_address`;
 * `mci`: to get the last stable MCI on the headless wallet;

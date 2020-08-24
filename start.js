@@ -230,7 +230,7 @@ function prepareBalanceText(handleBalanceText){
 			if (assocBalances[asset].pending)
 				line += ' (' + assocBalances[asset].pending + ' pending)';
 			else if (asset === 'base')
-				line += ' (including commissions)';
+				line += ' (including earned commissions)';
 			arrLines.push(line);
 		}
 		handleBalanceText(arrLines.join("\n"));
@@ -711,7 +711,7 @@ function handleText(from_address, text, onUnknown){
 					msg +=	"\n";
 					msg +=	"\n* Example 1: 'pay 12345' withdraws 12345 bytes";
 					msg +=	"\n* Example 2: 'pay 12345 bytes' withdraws 12345 bytes";
-					msg +=	"\n* Example 3: 'pay all bytes' withdraws all bytes (including commissions)";
+					msg +=	"\n* Example 3: 'pay all bytes' withdraws all bytes (including earned commissions)";
 					msg +=	"\n* Example 4: 'pay 12345 blackbytes' withdraws 12345 blackbytes";
 					msg +=	"\n* Example 5: 'pay 12345 qO2JsiuDMh/j+pqJYZw3u82O71WjCDf0vTNvsnntr8o=' withdraws 12345 blackbytes";
 					msg +=	"\n* Example 6: 'pay 12345 ASSET_ID' withdraws 12345 of asset with ASSET_ID";

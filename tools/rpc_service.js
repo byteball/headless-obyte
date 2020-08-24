@@ -126,6 +126,33 @@ function initRPC() {
 	});
 
 	/**
+	 * Returns the list of addresses for the whole wallet.
+	 * @param {number|string} [limit] - optional, 100 by default
+	 * @param {number|string|boolean} [reverse] - optional, true by default
+	 * @param {number|string|boolean} [is_change] - optional, must be: undefined, null, 0 or 1
+	 * @return [{address:{string}, address_index:{string}, is_change:{number}, creation_ts:{string}}] list of addresses
+	 * 
+	 * Accepts params as Object too
+	 * @param {limit?: {number|string}, reverse?: {number|string|boolean}, is_change?: {number|string|boolean}} [args] as Object - all are optional
+	 * @return [{address:{string}, address_index:{string}, is_change:{number}, creation_ts:{string}}] list of addresses
+	 */
+	server.expose('getaddresses', function(args, opt, cb) {
+		var {limit, reverse, is_change} = args;
+		if (Array.isArray(args))
+			[limit, reverse, is_change] = args;
+
+		limit = parseInt(limit) || 100;
+		reverse = (reverse == null) || String(reverse).toLowerCase() === "true";
+		if (is_change != null) {
+			is_change = !!parseInt(is_change) || String(is_change).toLowerCase() === "true";
+			is_change = is_change ? 1 : 0; // convert to suitable format for the function
+		}
+		walletDefinedByKeys.readAddresses(wallet_id, {limit, reverse, is_change}, function(listOfAddresses) {
+			cb(null, listOfAddresses);
+		});
+	});
+
+	/**
 	 * Returns address balance(stable and pending).
 	 * If address is invalid, then returns "invalid address".
 	 * If your wallet doesn`t own the address, then returns "address not found".
@@ -280,12 +307,12 @@ function initRPC() {
 	 * Send funds to address.
 	 * If address is invalid, then returns "invalid address".
 	 * @param {string} address - wallet address
-	 * @param {number} amount - amount in Bytes
-	 * @param {string} [asset] - optional
+	 * @param {number|string} amount - amount as whole number
+	 * @param {string} [asset] - asset ID, optional
 	 * @return {string} unit ID
 	 *
 	 * Accepts params as Object too
-	 * @param {address:{string}, amount:{number}, asset?:{string}} args as Object - asset is optional
+	 * @param {address:{string}, amount:{number|string}, asset?:{string}} args as Object - asset is optional
  	 * @return {string} unit ID
 	 */
 	server.expose('sendtoaddress', function(args, opt, cb) {
@@ -293,11 +320,12 @@ function initRPC() {
 		let start_time = Date.now();
 		var {address, amount, asset} = args;
 		if (Array.isArray(args)) {
-			if (typeof args[0] === 'string' && typeof args[1] === 'number')
+			if (typeof args[0] === 'string' && (typeof args[1] === 'number' || typeof args[1] === 'string'))
 				[address, amount, asset] = args;
 			else
-				return cb('wallet must be string and amount must be whole number');
+				return cb('address must be string and amount is required');
 		}
+		amount = parseInt(amount);
 		if (asset && asset !== 'base' && !validationUtils.isValidBase64(asset, constants.HASH_LENGTH))
 			return cb("bad asset: "+asset);
 		if (!amount || !address)
@@ -308,6 +336,54 @@ function initRPC() {
 			console.log('sendtoaddress '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms, unit='+unit+', err='+err);
 			cb(err, err ? undefined : unit);
 		});
+	});
+
+	/**
+	 * Send funds from address to address, keeping change to sending address.
+	 * If eiher addresses are invalid, then returns "invalid address".
+	 * Bytes payment can have amount as 'all', other assets must specify exact amount.
+	 * @param {string} from_address - wallet address
+	 * @param {string} to_address - wallet address
+	 * @param {number|string} amount - amount as whole number or 'all' (for Bytes only)
+	 * @param {string} [asset] - asset ID, optional
+	 * @return {string} unit ID
+	 *
+	 * Accepts params as Object too
+	 * @param {from_address:{string}, to_address:{string}, amount:{number|string}, asset?:{string}} args as Object - asset is optional
+ 	 * @return {string} unit ID
+	 */
+	server.expose('sendfrom', function(args, opt, cb) {
+		console.log('sendfrom '+JSON.stringify(args));
+		let start_time = Date.now();
+		var {from_address, to_address, amount, asset} = args;
+		if (Array.isArray(args)) {
+			if (typeof args[0] === 'string' && typeof args[1] === 'string' && (typeof args[2] === 'number' || typeof args[2] === 'string'))
+				[from_address, to_address, amount, asset] = args;
+			else
+				return cb('from_address and to_address must be strings, amount is required');
+		}
+		amount = (String(amount).toLowerCase() === 'all') ? 'all' : parseInt(amount);
+		if (asset && asset !== 'base' && !validationUtils.isValidBase64(asset, constants.HASH_LENGTH))
+			return cb("bad asset: "+asset);
+		if (!amount || !to_address || !from_address)
+			return cb("wrong parameters");
+		if (!validationUtils.isValidAddress(to_address) || !validationUtils.isValidAddress(from_address))
+			return cb("invalid address");
+
+		if (amount === 'all') {
+			if (asset && asset !== 'base')
+				return cb("use exact amount for custom assets");
+
+			headlessWallet.sendAllBytesFromAddress(from_address, to_address, null, function(err, unit) {
+				console.log('sendfrom '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms, unit='+unit+', err='+err);
+				cb(err, err ? undefined : unit);
+			});
+		}
+		else
+			headlessWallet.sendAssetFromAddress(asset, amount, from_address, to_address, null, function(err, unit) {
+				console.log('sendfrom '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms, unit='+unit+', err='+err);
+				cb(err, err ? undefined : unit);
+			});
 	});
 
 	/**

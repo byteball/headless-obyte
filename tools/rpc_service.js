@@ -307,7 +307,7 @@ function initRPC() {
 	 * Send funds to address.
 	 * If address is invalid, then returns "invalid address".
 	 * @param {string} address - wallet address
-	 * @param {number|string} amount - amount as whole number
+	 * @param {number|string} amount - amount as positive integer
 	 * @param {string} [asset] - asset ID, optional
 	 * @return {string} unit ID
 	 *
@@ -325,11 +325,13 @@ function initRPC() {
 			else
 				return cb('address must be string and amount is required');
 		}
+		if (amount != parseInt(amount) || parseInt(amount) < 1)
+			return cb('amount must be positive integer');
 		amount = parseInt(amount);
 		if (asset && asset !== 'base' && !validationUtils.isValidBase64(asset, constants.HASH_LENGTH))
 			return cb("bad asset: "+asset);
-		if (!amount || !address)
-			return cb("wrong parameters");
+		if (!address)
+			return cb("address is required");
 		if (!validationUtils.isValidAddress(address))
 			return cb("invalid address");
 		headlessWallet.issueChangeAddressAndSendPayment(asset, amount, address, null, function(err, unit) {
@@ -344,7 +346,7 @@ function initRPC() {
 	 * Bytes payment can have amount as 'all', other assets must specify exact amount.
 	 * @param {string} from_address - wallet address
 	 * @param {string} to_address - wallet address
-	 * @param {number|string} amount - amount as whole number or 'all' (for Bytes only)
+	 * @param {number|string} amount - amount as positive integer or 'all' (for Bytes only)
 	 * @param {string} [asset] - asset ID, optional
 	 * @return {string} unit ID
 	 *
@@ -362,11 +364,16 @@ function initRPC() {
 			else
 				return cb('from_address and to_address must be strings, amount is required');
 		}
-		amount = (String(amount).toLowerCase() === 'all') ? 'all' : parseInt(amount);
+		amount = (String(amount).toLowerCase() === 'all') ? 'all' : amount;
+		if (amount !== 'all') {
+			if (amount != parseInt(amount) || parseInt(amount) < 1)
+				return cb('amount must be positive integer');
+			amount = parseInt(amount);
+		}
 		if (asset && asset !== 'base' && !validationUtils.isValidBase64(asset, constants.HASH_LENGTH))
 			return cb("bad asset: "+asset);
-		if (!amount || !to_address || !from_address)
-			return cb("wrong parameters");
+		if (!to_address || !from_address)
+			return cb("addresses are required");
 		if (!validationUtils.isValidAddress(to_address) || !validationUtils.isValidAddress(from_address))
 			return cb("invalid address");
 

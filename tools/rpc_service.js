@@ -330,8 +330,8 @@ function initRPC() {
 		amount = parseInt(amount);
 		if (asset && asset !== 'base' && !validationUtils.isValidBase64(asset, constants.HASH_LENGTH))
 			return cb("bad asset: "+asset);
-		if (!address)
-			return cb("address is required");
+		if (!amount || !address)
+			return cb("wrong parameters");
 		if (!validationUtils.isValidAddress(address))
 			return cb("invalid address");
 		headlessWallet.issueChangeAddressAndSendPayment(asset, amount, address, null, function(err, unit) {
@@ -372,8 +372,8 @@ function initRPC() {
 		}
 		if (asset && asset !== 'base' && !validationUtils.isValidBase64(asset, constants.HASH_LENGTH))
 			return cb("bad asset: "+asset);
-		if (!to_address || !from_address)
-			return cb("addresses are required");
+		if (!amount || !to_address || !from_address)
+			return cb("wrong parameters");
 		if (!validationUtils.isValidAddress(to_address) || !validationUtils.isValidAddress(from_address))
 			return cb("invalid address");
 

@@ -342,7 +342,8 @@ function initRPC() {
 
 	/**
 	 * Send funds from address to address, keeping change to sending address.
-	 * If eiher addresses are invalid, then returns "invalid address".
+	 * If eiher addresses are invalid, then returns "invalid address" error.
+	 * If from_addres doesn't belong to this wallet, then returns "definition not found" error.
 	 * Bytes payment can have amount as 'all', other assets must specify exact amount.
 	 * @param {string} from_address - wallet address
 	 * @param {string} to_address - wallet address
@@ -377,24 +378,29 @@ function initRPC() {
 		if (!validationUtils.isValidAddress(to_address) || !validationUtils.isValidAddress(from_address))
 			return cb("invalid address");
 
-		if (amount === 'all') {
-			if (asset && asset !== 'base')
-				return cb("use exact amount for custom assets");
+		db.query("SELECT definition FROM my_addresses WHERE address=?", [from_address], function(rows){
+			if (rows.length !== 1)
+				return cb("definition not found");
+			if (amount === 'all') {
+				if (asset && asset !== 'base')
+					return cb("use exact amount for custom assets");
 
-			headlessWallet.sendAllBytesFromAddress(from_address, to_address, null, function(err, unit) {
-				console.log('sendfrom '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms, unit='+unit+', err='+err);
-				cb(err, err ? undefined : unit);
-			});
-		}
-		else
-			headlessWallet.sendAssetFromAddress(asset, amount, from_address, to_address, null, function(err, unit) {
-				console.log('sendfrom '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms, unit='+unit+', err='+err);
-				cb(err, err ? undefined : unit);
-			});
+				headlessWallet.sendAllBytesFromAddress(from_address, to_address, null, function(err, unit) {
+					console.log('sendfrom '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms, unit='+unit+', err='+err);
+					cb(err, err ? undefined : unit);
+				});
+			}
+			else
+				headlessWallet.sendAssetFromAddress(asset, amount, from_address, to_address, null, function(err, unit) {
+					console.log('sendfrom '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms, unit='+unit+', err='+err);
+					cb(err, err ? undefined : unit);
+				});
+		});
 	});
 
 	/**
 	 * Signs a message with address.
+	 * If address doesn't belong to this wallet, then returns "definition not found" error.
 	 * @param {string} address - wallet that signs the message
 	 * @param {string|object} message - message to be signed
 	 * @return {string} base64 encoded signature of {version:{string}, signed_message:{string|object}, authors:{object}}

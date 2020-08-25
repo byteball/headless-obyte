@@ -307,7 +307,7 @@ function initRPC() {
 	 * Send funds to address.
 	 * If address is invalid, then returns "invalid address".
 	 * @param {string} address - wallet address
-	 * @param {number|string} amount - amount as positive integer
+	 * @param {number|string} amount - positive integer
 	 * @param {string} [asset] - asset ID, optional
 	 * @return {string} unit ID
 	 *
@@ -346,7 +346,7 @@ function initRPC() {
 	 * Bytes payment can have amount as 'all', other assets must specify exact amount.
 	 * @param {string} from_address - wallet address
 	 * @param {string} to_address - wallet address
-	 * @param {number|string} amount - amount as positive integer or 'all' (for Bytes only)
+	 * @param {number|string} amount - positive integer or 'all' (for Bytes only)
 	 * @param {string} [asset] - asset ID, optional
 	 * @return {string} unit ID
 	 *

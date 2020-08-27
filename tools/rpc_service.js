@@ -127,36 +127,49 @@ function initRPC() {
 	/**
 	 * Returns the list of addresses for the whole wallet.
 	 * @param {string} [type] - optional, must be: "deposit", "change", "shared", "textcoin", null - shows both deposit and change by default
-	 * @param {number|string|boolean} [reverse] - optional, true by default
+	 * @param {string|boolean} [reverse] - optional, "reverse" by default
 	 * @param {number|string} [limit] - optional, 100 by default
+	 * @param {string|boolean} [verbose] - optional, off by default, includes is_used info when "verbose"
 	 * @return [{address:{string}, address_index:{string}, is_change:{number}, is_used:{number}, creation_ts:{string}}] list of addresses
 	 * 
 	 * Accepts params as Object too
-	 * @param {type?: {string}, reverse?: {number|string|boolean}, limit?: {number|string}} [args] as Object - all are optional
+	 * @param {type?: {string}, reverse?: {string|boolean}, limit?: {number|string}, verbose?: {string|boolean}} [args] as Object - all are optional
 	 * @return [{address:{string}, address_index:{string}, is_change:{number}, is_used:{number}, creation_ts:{string}}] list of addresses
 	 */
 	server.expose('getaddresses', function(args, opt, cb) {
 		console.log('getaddresses '+JSON.stringify(args));
 		let start_time = Date.now();
-		var {type, reverse, limit} = args;
+		var {type, reverse, limit, verbose} = args;
 		if (Array.isArray(args))
-			[type, reverse, limit] = args;
-
+			[type, reverse, limit, verbose] = args;
+		reverse = (reverse == null || reverse === 'reverse') || String(reverse).toLowerCase() === "true";
 		limit = parseInt(limit) || 100;
-		reverse = (reverse == null) || String(reverse).toLowerCase() === "true";
+		verbose = (verbose === 'verbose') || String(verbose).toLowerCase() === "true";
+
 		var sql;
 		switch (type) {
 			case 'textcoin':
-				sql = "SELECT address, NULL AS address_index, NULL AS is_change, (CASE WHEN unit_authors.unit IS NULL THEN 0 ELSE 1 END) AS is_used, "+db.getUnixTimestamp("creation_date")+" AS creation_ts FROM sent_mnemonics LEFT JOIN unit_authors USING(address) GROUP BY address";
+				sql = "SELECT address, NULL AS address_index, NULL AS is_change";
+				sql += verbose ? ", (CASE WHEN unit_authors.unit IS NULL THEN 0 ELSE 1 END) AS is_used" : "";
+				sql += ", "+ db.getUnixTimestamp("creation_date")+" AS creation_ts FROM sent_mnemonics";
+				sql += verbose ? " LEFT JOIN unit_authors USING(address)" : "";
+				sql += verbose ? " GROUP BY address" : "";
 				break;
 			case 'shared':
-				sql = "SELECT shared_address AS address, NULL AS address_index, NULL AS is_change, (CASE WHEN unit_authors.unit IS NULL THEN 0 ELSE 1 END) AS is_used, "+db.getUnixTimestamp("creation_date")+" AS creation_ts FROM shared_addresses LEFT JOIN unit_authors ON shared_address = address GROUP BY shared_address";
+				sql = "SELECT shared_address AS address, NULL AS address_index, NULL AS is_change";
+				sql += verbose ? ", (CASE WHEN unit_authors.unit IS NULL THEN 0 ELSE 1 END) AS is_used" : "";
+				sql += ", "+ db.getUnixTimestamp("creation_date")+" AS creation_ts FROM shared_addresses";
+				sql += verbose ? " LEFT JOIN unit_authors ON shared_address = address" : "";
+				sql += verbose ? " GROUP BY shared_address" : "";
 				break;
 			default:
-				sql = "SELECT address, address_index, is_change, (CASE WHEN unit_authors.unit IS NULL THEN 0 ELSE 1 END) AS is_used, "+db.getUnixTimestamp("creation_date")+" AS creation_ts FROM my_addresses LEFT JOIN unit_authors USING(address)";
+				sql = "SELECT address, address_index, is_change";
+				sql += verbose ? ", (CASE WHEN unit_authors.unit IS NULL THEN 0 ELSE 1 END) AS is_used" : "";
+				sql += ", "+ db.getUnixTimestamp("creation_date")+" AS creation_ts FROM my_addresses";
+				sql += verbose ? " LEFT JOIN unit_authors USING(address)" : "";
 				if (type === 'deposit' || type === 'change')
 					sql += " WHERE is_change="+ (type === 'change' ? "1" : "0");
-				sql += " GROUP BY address";
+				sql += verbose ? " GROUP BY address" : "";
 				break;
 		}
 		sql += " ORDER BY creation_ts "+ (reverse ? "DESC" : "") +" LIMIT "+ limit;
@@ -236,12 +249,12 @@ function initRPC() {
 	/**
 	 * Returns transaction by unit ID.
 	 * @param {string} unit - transaction unit ID
-	 * @param {boolean} [verbose] - optional, includes unit definition if "verbose" is second parameter
+	 * @param {string|boolean} [verbose] - optional, includes unit definition if "verbose" is second parameter
 	 * @param {string} [asset] - optional, asset ID
 	 * @return {"action":{'invalid','received','sent','moved'},"amount":{number},"my_address":{string},"arrPayerAddresses":[{string}],"confirmations":{0,1},"unit":{string},"fee":{number},"time":{string},"level":{number},"asset":{string}} one transaction
 	 *
 	 * Accepts params as Object too
-	 * @param {unit: {string}, verbose?: {boolean}, asset?: {string}} [args] as Object - verbose is optional
+	 * @param {unit: {string}, verbose?: {string|boolean}, asset?: {string}} [args] as Object - verbose is optional
 	 * @return {"action":{'invalid','received','sent','moved'},"amount":{number},"my_address":{string},"arrPayerAddresses":[{string}],"confirmations":{0,1},"unit":{string},"fee":{number},"time":{string},"level":{number},"asset":{string}} one transaction
 	 */
 	server.expose('gettransaction', function(args, opt, cb) {
@@ -254,6 +267,7 @@ function initRPC() {
 		}
 		if (!unit)
 			return cb('unit is required');
+		verbose = (verbose === 'verbose') || String(verbose).toLowerCase() === "true";
 
 		listtransactions({unit, since_mci:1, asset}, opt, function(err, results) {
 			if (err)

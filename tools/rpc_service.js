@@ -17,9 +17,6 @@ if (require.main === module && !fs.existsSync(appDataDir) && fs.existsSync(path.
 	fs.renameSync(path.dirname(appDataDir)+'/headless-byteball', appDataDir);
 }
 var conf = require('ocore/conf.js');
-if (conf.bSingleAddress)
-	throw Error('can`t run in single address mode');
-
 if (!conf.rpcInterface || !conf.rpcPort)
 	throw new Error('conf.rpcInterface and conf.rpcPort must be configured.');
 

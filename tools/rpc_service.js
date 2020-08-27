@@ -424,6 +424,46 @@ function initRPC() {
 	});
 
 	/**
+	 * Claim the textcoin.
+	 * If address is invalid, then returns "invalid address".
+	 * @param {string} mnemonic - textcoin words
+	 * @param {string} [address] - wallet address to receive funds
+	 * @return {unit:{string}, asset?:{string}} unit ID and asset (claim again if not null)
+	 *
+	 * Accepts params as Object too
+	 * @param {mnemonic:{string}, address?:{string}} args as Object
+ 	 * @return {nit:{string}, asset?:{string}} unit ID and asset (claim again if not null)
+	 */
+	server.expose('claimtextcoin', claimtextcoin);
+	// aliases for claimtextcoin
+	server.expose('sweeptextcoin', claimtextcoin);
+	server.expose('sweeppaperwallet', claimtextcoin);
+
+	function claimtextcoin(args, opt, cb) {
+		console.log('claimtextcoin '+JSON.stringify(args));
+		let start_time = Date.now();
+		var {mnemonic, address} = args;
+		if (Array.isArray(args)) {
+			if (typeof args[0] === 'string')
+				[mnemonic, address] = args;
+			else
+				return cb('mnemonic must be a string');
+		}
+		if (!mnemonic)
+			return cb("mnemonic is required");
+		if (address && !validationUtils.isValidAddress(address))
+			return cb('invalid address');
+
+		headlessWallet.readFirstAddress((first_address) => {
+			address = address || first_address;
+			Wallet.receiveTextCoin(mnemonic, address, function(err, unit, asset) {
+				console.log('claimtextcoin '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms, unit='+unit+', err='+err);
+				cb(err, err ? undefined : {unit, asset});
+			});
+		});
+	}
+
+	/**
 	 * Signs a message with address.
 	 * If address is invalid, then returns "invalid address".
 	 * If your wallet doesn`t own the address, then returns "address not found".
@@ -510,46 +550,6 @@ function initRPC() {
 					return cb("message objects don't match");
 			}
 			cb(null, objSignedMessage);
-		});
-	}
-
-	/**
-	 * Claim the textcoin.
-	 * If address is invalid, then returns "invalid address".
-	 * @param {string} mnemonic - textcoin words
-	 * @param {string} [address] - wallet address to receive funds
-	 * @return {unit:{string}, asset?:{string}} unit ID and asset (claim again if not null)
-	 *
-	 * Accepts params as Object too
-	 * @param {mnemonic:{string}, address?:{string}} args as Object
- 	 * @return {nit:{string}, asset?:{string}} unit ID and asset (claim again if not null)
-	 */
-	server.expose('claimtextcoin', claimtextcoin);
-	// aliases for claimtextcoin
-	server.expose('sweeptextcoin', claimtextcoin);
-	server.expose('sweeppaperwallet', claimtextcoin);
-
-	function claimtextcoin(args, opt, cb) {
-		console.log('claimtextcoin '+JSON.stringify(args));
-		let start_time = Date.now();
-		var {mnemonic, address} = args;
-		if (Array.isArray(args)) {
-			if (typeof args[0] === 'string')
-				[mnemonic, address] = args;
-			else
-				return cb('mnemonic must be a string');
-		}
-		if (!mnemonic)
-			return cb("mnemonic is required");
-		if (address && !validationUtils.isValidAddress(address))
-			return cb('invalid address');
-
-		headlessWallet.readFirstAddress((first_address) => {
-			address = address || first_address;
-			Wallet.receiveTextCoin(mnemonic, address, function(err, unit, asset) {
-				console.log('claimtextcoin '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms, unit='+unit+', err='+err);
-				cb(err, err ? undefined : {unit, asset});
-			});
 		});
 	}
 

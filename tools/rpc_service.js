@@ -251,6 +251,9 @@ function initRPC() {
 			else
 				return cb('unit must be a string');
 		}
+		if (!unit)
+			return cb('unit is required');
+
 		listtransactions({unit, since_mci:1, asset}, opt, function(err, results) {
 			if (err)
 				return cb(err);

@@ -129,12 +129,12 @@ function initRPC() {
 	 * @param {string} [type] - optional, must be: "deposit", "change", "shared", "textcoin", null - shows both deposit and change by default
 	 * @param {string|boolean} [reverse] - optional, "reverse" by default
 	 * @param {number|string} [limit] - optional, 100 by default
-	 * @param {string|boolean} [verbose] - optional, off by default, includes is_spent info when "verbose"
-	 * @return [{address:{string}, address_index:{string}, is_change:{number}, is_spent:{number}, creation_ts:{string}}] list of addresses
+	 * @param {string|boolean} [verbose] - optional, off by default, includes is_definition_public info when "verbose"
+	 * @return [{address:{string}, address_index:{string}, is_change:{number}, is_definition_public:{number}, creation_ts:{string}}] list of addresses
 	 * 
 	 * Accepts params as Object too
 	 * @param {type?: {string}, reverse?: {string|boolean}, limit?: {number|string}, verbose?: {string|boolean}} [args] as Object - all are optional
-	 * @return [{address:{string}, address_index:{string}, is_change:{number}, is_spent:{number}, creation_ts:{string}}] list of addresses
+	 * @return [{address:{string}, address_index:{string}, is_change:{number}, is_definition_public:{number}, creation_ts:{string}}] list of addresses
 	 */
 	server.expose('getaddresses', function(args, opt, cb) {
 		console.log('getaddresses '+JSON.stringify(args));
@@ -150,21 +150,21 @@ function initRPC() {
 		switch (type) {
 			case 'textcoin':
 				sql = "SELECT address, NULL AS address_index, NULL AS is_change";
-				sql += verbose ? ", (CASE WHEN unit_authors.unit IS NULL THEN 0 ELSE 1 END) AS is_spent" : "";
+				sql += verbose ? ", (CASE WHEN unit_authors.unit IS NULL THEN 0 ELSE 1 END) AS is_definition_public" : "";
 				sql += ", "+ db.getUnixTimestamp("creation_date")+" AS creation_ts FROM sent_mnemonics";
 				sql += verbose ? " LEFT JOIN unit_authors USING(address)" : "";
 				sql += verbose ? " GROUP BY address" : "";
 				break;
 			case 'shared':
 				sql = "SELECT shared_address AS address, NULL AS address_index, NULL AS is_change";
-				sql += verbose ? ", (CASE WHEN unit_authors.unit IS NULL THEN 0 ELSE 1 END) AS is_spent" : "";
+				sql += verbose ? ", (CASE WHEN unit_authors.unit IS NULL THEN 0 ELSE 1 END) AS is_definition_public" : "";
 				sql += ", "+ db.getUnixTimestamp("creation_date")+" AS creation_ts FROM shared_addresses";
 				sql += verbose ? " LEFT JOIN unit_authors ON shared_address = address" : "";
 				sql += verbose ? " GROUP BY shared_address" : "";
 				break;
 			default:
 				sql = "SELECT address, address_index, is_change";
-				sql += verbose ? ", (CASE WHEN unit_authors.unit IS NULL THEN 0 ELSE 1 END) AS is_spent" : "";
+				sql += verbose ? ", (CASE WHEN unit_authors.unit IS NULL THEN 0 ELSE 1 END) AS is_definition_public" : "";
 				sql += ", "+ db.getUnixTimestamp("creation_date")+" AS creation_ts FROM my_addresses";
 				sql += verbose ? " LEFT JOIN unit_authors USING(address)" : "";
 				if (type === 'deposit' || type === 'change')
@@ -209,7 +209,7 @@ function initRPC() {
 				db.query(
 					"SELECT asset, is_stable, SUM(amount) AS balance \n\
 					FROM outputs JOIN units USING(unit) \n\
-					WHERE is_spent=0 AND address=? AND sequence='good' AND asset "+((asset && asset !== 'base') ? "="+db.escape(asset) : "IS NULL")+" \n\
+					WHERE is_definition_public=0 AND address=? AND sequence='good' AND asset "+((asset && asset !== 'base') ? "="+db.escape(asset) : "IS NULL")+" \n\
 					GROUP BY is_stable", [address],
 					function(rows) {
 						var balance = {};

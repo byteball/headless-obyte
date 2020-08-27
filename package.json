@@ -2,7 +2,7 @@
   "name": "headless-obyte",
   "description": "Obyte headless wallet",
   "author": "Obyte",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "main": "start.js",
   "keywords": [
     "wallet",

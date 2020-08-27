@@ -51,20 +51,23 @@ If you want to change any defaults, refer to the documentation of [ocore](../../
 * `bSingleAddress`: Should the wallet use single address or could generate new addresses?
 * `bStaticChangeAddress`: Should the wallet issue new change addresses or always use the same static one?
 * `control_addresses`: array of device addresses of your other (likely GUI) wallets that can chat with the wallet and give commands.  To learn the device address of your GUI wallet, click menu button, then Global preferences, and look for 'Device address'.  If your `control_addresses` is empty array or contains a single address that is invalid (this is the default), then nobody can remotely control your wallet.
-* `payout_address`: if you give `pay` command over chat interface, the money will be sent to this Obyte address.
+* `payout_address`: if you give `pay` command over chat interface, funds will be sent to this Obyte address.
 * `hub`: hub address without wss://, the default is `obyte.org/bb`.
 * `deviceName`: the name of your device as seen in the chat interface.
 * `permanent_pairing_secret`: the pairing secret used to authenticate pairing requests when you pair your GUI wallet for remote control.  The pairing secret is the part of the pairing code after #.
 * `bNoPassphrase`: don't ask for passphrase when starting the wallet, assume it is an empty string. This option weakens the security of your funds but allows to start the wallet non-interactively.
-
+* `LOG_FILENAME`: by default `log.txt` file in data folder, set to `/dev/null` to disable all logs.
+* `logToSTDOUT`: by default `false` and writes logs to `LOG_FILENAME` file, set to `true` if you wish to keep the logs output to terminal screen, instead of file.
 
 ## Remote control
 
-You can remotely control your wallet via chat interface from devices listed in `control_addresses`.  When the wallet starts, it prints out its pairing code.  Copy it, open your GUI wallet, menu button, paired devices, add a new device, accept invitation, paste the code.  Now your GUI wallet is paired to your headless wallet and you can find it in the list of correspondents (menu, paired devices) to start a chat.  There are four commands you can give:
+You can remotely control your wallet via chat interface from devices listed in `control_addresses`.  When the wallet starts, it prints out its pairing code.  Copy it, open your GUI wallet, menu button, paired devices, add a new device, accept invitation, paste the code.  Now your GUI wallet is paired to your headless wallet and you can find it in the list of correspondents (menu, paired devices) to start a chat.  These are the commands you can give:
 
 * `balance`: to request the current balance on the headless wallet;
 * `address`: to get to know one of the wallet's addresses, you use it to refill the wallet's balance;
-* `pay <amount in bytes>` to request withdrawal from the headless wallet to your `payout_address`, or `pay <amount> <asset>` to withdraw another asset.
+* `pay <amount in bytes>` to withdraw Bytes to your `payout_address`;
+* `pay all bytes` to withdraw all Bytes (including earned commissions) to your `payout_address`;
+* `pay <amount> <asset>` to withdraw specific asset to your `payout_address`;
 * `mci`: to get the last stable MCI on the headless wallet;
 * `space`: to get the file sizes of data folder;
 
@@ -85,7 +88,7 @@ However, that is not enough.  If an attacker gets access to your server, he coul
 
 Use TOR ([conf.socksHost, conf.socksPort, and conf.socksLocalDNS](../../../ocore#confsockshost-confsocksport-and-confsockslocaldns)) to hide your server IP address from potential attackers.
 
-Don't keep more money than necessary on the server wallet, withdraw the excess using `pay` command in the chat interface.
+Don't keep more funds than necessary on the server wallet, withdraw the excess using `pay` command in the chat interface.
 
 ## Custom commands
 

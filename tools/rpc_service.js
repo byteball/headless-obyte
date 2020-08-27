@@ -16,9 +16,11 @@ if (require.main === module && !fs.existsSync(appDataDir) && fs.existsSync(path.
 	console.log('=== will rename old data dir');
 	fs.renameSync(path.dirname(appDataDir)+'/headless-byteball', appDataDir);
 }
+var conf = require('ocore/conf.js');
+if (!conf.rpcPort)
+	throw new Error('conf.rpcPort must be configured.');
 
 var headlessWallet = require('../start.js');
-var conf = require('ocore/conf.js');
 var eventBus = require('ocore/event_bus.js');
 var db = require('ocore/db.js');
 var mutex = require('ocore/mutex.js');
@@ -26,9 +28,6 @@ var storage = require('ocore/storage.js');
 var constants = require('ocore/constants.js');
 var validationUtils = require("ocore/validation_utils.js");
 var wallet_id;
-
-if (conf.bSingleAddress)
-	throw Error('can`t run in single address mode');
 
 function initRPC() {
 	var network = require('ocore/network.js');
@@ -126,6 +125,61 @@ function initRPC() {
 	});
 
 	/**
+	 * Returns the list of addresses for the whole wallet.
+	 * @param {string} [type] - optional, must be: "deposit", "change", "shared", "textcoin", null - shows both deposit and change by default
+	 * @param {string|boolean} [reverse] - optional, "reverse" by default
+	 * @param {number|string} [limit] - optional, 100 by default
+	 * @param {string|boolean} [verbose] - optional, off by default, includes is_definition_public info when "verbose"
+	 * @return [{address:{string}, address_index:{string}, is_change:{number}, is_definition_public:{number}, creation_ts:{string}}] list of addresses
+	 * 
+	 * Accepts params as Object too
+	 * @param {type?: {string}, reverse?: {string|boolean}, limit?: {number|string}, verbose?: {string|boolean}} [args] as Object - all are optional
+	 * @return [{address:{string}, address_index:{string}, is_change:{number}, is_definition_public:{number}, creation_ts:{string}}] list of addresses
+	 */
+	server.expose('getaddresses', function(args, opt, cb) {
+		console.log('getaddresses '+JSON.stringify(args));
+		let start_time = Date.now();
+		var {type, reverse, limit, verbose} = args;
+		if (Array.isArray(args))
+			[type, reverse, limit, verbose] = args;
+		reverse = (reverse == null || reverse === 'reverse') || String(reverse).toLowerCase() === "true";
+		limit = parseInt(limit) || 100;
+		verbose = (verbose === 'verbose') || String(verbose).toLowerCase() === "true";
+
+		var sql;
+		switch (type) {
+			case 'textcoin':
+				sql = "SELECT address, NULL AS address_index, NULL AS is_change";
+				sql += verbose ? ", (CASE WHEN unit_authors.unit IS NULL THEN 0 ELSE 1 END) AS is_definition_public" : "";
+				sql += ", "+ db.getUnixTimestamp("creation_date")+" AS creation_ts FROM sent_mnemonics";
+				sql += verbose ? " LEFT JOIN unit_authors USING(address)" : "";
+				sql += verbose ? " GROUP BY address" : "";
+				break;
+			case 'shared':
+				sql = "SELECT shared_address AS address, NULL AS address_index, NULL AS is_change";
+				sql += verbose ? ", (CASE WHEN unit_authors.unit IS NULL THEN 0 ELSE 1 END) AS is_definition_public" : "";
+				sql += ", "+ db.getUnixTimestamp("creation_date")+" AS creation_ts FROM shared_addresses";
+				sql += verbose ? " LEFT JOIN unit_authors ON shared_address = address" : "";
+				sql += verbose ? " GROUP BY shared_address" : "";
+				break;
+			default:
+				sql = "SELECT address, address_index, is_change";
+				sql += verbose ? ", (CASE WHEN unit_authors.unit IS NULL THEN 0 ELSE 1 END) AS is_definition_public" : "";
+				sql += ", "+ db.getUnixTimestamp("creation_date")+" AS creation_ts FROM my_addresses";
+				sql += verbose ? " LEFT JOIN unit_authors USING(address)" : "";
+				if (type === 'deposit' || type === 'change')
+					sql += " WHERE is_change="+ (type === 'change' ? "1" : "0");
+				sql += verbose ? " GROUP BY address" : "";
+				break;
+		}
+		sql += " ORDER BY creation_ts "+ (reverse ? "DESC" : "") +" LIMIT "+ limit;
+		db.query(sql, [], function(listOfAddresses) {
+			console.log('getaddresses took '+(Date.now()-start_time)+'ms');
+			cb(null, listOfAddresses);
+		});
+	});
+
+	/**
 	 * Returns address balance(stable and pending).
 	 * If address is invalid, then returns "invalid address".
 	 * If your wallet doesn`t own the address, then returns "address not found".
@@ -139,6 +193,7 @@ function initRPC() {
 	 * @return {"base":{"stable":{number},"pending":{number}}} balance
 	 */
 	server.expose('getbalance', function(args, opt, cb) {
+		console.log('getbalance '+JSON.stringify(args));
 		let start_time = Date.now();
 		var {address, asset} = args;
 		if (Array.isArray(args))
@@ -146,15 +201,15 @@ function initRPC() {
 		if (address) {
 			if (!validationUtils.isValidAddress(address))
 				return cb("invalid address");
-			db.query("SELECT COUNT(*) AS count FROM my_addresses WHERE address = ?", [address], function(rows) {
-				if (!rows[0].count)
+			db.query("SELECT address FROM my_addresses WHERE address = ? UNION SELECT shared_address AS address FROM shared_addresses WHERE shared_address = ? UNION SELECT address FROM sent_mnemonics WHERE address = ?;", [address, address, address], function(rows) {
+				if (rows.length !== 1)
 					return cb("address not found");
 				if (asset && asset !== 'base' && !validationUtils.isValidBase64(asset, constants.HASH_LENGTH))
 					return cb("bad asset: "+asset);
 				db.query(
 					"SELECT asset, is_stable, SUM(amount) AS balance \n\
 					FROM outputs JOIN units USING(unit) \n\
-					WHERE is_spent=0 AND address=? AND sequence='good' AND asset "+((asset && asset !== 'base') ? "="+db.escape(asset) : "IS NULL")+" \n\
+					WHERE is_definition_public=0 AND address=? AND sequence='good' AND asset "+((asset && asset !== 'base') ? "="+db.escape(asset) : "IS NULL")+" \n\
 					GROUP BY is_stable", [address],
 					function(rows) {
 						var balance = {};
@@ -193,21 +248,32 @@ function initRPC() {
 
 	/**
 	 * Returns transaction by unit ID.
-	 * @param {string} unit - transaction unit iD
-	 * @param {boolean} [verbose] - optional - includes unit definition if "verbose" is second parameter
+	 * @param {string} unit - transaction unit ID
+	 * @param {string|boolean} [verbose] - optional, includes unit definition if "verbose" is second parameter
+	 * @param {string} [asset] - optional, asset ID
 	 * @return {"action":{'invalid','received','sent','moved'},"amount":{number},"my_address":{string},"arrPayerAddresses":[{string}],"confirmations":{0,1},"unit":{string},"fee":{number},"time":{string},"level":{number},"asset":{string}} one transaction
 	 *
 	 * Accepts params as Object too
-	 * @param {unit?: {string}, verbose?: {boolean}} [args] as Object - verbose is optional
+	 * @param {unit: {string}, verbose?: {string|boolean}, asset?: {string}} [args] as Object - verbose is optional
 	 * @return {"action":{'invalid','received','sent','moved'},"amount":{number},"my_address":{string},"arrPayerAddresses":[{string}],"confirmations":{0,1},"unit":{string},"fee":{number},"time":{string},"level":{number},"asset":{string}} one transaction
 	 */
 	server.expose('gettransaction', function(args, opt, cb) {
-		var {unit, verbose} = args;
-		if (Array.isArray(args))
-			[unit, verbose] = args;
-		listtransactions({unit}, opt, function(err, results) {
+		var {unit, verbose, asset} = args;
+		if (Array.isArray(args)) {
+			if (typeof args[0] === 'string')
+				[unit, verbose, asset] = args;
+			else
+				return cb('unit must be a string');
+		}
+		if (!unit)
+			return cb('unit is required');
+		verbose = (verbose === 'verbose') || String(verbose).toLowerCase() === "true";
+
+		listtransactions({unit, since_mci:1, asset}, opt, function(err, results) {
 			if (err)
 				return cb(err);
+			if (!results.length)
+				return cb('transaction not found in wallet for ' + (asset || 'base') + ' asset');
 			if (!verbose)
 				return cb(null, {unit, details:results});
 			storage.readJoint(db, unit, {
@@ -238,6 +304,7 @@ function initRPC() {
 	server.expose('listtransactions', listtransactions);
 
 	function listtransactions(args, opt, cb) {
+		console.log('listtransactions '+JSON.stringify(args));
 		let start_time = Date.now();
 		var {address, since_mci, unit, asset} = args;
 		if (Array.isArray(args))
@@ -269,7 +336,7 @@ function initRPC() {
 				opts.asset = asset;
 			}
 			Wallet.readTransactionHistory(opts, function(result) {
-				console.log('listtransactions '+JSON.stringify({address, since_mci, unit, asset})+' took '+(Date.now()-start_time)+'ms');
+				console.log('listtransactions '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms');
 				cb(null, result);
 			});
 		}
@@ -280,12 +347,12 @@ function initRPC() {
 	 * Send funds to address.
 	 * If address is invalid, then returns "invalid address".
 	 * @param {string} address - wallet address
-	 * @param {number} amount - amount in Bytes
-	 * @param {string} [asset] - optional
+	 * @param {number|string} amount - positive integer
+	 * @param {string} [asset] - asset ID, optional
 	 * @return {string} unit ID
 	 *
 	 * Accepts params as Object too
-	 * @param {address:{string}, amount:{number}, asset?:{string}} args as Object - asset is optional
+	 * @param {address:{string}, amount:{number|string}, asset?:{string}} args as Object - asset is optional
  	 * @return {string} unit ID
 	 */
 	server.expose('sendtoaddress', function(args, opt, cb) {
@@ -293,17 +360,21 @@ function initRPC() {
 		let start_time = Date.now();
 		var {address, amount, asset} = args;
 		if (Array.isArray(args)) {
-			if (typeof args[0] === 'string' && typeof args[1] === 'number')
+			if (typeof args[0] === 'string')
 				[address, amount, asset] = args;
 			else
-				return cb('wallet must be string and amount must be whole number');
+				return cb('address must be a string');
 		}
+		if (amount != parseInt(amount) || parseInt(amount) < 1)
+			return cb('amount must be positive integer');
+		amount = parseInt(amount);
 		if (asset && asset !== 'base' && !validationUtils.isValidBase64(asset, constants.HASH_LENGTH))
 			return cb("bad asset: "+asset);
 		if (!amount || !address)
-			return cb("wrong parameters");
+			return cb("required parameters missing");
 		if (!validationUtils.isValidAddress(address))
 			return cb("invalid address");
+
 		headlessWallet.issueChangeAddressAndSendPayment(asset, amount, address, null, function(err, unit) {
 			console.log('sendtoaddress '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms, unit='+unit+', err='+err);
 			cb(err, err ? undefined : unit);
@@ -311,7 +382,107 @@ function initRPC() {
 	});
 
 	/**
+	 * Send funds from address to address, keeping change to sending address.
+	 * If eiher addresses are invalid, then returns "invalid address" error.
+	 * If your wallet doesn`t own the address, then returns "address not found".
+	 * Bytes payment can have amount as 'all', other assets must specify exact amount.
+	 * @param {string} from_address - wallet address
+	 * @param {string} to_address - wallet address
+	 * @param {number|string} amount - positive integer or 'all' (for Bytes only)
+	 * @param {string} [asset] - asset ID, optional
+	 * @return {string} unit ID
+	 *
+	 * Accepts params as Object too
+	 * @param {from_address:{string}, to_address:{string}, amount:{number|string}, asset?:{string}} args as Object - asset is optional
+ 	 * @return {string} unit ID
+	 */
+	server.expose('sendfrom', function(args, opt, cb) {
+		console.log('sendfrom '+JSON.stringify(args));
+		let start_time = Date.now();
+		var {from_address, to_address, amount, asset} = args;
+		if (Array.isArray(args)) {
+			if (typeof args[0] === 'string' && typeof args[1] === 'string')
+				[from_address, to_address, amount, asset] = args;
+			else
+				return cb('from_address and to_address must be strings');
+		}
+		amount = (String(amount).toLowerCase() === 'all') ? 'all' : amount;
+		if (amount !== 'all') {
+			if (amount != parseInt(amount) || parseInt(amount) < 1)
+				return cb('amount must be positive integer');
+			amount = parseInt(amount);
+		}
+		if (asset && asset !== 'base' && !validationUtils.isValidBase64(asset, constants.HASH_LENGTH))
+			return cb("bad asset: "+asset);
+		if (!amount || !to_address || !from_address)
+			return cb("required parameters missing");
+		if (!validationUtils.isValidAddress(to_address) || !validationUtils.isValidAddress(from_address))
+			return cb("invalid address");
+
+		db.query("SELECT address FROM my_addresses WHERE address = ? UNION SELECT shared_address AS address FROM shared_addresses WHERE shared_address = ?;", [from_address, from_address], function(rows){
+			if (rows.length !== 1)
+				return cb("address not found");
+			if (amount === 'all') {
+				if (asset && asset !== 'base')
+					return cb("use exact amount for custom assets");
+
+				headlessWallet.sendAllBytesFromAddress(from_address, to_address, null, function(err, unit) {
+					console.log('sendfrom '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms, unit='+unit+', err='+err);
+					cb(err, err ? undefined : unit);
+				});
+			}
+			else
+				headlessWallet.sendAssetFromAddress(asset, amount, from_address, to_address, null, function(err, unit) {
+					console.log('sendfrom '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms, unit='+unit+', err='+err);
+					cb(err, err ? undefined : unit);
+				});
+		});
+	});
+
+	/**
+	 * Claim the textcoin.
+	 * If address is invalid, then returns "invalid address".
+	 * @param {string} mnemonic - textcoin words
+	 * @param {string} [address] - wallet address to receive funds
+	 * @return {unit:{string}, asset?:{string}} unit ID and asset
+	 *
+	 * Accepts params as Object too
+	 * @param {mnemonic:{string}, address?:{string}} args as Object
+ 	 * @return {nit:{string}, asset?:{string}} unit ID and asset
+	 */
+	server.expose('claimtextcoin', claimtextcoin);
+	// aliases for claimtextcoin
+	server.expose('sweeptextcoin', claimtextcoin);
+	server.expose('sweeppaperwallet', claimtextcoin);
+
+	function claimtextcoin(args, opt, cb) {
+		console.log('claimtextcoin '+JSON.stringify(args));
+		let start_time = Date.now();
+		var {mnemonic, address} = args;
+		if (Array.isArray(args)) {
+			if (typeof args[0] === 'string')
+				[mnemonic, address] = args;
+			else
+				return cb('mnemonic must be a string');
+		}
+		if (!mnemonic)
+			return cb("mnemonic is required");
+		if (address && !validationUtils.isValidAddress(address))
+			return cb('invalid address');
+
+		headlessWallet.readFirstAddress((first_address) => {
+			address = address || first_address;
+			Wallet.receiveTextCoin(mnemonic, address, function(err, unit, asset) {
+				console.log('claimtextcoin '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms, unit='+unit+', err='+err);
+				cb(err, err ? undefined : {unit, asset});
+			});
+		});
+	}
+
+	/**
 	 * Signs a message with address.
+	 * If address is invalid, then returns "invalid address".
+	 * If your wallet doesn`t own the address, then returns "address not found".
 	 * @param {string} address - wallet that signs the message
 	 * @param {string|object} message - message to be signed
 	 * @return {string} base64 encoded signature of {version:{string}, signed_message:{string|object}, authors:{object}}
@@ -323,21 +494,21 @@ function initRPC() {
 	server.expose('signmessage', function(args, opt, cb) {
 		var {address, message} = args;
 		if (Array.isArray(args)) {
-			if (typeof args[0] === 'string' && args[1])
+			if (typeof args[0] === 'string')
 				[address, message] = args;
 			else
-				return cb('address and message are mandatory');
+				return cb('address must be a string');
 		}
 		if (address && !validationUtils.isValidAddress(address))
-			return cb('address is invalid');
-		if (!message)
-			return cb('message is mandatory');
+			return cb('invalid address');
+		if (!message || (typeof message !== 'string' && typeof message !== 'object') || !Object.keys(message).length)
+			return cb('message must be string or object');
 
 		headlessWallet.readFirstAddress((first_address) => {
 			address = address || first_address;
 			db.query("SELECT definition FROM my_addresses WHERE address=?", [address], function(rows){
 				if (rows.length !== 1)
-					return cb("definition not found");
+					return cb("address not found");
 				headlessWallet.signMessage(address, message, function(err, objSignedMessage){
 					if (err)
 						return cb(err);
@@ -350,7 +521,7 @@ function initRPC() {
 
 	/**
 	 * Verifies signed message.
-	 * @param {string} address - wallet that signed the message
+	 * @param {string} [address] - wallet that signed the message (optional, first param can be null)
 	 * @param {string} signature - base64 encoded signature
 	 * @param {string|object} [message] - the message that was signed (optional)
  	 * @return {version:{string}, signed_message:{string|object}, authors:{object}} objSignedMessage
@@ -366,13 +537,16 @@ function initRPC() {
 	function verifymessage(args, opt, cb) {
 		var {address, signature, message} = args;
 		if (Array.isArray(args)) {
-			if (typeof args[0] === 'string' && typeof args[1] === 'string')
+			if (typeof args[1] === 'string')
 				[address, signature, message] = args;
 			else
-				return cb('address and signature are mandatory');
+				return cb('signature must be a string');
 		}
 		if (!validationUtils.isValidBase64(signature))
 			return cb('signature is not valid base64');
+		if (message && (typeof message !== 'string' && typeof message !== 'object' && !Object.keys(message).length))
+			return cb('message must be string or object');
+
 		var signedMessageJson = Buffer.from(signature, 'base64').toString('utf8');
 		var objSignedMessage = {};
 		try {

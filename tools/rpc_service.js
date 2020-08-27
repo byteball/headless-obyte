@@ -136,6 +136,8 @@ function initRPC() {
 	 * @return [{address:{string}, address_index:{string}, is_change:{number}, is_used:{number}, creation_ts:{string}}] list of addresses
 	 */
 	server.expose('getaddresses', function(args, opt, cb) {
+		console.log('getaddresses '+JSON.stringify(args));
+		let start_time = Date.now();
 		var {type, reverse, limit} = args;
 		if (Array.isArray(args))
 			[type, reverse, limit] = args;
@@ -159,6 +161,7 @@ function initRPC() {
 		}
 		sql += " ORDER BY creation_ts "+ (reverse ? "DESC" : "") +" LIMIT "+ limit;
 		db.query(sql, [], function(listOfAddresses) {
+			console.log('getaddresses took '+(Date.now()-start_time)+'ms');
 			cb(null, listOfAddresses);
 		});
 	});
@@ -177,6 +180,7 @@ function initRPC() {
 	 * @return {"base":{"stable":{number},"pending":{number}}} balance
 	 */
 	server.expose('getbalance', function(args, opt, cb) {
+		console.log('getbalance '+JSON.stringify(args));
 		let start_time = Date.now();
 		var {address, asset} = args;
 		if (Array.isArray(args))
@@ -286,6 +290,7 @@ function initRPC() {
 	server.expose('listtransactions', listtransactions);
 
 	function listtransactions(args, opt, cb) {
+		console.log('listtransactions '+JSON.stringify(args));
 		let start_time = Date.now();
 		var {address, since_mci, unit, asset} = args;
 		if (Array.isArray(args))
@@ -317,7 +322,7 @@ function initRPC() {
 				opts.asset = asset;
 			}
 			Wallet.readTransactionHistory(opts, function(result) {
-				console.log('listtransactions '+JSON.stringify({address, since_mci, unit, asset})+' took '+(Date.now()-start_time)+'ms');
+				console.log('listtransactions '+JSON.stringify(args)+' took '+(Date.now()-start_time)+'ms');
 				cb(null, result);
 			});
 		}

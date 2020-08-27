@@ -723,7 +723,7 @@ function handleText(from_address, text, onUnknown){
 
 				function payout(amount, asset){
 					if (!amount)
-						return device.sendMessageToDevice(from_address, 'text', 'amount must be postitive integer'); 
+						return device.sendMessageToDevice(from_address, 'text', 'amount must be positive integer'); 
 					if (amount === 'all') {
 						if (asset===null)
 							return sendAllBytes(conf.payout_address, from_address);

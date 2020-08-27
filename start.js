@@ -284,9 +284,11 @@ function prepareBalanceText(handleBalanceText){
 		for (var asset in assocBalances){
 			var total = assocBalances[asset].stable + assocBalances[asset].pending;
 			var units = (asset === 'base') ? ' bytes' : (' of ' + asset);
-			var line = total + units;
+			var line = "* "+ total + units;
 			if (assocBalances[asset].pending)
 				line += ' (' + assocBalances[asset].pending + ' pending)';
+			else if (asset === 'base')
+				line += ' (including earned commissions)';
 			arrLines.push(line);
 		}
 		handleBalanceText(arrLines.join("\n"));
@@ -935,14 +937,15 @@ function handleText(from_address, text, onUnknown){
 			analyzePayParams(params[0], params[1], function(asset, amount){
 				if(asset===null && amount===null){
 					var msg = "syntax: pay [amount] [asset]";
-					msg +=	"\namount: digits only";
-					msg +=	"\nasset: one of '', 'bytes', 'blackbytes', ASSET_ID";
+					msg +=	"\namount: positive integer or 'all'";
+					msg +=	"\nasset: optional ('bytes', 'blackbytes', any ASSET_ID)";
 					msg +=	"\n";
-					msg +=	"\nExample 1: 'pay 12345' pays 12345 bytes";
-					msg +=	"\nExample 2: 'pay 12345 bytes' pays 12345 bytes";
-					msg +=	"\nExample 3: 'pay 12345 blackbytes' pays 12345 blackbytes";
-					msg +=	"\nExample 4: 'pay 12345 qO2JsiuDMh/j+pqJYZw3u82O71WjCDf0vTNvsnntr8o=' pays 12345 blackbytes";
-					msg +=	"\nExample 5: 'pay 12345 ASSET_ID' pays 12345 of asset with ID ASSET_ID";
+					msg +=	"\n* Example 1: 'pay 12345' withdraws 12345 bytes";
+					msg +=	"\n* Example 2: 'pay 12345 bytes' withdraws 12345 bytes";
+					msg +=	"\n* Example 3: 'pay all bytes' withdraws all bytes (including earned commissions)";
+					msg +=	"\n* Example 4: 'pay 12345 blackbytes' withdraws 12345 blackbytes";
+					msg +=	"\n* Example 5: 'pay 12345 qO2JsiuDMh/j+pqJYZw3u82O71WjCDf0vTNvsnntr8o=' withdraws 12345 blackbytes";
+					msg +=	"\n* Example 6: 'pay 12345 ASSET_ID' withdraws 12345 of asset with ASSET_ID";
 					return device.sendMessageToDevice(from_address, 'text', msg);
 				}
 
@@ -950,6 +953,14 @@ function handleText(from_address, text, onUnknown){
 					return device.sendMessageToDevice(from_address, 'text', "payout address not defined");
 
 				function payout(amount, asset){
+					if (!amount)
+						return device.sendMessageToDevice(from_address, 'text', 'amount must be positive integer'); 
+					if (amount === 'all') {
+						if (asset===null)
+							return sendAllBytes(conf.payout_address, from_address);
+						else
+							return device.sendMessageToDevice(from_address, 'text', '[get balance](command:balance) and then use exact amount for custom assets');
+					}
 					if (conf.bSingleAddress)
 						readSingleAddress(function(address){
 							sendPayment(asset, amount, conf.payout_address, address, from_address);
@@ -1036,30 +1047,27 @@ function getFileSizes(rootDir, cb) {
 
 function analyzePayParams(amountText, assetText, cb){
 	// expected:
-	// amountText = amount; only digits
-	// assetText = asset; '' -> whitebytes, 'bytes' -> whitebytes, 'blackbytes' -> blackbytes, '{asset-ID}' -> any asset
+	// amountText: positive integer or 'all'
+	// assetText: '' -> whitebytes, 'bytes' -> whitebytes, 'blackbytes' -> blackbytes, '{asset-ID}' -> any asset
+	if (amountText==='' && assetText==='') return cb(null, null);
 
-	if (amountText===''&&assetText==='') return cb(null, null);
+	var pattern = /^\d+$/; // checks if positive integer
+	amountText = String(amountText).toLowerCase();
 
-	var pattern = /^\d+$/;
-    if(pattern.test(amountText)){
-
-		var amount = parseInt(amountText);
-
-		var asset = assetText.toLowerCase();
-		switch(asset){
-			case '':
-			case 'bytes':
-				return cb(null, amount);
-			case 'blackbytes':
-				return cb(constants.BLACKBYTES_ASSET, amount);
-			default:
-				// return original assetText string because asset ID it is case sensitive
-				return cb(assetText, amount);
-		}
-
-	}else{
+	if(!pattern.test(amountText) && amountText !== 'all')
 		return cb(null, null);
+	if (amountText !== 'all')
+		amountText = parseInt(amountText);
+
+	switch(assetText.toLowerCase()){
+		case '':
+		case 'bytes':
+			return cb(null, amountText);
+		case 'blackbytes':
+			return cb(constants.BLACKBYTES_ASSET, amountText);
+		default:
+			// return original assetText string because asset ID it is case sensitive
+			return cb(assetText, amountText);
 	}
 }
 

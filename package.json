@@ -2,7 +2,7 @@
   "name": "headless-obyte",
   "description": "Obyte headless wallet",
   "author": "Obyte",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "main": "start.js",
   "scripts": {
     "generate-docs": "node_modules/.bin/jsdoc -c jsdoc.json --readme ./README.md"

@@ -428,11 +428,11 @@ function initRPC() {
 	 * If address is invalid, then returns "invalid address".
 	 * @param {string} mnemonic - textcoin words
 	 * @param {string} [address] - wallet address to receive funds
-	 * @return {unit:{string}, asset?:{string}} unit ID and asset (claim again if not null)
+	 * @return {unit:{string}, asset?:{string}} unit ID and asset
 	 *
 	 * Accepts params as Object too
 	 * @param {mnemonic:{string}, address?:{string}} args as Object
- 	 * @return {nit:{string}, asset?:{string}} unit ID and asset (claim again if not null)
+ 	 * @return {nit:{string}, asset?:{string}} unit ID and asset
 	 */
 	server.expose('claimtextcoin', claimtextcoin);
 	// aliases for claimtextcoin

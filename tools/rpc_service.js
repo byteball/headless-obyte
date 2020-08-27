@@ -17,8 +17,8 @@ if (require.main === module && !fs.existsSync(appDataDir) && fs.existsSync(path.
 	fs.renameSync(path.dirname(appDataDir)+'/headless-byteball', appDataDir);
 }
 var conf = require('ocore/conf.js');
-if (!conf.rpcInterface || !conf.rpcPort)
-	throw new Error('conf.rpcInterface and conf.rpcPort must be configured.');
+if (!conf.rpcPort)
+	throw new Error('conf.rpcPort must be configured.');
 
 var headlessWallet = require('../start.js');
 var eventBus = require('ocore/event_bus.js');

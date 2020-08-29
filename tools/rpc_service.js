@@ -60,7 +60,7 @@ function initRPC() {
 	 * @function
 	 * @returns {getInfoResponse} Response
 	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getinfo", "params":{} }' http://127.0.0.1:6332
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getinfo", "params":{} }' http://127.0.0.1:6332 | json_pp
 	 */
 	server.expose('getinfo', function(args, opt, cb) {
 		var connections = network.getConnectionStatus();
@@ -84,7 +84,7 @@ function initRPC() {
 	 * @function
 	 * @return {number} response
 	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getconnectioncount", "params":{} }' http://127.0.0.1:6332
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getconnectioncount", "params":{} }' http://127.0.0.1:6332 | json_pp
 	 */
 	server.expose('getconnectioncount', function(args, opt, cb) {
 		var connections = network.getConnectionStatus();
@@ -112,7 +112,7 @@ function initRPC() {
 	 * @function
 	 * @return {getNetworkInfoResponse} Response
 	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getnetworkinfo", "params":{} }' http://127.0.0.1:6332
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getnetworkinfo", "params":{} }' http://127.0.0.1:6332 | json_pp
 	 */
 	server.expose('getnetworkinfo', function(args, opt, cb) {
 		var connections = network.getConnectionStatus();
@@ -139,7 +139,7 @@ function initRPC() {
 	 * @param {string} address
 	 * @return {boolean} is_valid
 	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"validateaddress", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3"] }' http://127.0.0.1:6332
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"validateaddress", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3"] }' http://127.0.0.1:6332 | json_pp
 	 */
 	server.expose('validateaddress', validateaddres);
 	// alias for validateaddress
@@ -151,7 +151,7 @@ function initRPC() {
 	 * @param {string} address args as Object
 	 * @return {boolean} is_valid
 	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"verifyaddress", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3"] }' http://127.0.0.1:6332
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"verifyaddress", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3"] }' http://127.0.0.1:6332 | json_pp
 	 */
 	server.expose('verifyaddress', validateaddres);
 
@@ -167,7 +167,7 @@ function initRPC() {
 	 * @function
 	 * @return {string} address
 	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getnewaddress", "params":{} }' http://127.0.0.1:6332
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getnewaddress", "params":{} }' http://127.0.0.1:6332 | json_pp
 	 */
 	server.expose('getnewaddress', function(args, opt, cb) {
 		mutex.lock(['rpc_getnewaddress'], function(unlock){
@@ -197,7 +197,7 @@ function initRPC() {
 	 * @param {string|boolean} [verbose] - off by default, includes is_definition_public info when "verbose"
 	 * @return {Array<getaddressesResponse>} list of addresses
 	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getaddresses", "params":{} }' http://127.0.0.1:6332
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getaddresses", "params":{} }' http://127.0.0.1:6332 | json_pp
 	 */
 	server.expose('getaddresses', function(args, opt, cb) {
 		console.log('getaddresses '+JSON.stringify(args));
@@ -263,9 +263,9 @@ function initRPC() {
 	 * @param {string} [asset]
 	 * @return {balanceResponse} balance
 	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getbalance", "params":{} }' http://127.0.0.1:6332
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getbalance", "params":{} }' http://127.0.0.1:6332 | json_pp
 	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getbalance", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3"] }' http://127.0.0.1:6332
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getbalance", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3"] }' http://127.0.0.1:6332 | json_pp
 	 */
 	server.expose('getbalance', function(args, opt, cb) {
 		console.log('getbalance '+JSON.stringify(args));
@@ -315,7 +315,7 @@ function initRPC() {
 	 * @function
 	 * @return {balanceResponse} balance
 	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getmainbalance", "params":{} }' http://127.0.0.1:6332
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getmainbalance", "params":{} }' http://127.0.0.1:6332 | json_pp
 	 */
 	server.expose('getmainbalance', function(args, opt, cb) {
 		let start_time = Date.now();
@@ -348,7 +348,7 @@ function initRPC() {
 	 * @param {string} [asset] - asset ID
 	 * @return {gettransactionResponse} Response
 	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"gettransaction", "params":["vuudtbL5ASwr0LJZ9tuV4S0j/lIsotJCKifphvGATmU=", true] }' http://127.0.0.1:6332
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"gettransaction", "params":["vuudtbL5ASwr0LJZ9tuV4S0j/lIsotJCKifphvGATmU=", true] }' http://127.0.0.1:6332 | json_pp
 	 */
 	server.expose('gettransaction', function(args, opt, cb) {
 		var {unit, verbose, asset} = args;
@@ -393,9 +393,9 @@ function initRPC() {
 	 * @param {string} [asset] - optional, counts only if no address
 	 * @return {Array<gettransactionResponse>} Response
 	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"listtransactions", "params":{"since_mci": 1234} }' http://127.0.0.1:6332
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"listtransactions", "params":{"since_mci": 1234} }' http://127.0.0.1:6332 | json_pp
 	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"listtransactions", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3"] }' http://127.0.0.1:6332
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"listtransactions", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3"] }' http://127.0.0.1:6332 | json_pp
 	 */
 	server.expose('listtransactions', listtransactions);
 
@@ -450,7 +450,7 @@ function initRPC() {
 	 * @param {string} [asset] - asset ID
 	 * @returns {string} unit ID
 	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"sendtoaddress", "params":["BVVJ2K7ENPZZ3VYZFWQWK7ISPCATFIW3", 1000] }' http://127.0.0.1:6332
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"sendtoaddress", "params":["BVVJ2K7ENPZZ3VYZFWQWK7ISPCATFIW3", 1000] }' http://127.0.0.1:6332 | json_pp
 	 */
 	server.expose('sendtoaddress', function(args, opt, cb) {
 		console.log('sendtoaddress '+JSON.stringify(args));
@@ -492,7 +492,7 @@ function initRPC() {
 	 * @param {string} [asset] - asset ID
 	 * @return {string} unit ID
 	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"sendfrom", "params":{"from_address":"BVVJ2K7ENPZZ3VYZFWQWK7ISPCATFIW3", "to_address":"SNYRRHTIWDVJHSKE5BUIS3HWXKBN57JJ", "amount:"1000} }' http://127.0.0.1:6332
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"sendfrom", "params":{"from_address":"BVVJ2K7ENPZZ3VYZFWQWK7ISPCATFIW3", "to_address":"SNYRRHTIWDVJHSKE5BUIS3HWXKBN57JJ", "amount:"1000} }' http://127.0.0.1:6332 | json_pp
 	 */
 	server.expose('sendfrom', function(args, opt, cb) {
 		console.log('sendfrom '+JSON.stringify(args));
@@ -552,35 +552,11 @@ function initRPC() {
 	 * @param {string} [address] - wallet address to receive funds
 	 * @return {claimtextcoinResponse} unit ID and asset
 	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"claimtextcoin", "params":{mnemonic: "gym-cruise-upset-license-scan-viable-diary-release-corn-legal-bronze-mosquito"} }' http://127.0.0.1:6332
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"claimtextcoin", "params":{mnemonic: "gym-cruise-upset-license-scan-viable-diary-release-corn-legal-bronze-mosquito"} }' http://127.0.0.1:6332 | json_pp
 	 */
 	server.expose('claimtextcoin', claimtextcoin);
 	// aliases for claimtextcoin
-	/**
-	 * Claim the textcoin.<br>
-	 * If address is invalid, then returns "invalid address". Aliases for claimtextcoin
-	 * @name sweepTextcoin
-	 * @memberOf rpc_service
-	 * @function
-	 * @param {string} mnemonic - textcoin words
-	 * @param {string} [address] - wallet address to receive funds
-	 * @return {claimtextcoinResponse} unit ID and asset
-	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"sweeptextcoin", "params":{mnemonic: "gym-cruise-upset-license-scan-viable-diary-release-corn-legal-bronze-mosquito"} }' http://127.0.0.1:6332
-	 */
 	server.expose('sweeptextcoin', claimtextcoin);
-	/**
-	 * Claim the textcoin.<br>
-	 * If address is invalid, then returns "invalid address". Aliases for claimtextcoin
-	 * @name sweepPaperWallet
-	 * @memberOf rpc_service
-	 * @function
-	 * @param {string} mnemonic - textcoin words
-	 * @param {string} [address] - wallet address to receive funds
-	 * @return {claimtextcoinResponse} unit ID and asset
-	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"sweeppaperwallet", "params":{mnemonic: "gym-cruise-upset-license-scan-viable-diary-release-corn-legal-bronze-mosquito"} }' http://127.0.0.1:6332
-	 */
 	server.expose('sweeppaperwallet', claimtextcoin);
 
 	function claimtextcoin(args, opt, cb) {
@@ -618,7 +594,7 @@ function initRPC() {
 	 * @param {string|object} message - message to be signed
 	 * @return {string} base64 encoded signature
 	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"signmessage", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3", "Let there be light!"] }' http://127.0.0.1:6332
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"signmessage", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3", "Let there be light!"] }' http://127.0.0.1:6332 | json_pp
 	 */
 	server.expose('signmessage', function(args, opt, cb) {
 		var {address, message} = args;
@@ -664,7 +640,7 @@ function initRPC() {
 	 * @param {string|object} [message] - the message that was signed
 	 * @return {verifymessageResponse} objSignedMessage
 	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"verifymessage", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3", "TGV0IHRoZXJlIGJlIGxpZ2h0IQ==", "Let there be light!"] }' http://127.0.0.1:6332
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"verifymessage", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3", "TGV0IHRoZXJlIGJlIGxpZ2h0IQ==", "Let there be light!"] }' http://127.0.0.1:6332 | json_pp
 	 */
 	server.expose('verifymessage', verifymessage);
 	// alias for verifymessage
@@ -678,7 +654,7 @@ function initRPC() {
 	 * @param {string|object} [message] - the message that was signed
 	 * @return {verifymessageResponse} objSignedMessage
 	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"validatemessage", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3", "TGV0IHRoZXJlIGJlIGxpZ2h0IQ==", "Let there be light!"] }' http://127.0.0.1:6332
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"validatemessage", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3", "TGV0IHRoZXJlIGJlIGxpZ2h0IQ==", "Let there be light!"] }' http://127.0.0.1:6332 | json_pp
 	 */
 	server.expose('validatemessage', verifymessage);
 

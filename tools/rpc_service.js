@@ -1,5 +1,7 @@
 /*jslint node: true */
-
+/**
+ * @namespace rpc_service
+ */
 /*
 	Accept commands via JSON-RPC API.
 	The daemon listens on port 6332 by default.
@@ -45,8 +47,20 @@ function initRPC() {
 	});
 
 	/**
+	 * @typedef {Object} getInfoResponse
+	 * @property {number} connections
+	 * @property {number} last_mci
+	 * @property {number} last_stable_mci
+	 * @property {number} count_unhandled
+	 */
+	/**
 	 * Returns information about the current state.
-	 * @return {connections:{number}, last_mci:{number}, last_stable_mci:{number}, count_unhandled:{number}}
+	 * @name getInfo
+	 * @memberOf rpc_service
+	 * @function
+	 * @returns {getInfoResponse} Response
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getinfo", "params":{} }' http://127.0.0.1:6332
 	 */
 	server.expose('getinfo', function(args, opt, cb) {
 		var connections = network.getConnectionStatus();
@@ -65,7 +79,12 @@ function initRPC() {
 
 	/**
 	 * Returns the number of connections to other nodes.
-	 * @return {number} result
+	 * @name getConnectionCount
+	 * @memberOf rpc_service
+	 * @function
+	 * @return {number} response
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getconnectioncount", "params":{} }' http://127.0.0.1:6332
 	 */
 	server.expose('getconnectioncount', function(args, opt, cb) {
 		var connections = network.getConnectionStatus();
@@ -73,8 +92,27 @@ function initRPC() {
 	});
 
 	/**
+	 * @typedef {Object} getNetworkInfoResponse
+	 * @property {string} version
+	 * @property {string} subversion
+	 * @property {string} protocolversion
+	 * @property {string} alt
+	 * @property {number} connections
+	 * @property {boolean} bLight
+	 * @property {boolean} socksConfigured
+	 * @property {number} COUNT_WITNESSES
+	 * @property {number} MAJORITY_OF_WITNESSES
+	 * @property {string} GENESIS_UNIT
+	 * @property {string} BLACKBYTES_ASSET
+	 */
+	/**
 	 * Returns information about the node's connection to the network.
-	 * @return {object} result
+	 * @name getNetworkInfo
+	 * @memberOf rpc_service
+	 * @function
+	 * @return {getNetworkInfoResponse} Response
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getnetworkinfo", "params":{} }' http://127.0.0.1:6332
 	 */
 	server.expose('getnetworkinfo', function(args, opt, cb) {
 		var connections = network.getConnectionStatus();
@@ -94,16 +132,28 @@ function initRPC() {
 	});
 
 	/**
-	 * Validates address.
+	 * Validates address
+	 * @name validateAddress
+	 * @memberOf rpc_service
+	 * @function
 	 * @param {string} address
 	 * @return {boolean} is_valid
-	 *
-	 * Accepts params as Object too
-	 * @param {address:{string}} args as Object
-	 * @return {boolean} is_valid
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"validateaddress", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3"] }' http://127.0.0.1:6332
 	 */
 	server.expose('validateaddress', validateaddres);
+
 	// alias for validateaddress
+	/**
+	 * Validates address. alias for validateaddress
+	 * @name verifyAddress
+	 * @memberOf rpc_service
+	 * @function
+	 * @param {string} address args as Object
+	 * @return {boolean} is_valid
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"verifyaddress", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3"] }' http://127.0.0.1:6332
+	 */
 	server.expose('verifyaddress', validateaddres);
 
 	function validateaddres(args, opt, cb) {
@@ -113,7 +163,12 @@ function initRPC() {
 
 	/**
 	 * Creates and returns new wallet address.
+	 * @name getNewAddress
+	 * @memberOf rpc_service
+	 * @function
 	 * @return {string} address
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getnewaddress", "params":{} }' http://127.0.0.1:6332
 	 */
 	server.expose('getnewaddress', function(args, opt, cb) {
 		mutex.lock(['rpc_getnewaddress'], function(unlock){
@@ -125,16 +180,25 @@ function initRPC() {
 	});
 
 	/**
+	 * @typedef {Object} getaddressesResponse
+	 * @property {string} address
+	 * @property {string} address_index
+	 * @property {number} is_change
+	 * @property {number} is_definition_public
+	 * @property {string} creation_ts
+	 */
+	/**
 	 * Returns the list of addresses for the whole wallet.
+	 * @name getAddresses
+	 * @memberOf rpc_service
+	 * @function
 	 * @param {string} [type] - optional, must be: "deposit", "change", "shared", "textcoin", null - shows both deposit and change by default
 	 * @param {string|boolean} [reverse] - optional, "reverse" by default
 	 * @param {number|string} [limit] - optional, 100 by default
 	 * @param {string|boolean} [verbose] - optional, off by default, includes is_definition_public info when "verbose"
-	 * @return [{address:{string}, address_index:{string}, is_change:{number}, is_definition_public:{number}, creation_ts:{string}}] list of addresses
-	 * 
-	 * Accepts params as Object too
-	 * @param {type?: {string}, reverse?: {string|boolean}, limit?: {number|string}, verbose?: {string|boolean}} [args] as Object - all are optional
-	 * @return [{address:{string}, address_index:{string}, is_change:{number}, is_definition_public:{number}, creation_ts:{string}}] list of addresses
+	 * @return {Array<getaddressesResponse>} list of addresses
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getaddresses", "params":{} }' http://127.0.0.1:6332
 	 */
 	server.expose('getaddresses', function(args, opt, cb) {
 		console.log('getaddresses '+JSON.stringify(args));
@@ -180,17 +244,29 @@ function initRPC() {
 	});
 
 	/**
-	 * Returns address balance(stable and pending).
-	 * If address is invalid, then returns "invalid address".
-	 * If your wallet doesn`t own the address, then returns "address not found".
+	 * @typedef {Object} assetInBalanceResponse
+	 * @property {number} stable
+	 * @property {number} pending
+	 */
+	/**
+	 * @typedef {Object} balanceResponse
+	 * @property {assetInBalanceResponse} asset
+	 */
+	/**
+	 * Returns address balance(stable and pending).<br>
+	 * If address is invalid, then returns "invalid address".<br>
+	 * If your wallet doesn`t own the address, then returns "address not found".<br>
 	 * If no address supplied, returns wallet balance(stable and pending).
-	 * @param {string} [address] - optional
-	 * @param {string} [asset] - optional
-	 * @return {"base":{"stable":{number},"pending":{number}}} balance
-	 *
-	 * Accepts params as Object too
-	 * @param {address?: {string}, asset?: {string}} [args] as Object - all are optional
-	 * @return {"base":{"stable":{number},"pending":{number}}} balance
+	 * @name getBalance
+	 * @memberOf rpc_service
+	 * @function
+	 * @param {string} [address]
+	 * @param {string} [asset]
+	 * @return {balanceResponse} balance
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getbalance", "params":{} }' http://127.0.0.1:6332
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getbalance", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3"] }' http://127.0.0.1:6332
 	 */
 	server.expose('getbalance', function(args, opt, cb) {
 		console.log('getbalance '+JSON.stringify(args));
@@ -235,8 +311,12 @@ function initRPC() {
 
 	/**
 	 * Returns wallet balance(stable and pending) without commissions earned from headers and witnessing.
-	 * 
-	 * @return {"base":{"stable":{number},"pending":{number}}} balance
+	 * @name getMainBalance
+	 * @memberOf rpc_service
+	 * @function
+	 * @return {balanceResponse} balance
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getmainbalance", "params":{} }' http://127.0.0.1:6332
 	 */
 	server.expose('getmainbalance', function(args, opt, cb) {
 		let start_time = Date.now();
@@ -247,15 +327,29 @@ function initRPC() {
 	});
 
 	/**
+	 * @typedef {Object} gettransactionResponse
+	 * @property {string} action
+	 * @property {number} amount
+	 * @property {string} my_address
+	 * @property {Array<String>} arrPayerAddresses
+	 * @property {number} confirmations
+	 * @property {string} unit
+	 * @property {number} fee
+	 * @property {string} time
+	 * @property {number} level
+	 * @property {string} asset
+	 */
+	/**
 	 * Returns transaction by unit ID.
+	 * @name getTransaction
+	 * @memberOf rpc_service
+	 * @function
 	 * @param {string} unit - transaction unit ID
-	 * @param {string|boolean} [verbose] - optional, includes unit definition if "verbose" is second parameter
+	 * @param {boolean|string} [verbose] - includes unit definition if "verbose" is second parameter
 	 * @param {string} [asset] - optional, asset ID
-	 * @return {"action":{'invalid','received','sent','moved'},"amount":{number},"my_address":{string},"arrPayerAddresses":[{string}],"confirmations":{0,1},"unit":{string},"fee":{number},"time":{string},"level":{number},"asset":{string}} one transaction
-	 *
-	 * Accepts params as Object too
-	 * @param {unit: {string}, verbose?: {string|boolean}, asset?: {string}} [args] as Object - verbose is optional
-	 * @return {"action":{'invalid','received','sent','moved'},"amount":{number},"my_address":{string},"arrPayerAddresses":[{string}],"confirmations":{0,1},"unit":{string},"fee":{number},"time":{string},"level":{number},"asset":{string}} one transaction
+	 * @return {gettransactionResponse} Response
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"gettransaction", "params":["vuudtbL5ASwr0LJZ9tuV4S0j/lIsotJCKifphvGATmU=", true] }' http://127.0.0.1:6332
 	 */
 	server.expose('gettransaction', function(args, opt, cb) {
 		var {unit, verbose, asset} = args;
@@ -288,18 +382,21 @@ function initRPC() {
 	});
 
 	/**
-	 * Returns transaction list.
-	 * If address is invalid, then returns "invalid address".
+	 * Returns transaction list.<br>
+	 * If address is invalid, then returns "invalid address".<br>
 	 * If no address supplied, returns wallet transaction list.
+	 * @name listTransactions
+	 * @memberOf rpc_service
+	 * @function
 	 * @param {string} [address] - optional
 	 * @param {string} [since_mci] - optional, counts only if no address
 	 * @param {string} [unit] - optional, counts only if no address
 	 * @param {string} [asset] - optional, counts only if no address
-	 * @return [{"action":{'invalid','received','sent','moved'},"amount":{number},"my_address":{string},"arrPayerAddresses":[{string}],"confirmations":{0,1},"unit":{string},"fee":{number},"time":{string},"level":{number},"asset":{string}}] transactions
-	 *
-	 * Accepts params as Object too
-	 * @param {address?: {string}, since_mci?: {number}, unit?: {string}, asset?: {string}} [args] as Object - all are optional
-	 * @return [{"action":{'invalid','received','sent','moved'},"amount":{number},"my_address":{string},"arrPayerAddresses":[{string}],"confirmations":{0,1},"unit":{string},"fee":{number},"time":{string},"level":{number},"asset":{string}}] transactions
+	 * @return {Array<gettransactionResponse>} Response
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"listtransactions", "params":{"since_mci": 1234} }' http://127.0.0.1:6332
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"listtransactions", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3"] }' http://127.0.0.1:6332
 	 */
 	server.expose('listtransactions', listtransactions);
 
@@ -344,16 +441,17 @@ function initRPC() {
 	}
 
 	/**
-	 * Send funds to address.
+	 * Send funds to address.<br>
 	 * If address is invalid, then returns "invalid address".
+	 * @name sendToAddress
+	 * @memberOf rpc_service
+	 * @function
 	 * @param {string} address - wallet address
 	 * @param {number|string} amount - positive integer
 	 * @param {string} [asset] - asset ID, optional
-	 * @return {string} unit ID
-	 *
-	 * Accepts params as Object too
-	 * @param {address:{string}, amount:{number|string}, asset?:{string}} args as Object - asset is optional
- 	 * @return {string} unit ID
+	 * @returns {string} unit ID
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"sendtoaddress", "params":["BVVJ2K7ENPZZ3VYZFWQWK7ISPCATFIW3", 1000] }' http://127.0.0.1:6332
 	 */
 	server.expose('sendtoaddress', function(args, opt, cb) {
 		console.log('sendtoaddress '+JSON.stringify(args));
@@ -382,19 +480,20 @@ function initRPC() {
 	});
 
 	/**
-	 * Send funds from address to address, keeping change to sending address.
-	 * If eiher addresses are invalid, then returns "invalid address" error.
-	 * If your wallet doesn`t own the address, then returns "address not found".
+	 * Send funds from address to address, keeping change to sending address.<br>
+	 * If eiher addresses are invalid, then returns "invalid address" error.<br>
+	 * If your wallet doesn`t own the address, then returns "address not found".<br>
 	 * Bytes payment can have amount as 'all', other assets must specify exact amount.
+	 * @name sendFrom
+	 * @memberOf rpc_service
+	 * @function
 	 * @param {string} from_address - wallet address
 	 * @param {string} to_address - wallet address
 	 * @param {number|string} amount - positive integer or 'all' (for Bytes only)
 	 * @param {string} [asset] - asset ID, optional
 	 * @return {string} unit ID
-	 *
-	 * Accepts params as Object too
-	 * @param {from_address:{string}, to_address:{string}, amount:{number|string}, asset?:{string}} args as Object - asset is optional
- 	 * @return {string} unit ID
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"sendfrom", "params":{"from_address":"BVVJ2K7ENPZZ3VYZFWQWK7ISPCATFIW3", "to_address":"SNYRRHTIWDVJHSKE5BUIS3HWXKBN57JJ", "amount:"1000} }' http://127.0.0.1:6332
 	 */
 	server.expose('sendfrom', function(args, opt, cb) {
 		console.log('sendfrom '+JSON.stringify(args));
@@ -440,19 +539,49 @@ function initRPC() {
 	});
 
 	/**
-	 * Claim the textcoin.
+	 * @typedef claimtextcoinResponse
+	 * @property {string} unit
+	 * @property {string} [asset]
+	 */
+	/**
+	 * Claim the textcoin.<br>
 	 * If address is invalid, then returns "invalid address".
+	 * @name claimTextcoin
+	 * @memberOf rpc_service
+	 * @function
 	 * @param {string} mnemonic - textcoin words
 	 * @param {string} [address] - wallet address to receive funds
-	 * @return {unit:{string}, asset?:{string}} unit ID and asset
-	 *
-	 * Accepts params as Object too
-	 * @param {mnemonic:{string}, address?:{string}} args as Object
- 	 * @return {nit:{string}, asset?:{string}} unit ID and asset
+	 * @return {claimtextcoinResponse} unit ID and asset
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"claimtextcoin", "params":{mnemonic: "gym-cruise-upset-license-scan-viable-diary-release-corn-legal-bronze-mosquito"} }' http://127.0.0.1:6332
 	 */
 	server.expose('claimtextcoin', claimtextcoin);
 	// aliases for claimtextcoin
+	/**
+	 * Claim the textcoin.<br>
+	 * If address is invalid, then returns "invalid address". Aliases for claimtextcoin
+	 * @name sweepTextcoin
+	 * @memberOf rpc_service
+	 * @function
+	 * @param {string} mnemonic - textcoin words
+	 * @param {string} [address] - wallet address to receive funds
+	 * @return {claimtextcoinResponse} unit ID and asset
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"sweeptextcoin", "params":{mnemonic: "gym-cruise-upset-license-scan-viable-diary-release-corn-legal-bronze-mosquito"} }' http://127.0.0.1:6332
+	 */
 	server.expose('sweeptextcoin', claimtextcoin);
+	/**
+	 * Claim the textcoin.<br>
+	 * If address is invalid, then returns "invalid address". Aliases for claimtextcoin
+	 * @name sweepPaperWallet
+	 * @memberOf rpc_service
+	 * @function
+	 * @param {string} mnemonic - textcoin words
+	 * @param {string} [address] - wallet address to receive funds
+	 * @return {claimtextcoinResponse} unit ID and asset
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"sweeppaperwallet", "params":{mnemonic: "gym-cruise-upset-license-scan-viable-diary-release-corn-legal-bronze-mosquito"} }' http://127.0.0.1:6332
+	 */
 	server.expose('sweeppaperwallet', claimtextcoin);
 
 	function claimtextcoin(args, opt, cb) {
@@ -480,16 +609,17 @@ function initRPC() {
 	}
 
 	/**
-	 * Signs a message with address.
-	 * If address is invalid, then returns "invalid address".
+	 * Signs a message with address.<br>
+	 * If address is invalid, then returns "invalid address".<br>
 	 * If your wallet doesn`t own the address, then returns "address not found".
+	 * @name signMessage
+	 * @memberOf rpc_service
+	 * @function
 	 * @param {string} address - wallet that signs the message
 	 * @param {string|object} message - message to be signed
-	 * @return {string} base64 encoded signature of {version:{string}, signed_message:{string|object}, authors:{object}}
-	 *
-	 * Accepts params as Object too
-	 * @param {address?:{string}, message:{string|object}} args as Object - address is optional
- 	 * @return {string} base64 encoded signature
+	 * @return {string} base64 encoded signature
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"signmessage", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3", "Let there be light!"] }' http://127.0.0.1:6332
 	 */
 	server.expose('signmessage', function(args, opt, cb) {
 		var {address, message} = args;
@@ -520,18 +650,37 @@ function initRPC() {
 	});
 
 	/**
+	 * @typedef {Object} verifymessageResponse
+	 * @property {string} version
+	 * @property {string|Object} signed_message
+	 * @property {Object} authors
+	 */
+	/**
 	 * Verifies signed message.
+	 * @name verifyMessage
+	 * @memberOf rpc_service
+	 * @function
 	 * @param {string} [address] - wallet that signed the message (optional, first param can be null)
 	 * @param {string} signature - base64 encoded signature
 	 * @param {string|object} [message] - the message that was signed (optional)
- 	 * @return {version:{string}, signed_message:{string|object}, authors:{object}} objSignedMessage
-	 *
-	 * Accepts params as Object too
-	 * @param {address?:{string}, signature:{string}, message?:{string|object}} args as Object - address and message are optinal
- 	 * @return {version:{string}, signed_message:{string|object}, authors:{object}} objSignedMessage
+	 * @return {verifymessageResponse} objSignedMessage
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"verifymessage", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3", "TGV0IHRoZXJlIGJlIGxpZ2h0IQ==", "Let there be light!"] }' http://127.0.0.1:6332
 	 */
 	server.expose('verifymessage', verifymessage);
 	// alias for verifymessage
+	/**
+	 * Verifies signed message.
+	 * @name validateMessage
+	 * @memberOf rpc_service
+	 * @function
+	 * @param {string} address - wallet that signed the message
+	 * @param {string} signature - base64 encoded signature
+	 * @param {string|object} [message] - the message that was signed (optional)
+	 * @return {verifymessageResponse} objSignedMessage
+	 * @example
+	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"validatemessage", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3", "TGV0IHRoZXJlIGJlIGxpZ2h0IQ==", "Let there be light!"] }' http://127.0.0.1:6332
+	 */
 	server.expose('validatemessage', verifymessage);
 
 	function verifymessage(args, opt, cb) {

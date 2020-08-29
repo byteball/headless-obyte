@@ -1,4 +1,7 @@
 /*jslint node: true */
+/**
+ * @namespace start
+ */
 "use strict";
 var fs = require('fs');
 var crypto = require('crypto');
@@ -47,7 +50,7 @@ var bReady = false;
 
 /**
  * Returns wallets status
- *
+ * @memberOf start
  * @return {boolean} is ready
  *
  * @example
@@ -63,7 +66,7 @@ function isReady() {
 /**
  * Waits for wallet to be ready
  * @async
- *
+ * @memberOf start
  * @example
  * await waitTillReady();
  */
@@ -228,6 +231,7 @@ function createWallet(xPrivKey, onDone){
 
 /**
  * Check device address in array of controlled addresses
+ * @memberOf start
  * @param device_address
  * @return {boolean}
  * @example
@@ -241,6 +245,7 @@ function isControlAddress(device_address){
 
 /**
  * Returns address if the address is one in DB
+ * @memberOf start
  * @param {resultCallback=} handleAddress
  * @return {Promise<string>}
  * @example
@@ -260,6 +265,7 @@ function readSingleAddress(handleAddress){
 
 /**
  * Returns first address
+ * @memberOf start
  * @param {resultCallback=} handleAddress
  * @return {Promise<string>}
  * @example
@@ -297,6 +303,7 @@ function prepareBalanceText(handleBalanceText){
 
 /**
  * Returns wallet if the wallet is one in DB
+ * @memberOf start
  * @param {resultCallback=} handleWallet
  * @return {Promise<string>}
  * @example
@@ -328,6 +335,7 @@ function determineIfWalletExists(handleResult){
  */
 /**
  * Signs a message using a private key
+ * @memberOf start
  * @param {string} wallet_id
  * @param {number} account
  * @param {number} is_change
@@ -487,13 +495,38 @@ function sendPayment(asset, amount, to_address, change_address, device_address, 
 }
 
 /**
- * Sends payment with specified parameters
- * @param {Object} opts
+ * @typedef {Object} smpOpts
+ * @property {string} [wallet] If specified, payment will be from this wallet
+ * @property {string} [fee_paying_wallet] If specified, commission will be paid from this wallet
+ * @property {Array<string>} [paying_addresses] If specified, payment will be from these addresses
+ * @property {string} change_address Change address
+ * @property {number} [amount] Payment amount
+ * @property {string} [to_address] Payment address of receiver
+ * @property {Array<Object>} [base_outputs] Outputs array in bytes
+ * @property {string|null} [asset] Payment asset
+ * @property {Array<Object>} [asset_outputs] Outputs array for specified asset
+ * @property {boolean} [send_all] Send all bytes to "to_address"
+ * @property {Array<Object>} [messages] Messages array in payment
+ * @property {string} [spend_unconfirmed=own] What transactions we will take (all - all available, own - where you author or stable, none - only stable)
+ * @property {string} [recipient_device_address] Device address for payment notification
+ * @property {Array<string>} [recipient_device_addresses] Device addresses for payment notification
+ * @property {Array<string>} [arrSigningDeviceAddresses] Device addresses which need to sign transaction
+ * @property {Array<string>} [signing_addresses] Payment addresses which need to sign transaction
+ * @property {function} [signWithLocalPrivateKey] A function for signing transaction with a key located the device
+ * @property {boolean} [aa_addresses_checked] Have been verified autonomous agents addresses?
+ * @property {boolean} [do_not_email] Do not send an email?
+ * @property {string} [email_subject] E-mail subject
+ * @property {function} [getPrivateAssetPayloadSavePath] Function that returns the path to save the file with private payload when sending private textcoin
+ */
+/**
+ * Sends payment with specified parameters. More examples in the [documentation]{@link https://developer.obyte.org}
+ * @memberOf start
+ * @param {smpOpts} opts
  * @param {paymentResultCallback=} onDone
  * @return {Promise<PaymentResult>}
- * @example
+ * @example <caption>Example usage of method1.</caption>
  * const opts = {};
- * opts.paying_addresses = 'FCNQIGCW7JIYTARK6M54NMSCPFVIY25E';
+ * opts.paying_addresses = ['FCNQIGCW7JIYTARK6M54NMSCPFVIY25E'];
  * opts.change_address = 'FCNQIGCW7JIYTARK6M54NMSCPFVIY25E';
  * opts.amount = 10000;
  * opts.toAddress = '2T35YT6L53OYFEUKIOXBQRKUZD4B3CYW';
@@ -528,6 +561,7 @@ function sendMultiPayment(opts, onDone){
 
 /**
  * Sends payment using outputs
+ * @memberOf start
  * @param asset
  * @param outputs
  * @param change_address
@@ -573,6 +607,7 @@ function sendPaymentUsingOutputs(asset, outputs, change_address, onDone) {
 
 /**
  * Sends all bytes from all addresses
+ * @memberOf start
  * @param {string} to_address
  * @param {string|null} recipient_device_address
  * @param {paymentResultCallback=} onDone
@@ -609,6 +644,7 @@ function sendAllBytes(to_address, recipient_device_address, onDone) {
 
 /**
  * Sends all bytes from the specified address
+ * @memberOf start
  * @param {string} from_address
  * @param {string} to_address
  * @param {string|null} recipient_device_address
@@ -647,6 +683,7 @@ function sendAllBytesFromAddress(from_address, to_address, recipient_device_addr
 
 /**
  * Sends a payment with specified asset and address
+ * @memberOf start
  * @param {string|null} asset
  * @param {number} amount
  * @param {string} from_address
@@ -689,6 +726,7 @@ function sendAssetFromAddress(asset, amount, from_address, to_address, recipient
 
 /**
  * Publish data to DAG
+ * @memberOf start
  * @param {Object} opts
  * @param {paymentResultCallback=} onDone
  * @return {Promise<string>}
@@ -724,6 +762,7 @@ function sendData(opts, onDone){
 
 /**
  * Issue change address and send payment
+ * @memberOf start
  * @param {string|null} asset
  * @param {number} amount
  * @param {string} to_address
@@ -751,6 +790,7 @@ function issueChangeAddressAndSendPayment(asset, amount, to_address, device_addr
 
 /**
  * Issue change address and send payment with specified parameters
+ * @memberOf start
  * @param {Object} opts
  * @param {paymentResultCallback=} onDone
  * @return {Promise<PaymentResult>}
@@ -778,6 +818,7 @@ function issueChangeAddressAndSendMultiPayment(opts, onDone){
 
 /**
  * Returns next main address
+ * @memberOf start
  * @param {resultCallback=} handleAddress
  * @return {Promise<string>}
  * @example
@@ -794,6 +835,7 @@ function issueOrSelectNextMainAddress(handleAddress){
 
 /**
  * Issue next main address
+ * @memberOf start
  * @param {resultCallback=} handleAddress
  * @return {Promise<string>}
  * @example
@@ -810,6 +852,7 @@ function issueNextMainAddress(handleAddress){
 
 /**
  * Returns address by change and index. If address not exists address will be created
+ * @memberOf start
  * @param is_change {number}
  * @param address_index {number}
  * @param {resultCallback=} handleAddress
@@ -833,6 +876,7 @@ function issueOrSelectAddressByIndex(is_change, address_index, handleAddress){
 
 /**
  * Return static change address. If address not exists address will be created
+ * @memberOf start
  * @param {resultCallback=} handleAddress
  * @return {Promise<string>}
  * @example
@@ -885,6 +929,7 @@ function signMessage(signing_address, message, cb) {
  */
 /**
  * Signs message
+ * @memberOf start
  * @param signing_address
  * @param message
  * @param {signMessageCB=} cb

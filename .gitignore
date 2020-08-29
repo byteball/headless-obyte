@@ -41,5 +41,6 @@ tools/textcoins-*
 isolate-*-v8.log
 processed.txt
 
+.idea
 .env
 docs

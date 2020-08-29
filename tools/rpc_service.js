@@ -143,16 +143,6 @@ function initRPC() {
 	 */
 	server.expose('validateaddress', validateaddres);
 	// alias for validateaddress
-	/**
-	 * Validates address. alias for validateaddress
-	 * @name verifyAddress
-	 * @memberOf rpc_service
-	 * @function
-	 * @param {string} address args as Object
-	 * @return {boolean} is_valid
-	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"verifyaddress", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3"] }' http://127.0.0.1:6332 | json_pp
-	 */
 	server.expose('verifyaddress', validateaddres);
 
 	function validateaddres(args, opt, cb) {
@@ -644,18 +634,6 @@ function initRPC() {
 	 */
 	server.expose('verifymessage', verifymessage);
 	// alias for verifymessage
-	/**
-	 * Verifies signed message. Alias for verifymessage
-	 * @name validateMessage
-	 * @memberOf rpc_service
-	 * @function
-	 * @param {string} address - wallet that signed the message
-	 * @param {string} signature - base64 encoded signature
-	 * @param {string|object} [message] - the message that was signed
-	 * @return {verifymessageResponse} objSignedMessage
-	 * @example
-	 * $ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"validatemessage", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3", "TGV0IHRoZXJlIGJlIGxpZ2h0IQ==", "Let there be light!"] }' http://127.0.0.1:6332 | json_pp
-	 */
 	server.expose('validatemessage', verifymessage);
 
 	function verifymessage(args, opt, cb) {

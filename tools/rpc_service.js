@@ -209,7 +209,7 @@ function initRPC() {
 				db.query(
 					"SELECT asset, is_stable, SUM(amount) AS balance \n\
 					FROM outputs JOIN units USING(unit) \n\
-					WHERE is_definition_public=0 AND address=? AND sequence='good' AND asset "+((asset && asset !== 'base') ? "="+db.escape(asset) : "IS NULL")+" \n\
+					WHERE is_spent=0 AND address=? AND sequence='good' AND asset "+((asset && asset !== 'base') ? "="+db.escape(asset) : "IS NULL")+" \n\
 					GROUP BY is_stable", [address],
 					function(rows) {
 						var balance = {};

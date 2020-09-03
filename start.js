@@ -49,7 +49,7 @@ var bReady = false;
  */
 
 /**
- * Returns wallets status
+ * Returns whether the wallet is ready
  * @memberOf start
  * @return {boolean} is ready
  *
@@ -63,7 +63,7 @@ function isReady() {
 }
 
 /**
- * Waits for wallet to be ready
+ * Waits for the wallet to be ready
  * @async
  * @memberOf start
  * @example
@@ -230,7 +230,7 @@ function createWallet(xPrivKey, onDone){
 
 
 /**
- * Check device address in array of controlled addresses
+ * Check that the device address is in the array of controlled addresses
  * @memberOf start
  * @param device_address
  * @return {boolean}
@@ -244,7 +244,7 @@ function isControlAddress(device_address){
 }
 
 /**
- * Returns address if the address is one in DB
+ * Returns the address of the single-address wallet, throws if the wallet is not single-address
  * @memberOf start
  * @param {resultCallback=} handleAddress
  * @return {Promise<string>}
@@ -264,7 +264,7 @@ function readSingleAddress(handleAddress){
 }
 
 /**
- * Returns first address
+ * Returns the first address of the wallet
  * @memberOf start
  * @param {resultCallback=} handleAddress
  * @return {Promise<string>}
@@ -302,7 +302,7 @@ function prepareBalanceText(handleBalanceText){
 }
 
 /**
- * Returns wallet if the wallet is one in DB
+ * Returns the wallet ID. There should be only one wallet, throws otherwise.
  * @memberOf start
  * @param {resultCallback=} handleWallet
  * @return {Promise<string>}
@@ -334,7 +334,7 @@ function determineIfWalletExists(handleResult){
  * @param {string} result
  */
 /**
- * Signs a message using a private key
+ * Signs a transaction/message using the local private key
  * @memberOf start
  * @param {string} wallet_id
  * @param {number} account
@@ -496,30 +496,30 @@ function sendPayment(asset, amount, to_address, change_address, device_address, 
 
 /**
  * @typedef {Object} smpOpts
- * @property {string} [wallet] If specified, payment will be from this wallet
- * @property {string} [fee_paying_wallet] If specified, commission will be paid from this wallet
- * @property {Array<string>} [paying_addresses] If specified, payment will be from these addresses
+ * @property {string} [wallet] If specified, the payment will be from this wallet
+ * @property {string} [fee_paying_wallet] Fallback wallet for paying the fees, used if there is not enough bytes on the main paying wallet
+ * @property {Array<string>} [paying_addresses] If specified, payment will be sent from these addresses
  * @property {string} change_address Change address
  * @property {number} [amount] Payment amount
- * @property {string} [to_address] Payment address of receiver
- * @property {Array<Object>} [base_outputs] Outputs array in bytes
+ * @property {string} [to_address] Payment address of the receiver
+ * @property {Array<Object>} [base_outputs] Array of outputs for payment in bytes
  * @property {string|null} [asset] Payment asset
- * @property {Array<Object>} [asset_outputs] Outputs array for specified asset
+ * @property {Array<Object>} [asset_outputs] Array of outputs for payment in the specified asset
  * @property {boolean} [send_all] Send all bytes to "to_address"
- * @property {Array<Object>} [messages] Messages array in payment
- * @property {string} [spend_unconfirmed=own] What transactions we will take (all - all available, own - where you author or stable, none - only stable)
- * @property {string} [recipient_device_address] Device address for payment notification
- * @property {Array<string>} [recipient_device_addresses] Device addresses for payment notification
- * @property {Array<string>} [arrSigningDeviceAddresses] Device addresses which need to sign transaction
- * @property {Array<string>} [signing_addresses] Payment addresses which need to sign transaction
- * @property {function} [signWithLocalPrivateKey] A function for signing transaction with a key located the device
- * @property {boolean} [aa_addresses_checked] Have been verified autonomous agents addresses?
- * @property {boolean} [do_not_email] Do not send an email?
- * @property {string} [email_subject] E-mail subject
- * @property {function} [getPrivateAssetPayloadSavePath] Function that returns the path to save the file with private payload when sending private textcoin
+ * @property {Array<Object>} [messages] Array of messages to send along with the payment
+ * @property {string} [spend_unconfirmed=own] What unspent outputs to use for the payment (all - all available, own - sent by us or stable, none - only stable)
+ * @property {string} [recipient_device_address] Device address for payment notification or sending the private payloads
+ * @property {Array<string>} [recipient_device_addresses] Device addresses for payment notification or sending the private payloads
+ * @property {Array<string>} [arrSigningDeviceAddresses] Device addresses which need to sign the transaction
+ * @property {Array<string>} [signing_addresses] Payment addresses which need to sign the transaction
+ * @property {function} [signWithLocalPrivateKey] A function for signing the transaction with a key stored on the wallet's device
+ * @property {boolean} [aa_addresses_checked] Whether the output addresses have already been checked for being Autonomous Agent addresses and the respective bounce fees added where necessary. If false, the job will be performed by the function
+ * @property {boolean} [do_not_email] Do not send an email when sending textcoins, the caller will take care of delivery of the produced textcoins
+ * @property {string} [email_subject] Subject for the email message sent when sending textcoins
+ * @property {function} [getPrivateAssetPayloadSavePath] Function that returns the path to save the file with private payloads when sending a private textcoin
  */
 /**
- * Sends payment with specified parameters. More examples in the [documentation]{@link https://developer.obyte.org}
+ * Sends payment with specified parameters. See more examples in the [documentation]{@link https://developer.obyte.org}
  * @memberOf start
  * @param {smpOpts} opts
  * @param {paymentResultCallback=} onDone
@@ -581,7 +581,7 @@ function sendMultiPayment(opts, onDone){
 }
 
 /**
- * Sends payment using outputs
+ * Sends payment using the specified outputs
  * @memberOf start
  * @param asset
  * @param outputs
@@ -703,7 +703,7 @@ function sendAllBytesFromAddress(from_address, to_address, recipient_device_addr
 }
 
 /**
- * Sends a payment with specified asset and address
+ * Sends a payment in the specified asset from the specified address
  * @memberOf start
  * @param {string|null} asset
  * @param {number} amount
@@ -838,7 +838,7 @@ function issueChangeAddressAndSendMultiPayment(opts, onDone){
 }
 
 /**
- * Returns next main address
+ * Returns the next main address, or reuses an existing address if there is already a long row of unused addresses
  * @memberOf start
  * @param {resultCallback=} handleAddress
  * @return {Promise<string>}
@@ -855,7 +855,7 @@ function issueOrSelectNextMainAddress(handleAddress){
 }
 
 /**
- * Issue next main address
+ * Issue the next main address
  * @memberOf start
  * @param {resultCallback=} handleAddress
  * @return {Promise<string>}
@@ -872,7 +872,7 @@ function issueNextMainAddress(handleAddress){
 }
 
 /**
- * Returns address by change and index. If address not exists address will be created
+ * Returns the wallet's address by is_change flag and index. If the address does not exist, it will be created
  * @memberOf start
  * @param is_change {number}
  * @param address_index {number}
@@ -895,7 +895,7 @@ function issueOrSelectAddressByIndex(is_change, address_index, handleAddress){
 }
 
 /**
- * Return static change address. If address not exists address will be created
+ * Returns static change address, which is the same as the first change address. If the address does not exist, it will be created
  * @memberOf start
  * @param {resultCallback=} handleAddress
  * @return {Promise<string>}

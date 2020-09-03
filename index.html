@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>Home - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="rpc_service.html">rpc_service</a><ul class='methods'><li data-type='method'><a href="rpc_service.html#.claimTextcoin">claimTextcoin</a></li><li data-type='method'><a href="rpc_service.html#.getAddresses">getAddresses</a></li><li data-type='method'><a href="rpc_service.html#.getBalance">getBalance</a></li><li data-type='method'><a href="rpc_service.html#.getConnectionCount">getConnectionCount</a></li><li data-type='method'><a href="rpc_service.html#.getInfo">getInfo</a></li><li data-type='method'><a href="rpc_service.html#.getMainBalance">getMainBalance</a></li><li data-type='method'><a href="rpc_service.html#.getNetworkInfo">getNetworkInfo</a></li><li data-type='method'><a href="rpc_service.html#.getNewAddress">getNewAddress</a></li><li data-type='method'><a href="rpc_service.html#.getTransaction">getTransaction</a></li><li data-type='method'><a href="rpc_service.html#.listTransactions">listTransactions</a></li><li data-type='method'><a href="rpc_service.html#.sendFrom">sendFrom</a></li><li data-type='method'><a href="rpc_service.html#.sendToAddress">sendToAddress</a></li><li data-type='method'><a href="rpc_service.html#.signMessage">signMessage</a></li><li data-type='method'><a href="rpc_service.html#.validateAddress">validateAddress</a></li><li data-type='method'><a href="rpc_service.html#.verifyMessage">verifyMessage</a></li></ul></li><li><a href="start.html">start</a><ul class='methods'><li data-type='method'><a href="start.html#.isControlAddress">isControlAddress</a></li><li data-type='method'><a href="start.html#.isReady">isReady</a></li><li data-type='method'><a href="start.html#.issueChangeAddressAndSendMultiPayment">issueChangeAddressAndSendMultiPayment</a></li><li data-type='method'><a href="start.html#.issueChangeAddressAndSendPayment">issueChangeAddressAndSendPayment</a></li><li data-type='method'><a href="start.html#.issueNextMainAddress">issueNextMainAddress</a></li><li data-type='method'><a href="start.html#.issueOrSelectAddressByIndex">issueOrSelectAddressByIndex</a></li><li data-type='method'><a href="start.html#.issueOrSelectNextMainAddress">issueOrSelectNextMainAddress</a></li><li data-type='method'><a href="start.html#.issueOrSelectStaticChangeAddress">issueOrSelectStaticChangeAddress</a></li><li data-type='method'><a href="start.html#.readFirstAddress">readFirstAddress</a></li><li data-type='method'><a href="start.html#.readSingleAddress">readSingleAddress</a></li><li data-type='method'><a href="start.html#.readSingleWallet">readSingleWallet</a></li><li data-type='method'><a href="start.html#.sendAllBytes">sendAllBytes</a></li><li data-type='method'><a href="start.html#.sendAllBytesFromAddress">sendAllBytesFromAddress</a></li><li data-type='method'><a href="start.html#.sendAssetFromAddress">sendAssetFromAddress</a></li><li data-type='method'><a href="start.html#.sendData">sendData</a></li><li data-type='method'><a href="start.html#.sendMultiPayment">sendMultiPayment</a></li><li data-type='method'><a href="start.html#.sendPaymentUsingOutputs">sendPaymentUsingOutputs</a></li><li data-type='method'><a href="start.html#.signMessage">signMessage</a></li><li data-type='method'><a href="start.html#.signWithLocalPrivateKey">signWithLocalPrivateKey</a></li><li data-type='method'><a href="start.html#.waitTillReady">waitTillReady</a></li></ul></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<div id="main">
+    
+
+    
+
+
+
+    
+
+
+    <section class="package">
+        <h3> </h3>		
+    </section>
+
+
+
+
+
+
+
+
+
+    
+
+
+
+    <section class="readme usertext">
+        <article><h1>Headless wallet for Obyte network</h1>
+<p>This is a headless alternative of the <a href="../../../obyte-gui-wallet">GUI wallet</a> for Obyte network.  It is designed for an always-online deployment on a server.</p>
+<h2>Install</h2>
+<p>Install node.js, clone the repository, then say</p>
+<pre class="prettyprint source lang-sh"><code>npm install
+</code></pre>
+<p>If you want to accept incoming connections, you'll need to set up a proxy, such as nginx, to forward all websocket connections on a specific path to your daemon running this code.  See example configuration for nginx in <a href="../../../ocore">ocore</a> documentation.</p>
+<h2>Testnet</h2>
+<p>Run <code>cp .env.testnet .env</code> to connect to TESTNET hub. Backup and delete the database if you already ran it on MAINNET. Wallet app for <a href="https://obyte.org/testnet.html">TESTNET can be downloaded from Obyte.org</a> website.</p>
+<h2>Run</h2>
+<pre class="prettyprint source lang-sh"><code>node start.js 2>errlog
+</code></pre>
+<p>The first time you run it, it will generate a new extended private key (BIP44) and ask you for a passphrase to encrypt it.  The BIP39 mnemonic will be saved to the file keys.json in the app data directory (see <a href="../../../ocore">ocore</a> for its location), the passphrase is, of course, never saved.  Every time you start the wallet, you'll have to type the passphrase.  One implication of this is the wallet cannot be started automatically when your server restarts, you'll have to ssh the server and type the passphrase.</p>
+<p>After you enter the passphrase, the wallet redirects all output to a log file in your app data directory but it still holds the terminal window.  To release it, type Ctrl-Z, then bg to resume the wallet in the background.  After that, you can safely terminate the ssh session.</p>
+<h3>Running non-interactively</h3>
+<p>If you are unable to enter a passphrase every time the wallet starts and/or are willing to accept the security risks, set <code>bNoPassphrase</code> to <code>true</code> and daemonize the app when starting:</p>
+<pre class="prettyprint source lang-sh"><code>node start.js 1>log 2>errlog &
+</code></pre>
+<p>If you run the wallet in a non-permanent environment such as Heroku (where hard disks are ephemeral and deleted on each restart), supply your mnemonic as an environment variable <code>mnemonic</code> to ensure that the keys are not regenerated every time. Your private keys are derived from the mnemonic. Also set <code>bLight</code> and <code>bSingleAddress</code> to <code>true</code>. See below about conf options.</p>
+<h2>Backup</h2>
+<p>If you run only a headless wallet, backing up <code>keys.json</code> (or just the mnemonic from this file) in your data folder is enough, the rest can be restored by syncing the node again (which takes several days) and running the below script.  If your headless wallet is included in a bigger application which stores its own data in addition to the public DAG data, you need to back up your entire data folder.</p>
+<h2>Recovery from seed (mnemonic)</h2>
+<pre class="prettyprint source lang-sh"><code>cd tools
+node recovery.js --limit=20
+</code></pre>
+<p>The script generates your wallet addresses and stops when it finds <code>limit</code> (default 20) unused addresses in a row.  If using full wallet, your node should be synced before running the script.</p>
+<p>If you already have <code>keys.json</code> file, copy it to the data folder, otherwise the script will ask you about your mnemonic.</p>
+<h2>Customize</h2>
+<p>If you want to change any defaults, refer to the documentation of <a href="../../../ocore">ocore</a>, the core Obyte library <code>require()</code>'d from here.  Below are some headless wallet specific settings you might want to change:</p>
+<ul>
+<li><code>bLight</code>: some bots don't need to sync full node. If your bot is designed to work as light node or you just wish to get it working first, change <code>bLight</code> variable to <code>true</code> in configuration file. Changing this value will make it use a different SQLite database next time you run it.</li>
+<li><code>bSingleAddress</code>: Should the wallet use single address or could generate new addresses?</li>
+<li><code>bStaticChangeAddress</code>: Should the wallet issue new change addresses or always use the same static one?</li>
+<li><code>control_addresses</code>: array of device addresses of your other (likely GUI) wallets that can chat with the wallet and give commands.  To learn the device address of your GUI wallet, click menu button, then Global preferences, and look for 'Device address'.  If your <code>control_addresses</code> is empty array or contains a single address that is invalid (this is the default), then nobody can remotely control your wallet.</li>
+<li><code>payout_address</code>: if you give <code>pay</code> command over chat interface, funds will be sent to this Obyte address.</li>
+<li><code>hub</code>: hub address without wss://, the default is <code>obyte.org/bb</code>.</li>
+<li><code>deviceName</code>: the name of your device as seen in the chat interface.</li>
+<li><code>permanent_pairing_secret</code>: the pairing secret used to authenticate pairing requests when you pair your GUI wallet for remote control.  The pairing secret is the part of the pairing code after #.</li>
+<li><code>bNoPassphrase</code>: don't ask for passphrase when starting the wallet, assume it is an empty string. This option weakens the security of your funds but allows to start the wallet non-interactively.</li>
+<li><code>LOG_FILENAME</code>: by default <code>log.txt</code> file in data folder, set to <code>/dev/null</code> to disable all logs.</li>
+<li><code>logToSTDOUT</code>: by default <code>false</code> and writes logs to <code>LOG_FILENAME</code> file, set to <code>true</code> if you wish to keep the logs output to terminal screen, instead of file.</li>
+</ul>
+<h2>Remote control</h2>
+<p>You can remotely control your wallet via chat interface from devices listed in <code>control_addresses</code>.  When the wallet starts, it prints out its pairing code.  Copy it, open your GUI wallet, menu button, paired devices, add a new device, accept invitation, paste the code.  Now your GUI wallet is paired to your headless wallet and you can find it in the list of correspondents (menu, paired devices) to start a chat.  These are the commands you can give:</p>
+<ul>
+<li><code>balance</code>: to request the current balance on the headless wallet;</li>
+<li><code>address</code>: to get to know one of the wallet's addresses, you use it to refill the wallet's balance;</li>
+<li><code>pay &lt;amount in bytes&gt;</code> to withdraw Bytes to your <code>payout_address</code>;</li>
+<li><code>pay all bytes</code> to withdraw all Bytes (including earned commissions) to your <code>payout_address</code>;</li>
+<li><code>pay &lt;amount&gt; &lt;asset&gt;</code> to withdraw specific asset to your <code>payout_address</code>;</li>
+<li><code>mci</code>: to get the last stable MCI on the headless wallet;</li>
+<li><code>space</code>: to get the file sizes of data folder;</li>
+</ul>
+<p><img src="chat-with-headless.png" alt="Chat with headless wallet"></p>
+<h2>Differences from GUI wallet</h2>
+<ul>
+<li>Headless wallet (as software) can have only one wallet (as storage of funds) AKA account, its BIP44 derivation path is <code>m/44'/0'/0'</code>.  In GUI wallet (as software) you can create multiple wallets (as storage of funds).</li>
+<li>Headless wallet cannot be a member of multisig address because there is nobody to present confirmation messages to.  Hence, you can't have multisig security on headless wallets and have to have other security measures in place.</li>
+</ul>
+<h2>Security recommendations</h2>
+<p>First, don't run the server wallet if you don't absolutely need to.  For example, if you want to only accept payments, you don't need it.  Consider server wallet only if you need to <em>send</em> payments in programmatic manner.</p>
+<p>Having the keys encrypted by a passphrase helps protect against the most trivial theft of private keys in case an attacker gets access to your server.  Set a good passphrase that cannot be easily bruteforced and never store it on the server.</p>
+<p>However, that is not enough.  If an attacker gets access to your server, he could also modify your conf.json and change <code>control_addresses</code> and <code>payout_address</code>, then wait that you restart the wallet and steal its entire balance.  To help you prevent such attacks, every time the wallet starts it prints out the current values of <code>control_addresses</code> and <code>payout_address</code>, please pay attention to these values before entering your passphrase.</p>
+<p>Use TOR (<a href="../../../ocore#confsockshost-confsocksport-and-confsockslocaldns">conf.socksHost, conf.socksPort, and conf.socksLocalDNS</a>) to hide your server IP address from potential attackers.</p>
+<p>Don't keep more funds than necessary on the server wallet, withdraw the excess using <code>pay</code> command in the chat interface.</p>
+<h2>Custom commands</h2>
+<p>Payments are the central but not the only type of data that Obyte stores.  In <a href="tools/">tools/</a> subdirectory, you will find many small scripts that demonstrate how to create other message types that are not available through the GUI wallet.  In particular, you can declare and issue your own assets, post data as an oracle, create polls and cast votes.  Just edit any of these scripts and run it.</p>
+<h2>RPC service</h2>
+<p>By default, no RPC service is enabled.  If you want to manage your headless wallet via JSON-RPC API, e.g. you run an exchange, run <a href="tools/rpc_service.js">tools/rpc_service.js</a> instead.  See the <a href="https://developer.obyte.org/json-rpc/running-rpc-service">documentation about running RPC service</a>.</p>
+<h2>Docker image</h2>
+<p>You can build and run your own docker image.</p>
+<p>To build the docker image run:</p>
+<pre class="prettyprint source lang-sh"><code>docker build -t headless-obyte:latest -f docker/Dockerfile .
+</code></pre>
+<p>To run the docker container execute:</p>
+<pre class="prettyprint source lang-sh"><code>docker run -it \
+  --name headless-obyte \
+  -v &quot;$(pwd)&quot;/docker/configs:/home/node/.config \
+  headless-obyte:latest
+</code></pre>
+<p>The start.js script asks for the passphrase, so the user should input the passphrase
+and let the script running in the background. (hit Ctrl+P+Q)</p>
+<p>To stop the docker container run:</p>
+<pre class="prettyprint source lang-sh"><code>docker stop headless-obyte
+</code></pre>
+<p>To remove the stoped docker container run:</p>
+<pre class="prettyprint source lang-sh"><code>docker rm headless-obyte
+</code></pre>
+<p>To remove not used docker image run:</p>
+<pre class="prettyprint source lang-sh"><code>docker rmi headless-obyte:latest
+</code></pre>
+<h3>You can also use scripts</h3>
+<p>Before running scripts, you must give permission to execute them:</p>
+<pre class="prettyprint source lang-sh"><code>chmod +x docker/*.sh
+</code></pre>
+<p>To build the docker image run:</p>
+<pre class="prettyprint source lang-sh"><code>docker/build.sh [tagname]
+</code></pre>
+<p>To run the docker container execute:</p>
+<pre class="prettyprint source lang-sh"><code>docker/run.sh [tagname] [volume_path]
+</code></pre>
+<p>To stop and remove the docker container run:</p>
+<pre class="prettyprint source lang-sh"><code>docker/stop.sh [tagname]
+</code></pre></article>
+    </section>
+
+
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.5</a> on Thu Sep 03 2020 23:50:59 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

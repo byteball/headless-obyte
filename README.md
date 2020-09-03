@@ -1,6 +1,6 @@
 # Headless wallet for Obyte network
 
-This is a headless alternative of the [GUI wallet](../../../obyte-gui-wallet) for Obyte network.  It is designed for an always-online deployment on a server.
+This is a headless alternative of the [GUI wallet](https://github.com/byteball/obyte-gui-wallet) for Obyte network.  It is designed for an always-online deployment on a server.
 
 ## Install
 
@@ -8,7 +8,7 @@ Install node.js, clone the repository, then say
 ```sh
 npm install
 ```
-If you want to accept incoming connections, you'll need to set up a proxy, such as nginx, to forward all websocket connections on a specific path to your daemon running this code.  See example configuration for nginx in [ocore](../../../ocore) documentation.
+If you want to accept incoming connections, you'll need to set up a proxy, such as nginx, to forward all websocket connections on a specific path to your daemon running this code.  See example configuration for nginx in [ocore](https://github.com/byteball/ocore) documentation.
 
 ## Testnet
 
@@ -18,7 +18,7 @@ Run `cp .env.testnet .env` to connect to TESTNET hub. Backup and delete the data
 ```sh
 node start.js 2>errlog
 ```
-The first time you run it, it will generate a new extended private key (BIP44) and ask you for a passphrase to encrypt it.  The BIP39 mnemonic will be saved to the file keys.json in the app data directory (see [ocore](../../../ocore) for its location), the passphrase is, of course, never saved.  Every time you start the wallet, you'll have to type the passphrase.  One implication of this is the wallet cannot be started automatically when your server restarts, you'll have to ssh the server and type the passphrase.
+The first time you run it, it will generate a new extended private key (BIP44) and ask you for a passphrase to encrypt it.  The BIP39 mnemonic will be saved to the file keys.json in the app data directory (see [ocore](https://github.com/byteball/ocore) for its location), the passphrase is, of course, never saved.  Every time you start the wallet, you'll have to type the passphrase.  One implication of this is the wallet cannot be started automatically when your server restarts, you'll have to ssh the server and type the passphrase.
 
 After you enter the passphrase, the wallet redirects all output to a log file in your app data directory but it still holds the terminal window.  To release it, type Ctrl-Z, then bg to resume the wallet in the background.  After that, you can safely terminate the ssh session.
 
@@ -45,7 +45,7 @@ If you already have `keys.json` file, copy it to the data folder, otherwise the 
 
 ## Customize
 
-If you want to change any defaults, refer to the documentation of [ocore](../../../ocore), the core Obyte library `require()`'d from here.  Below are some headless wallet specific settings you might want to change:
+If you want to change any defaults, refer to the documentation of [ocore](https://github.com/byteball/ocore), the core Obyte library `require()`'d from here.  Below are some headless wallet specific settings you might want to change:
 
 * `bLight`: some bots don't need to sync full node. If your bot is designed to work as light node or you just wish to get it working first, change `bLight` variable to `true` in configuration file. Changing this value will make it use a different SQLite database next time you run it.
 * `bSingleAddress`: Should the wallet use single address or could generate new addresses?
@@ -86,7 +86,7 @@ Having the keys encrypted by a passphrase helps protect against the most trivial
 
 However, that is not enough.  If an attacker gets access to your server, he could also modify your conf.json and change `control_addresses` and `payout_address`, then wait that you restart the wallet and steal its entire balance.  To help you prevent such attacks, every time the wallet starts it prints out the current values of `control_addresses` and `payout_address`, please pay attention to these values before entering your passphrase.
 
-Use TOR ([conf.socksHost, conf.socksPort, and conf.socksLocalDNS](../../../ocore#confsockshost-confsocksport-and-confsockslocaldns)) to hide your server IP address from potential attackers.
+Use TOR ([conf.socksHost, conf.socksPort, and conf.socksLocalDNS](https://github.com/byteball/ocore#confsockshost-confsocksport-and-confsockslocaldns)) to hide your server IP address from potential attackers.
 
 Don't keep more funds than necessary on the server wallet, withdraw the excess using `pay` command in the chat interface.
 

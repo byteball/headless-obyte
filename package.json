@@ -4,6 +4,9 @@
   "author": "Obyte",
   "version": "0.1.11",
   "main": "start.js",
+  "scripts": {
+    "generate-docs": "node_modules/.bin/jsdoc -c jsdoc.json --readme ./README.md"
+  },
   "keywords": [
     "wallet",
     "headless",
@@ -30,5 +33,9 @@
     "bitcore-mnemonic": "~1.0.0",
     "json-rpc2": "^1.0.2",
     "yargs": "^13.2.2"
+  },
+  "devDependencies": {
+    "docdash": "^1.2.0",
+    "jsdoc": "^3.6.5"
   }
 }

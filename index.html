@@ -58,18 +58,18 @@
 
     <section class="readme usertext">
         <article><h1>Headless wallet for Obyte network</h1>
-<p>This is a headless alternative of the <a href="../../../obyte-gui-wallet">GUI wallet</a> for Obyte network.  It is designed for an always-online deployment on a server.</p>
+<p>This is a headless alternative of the <a href="https://github.com/byteball/obyte-gui-wallet">GUI wallet</a> for Obyte network.  It is designed for an always-online deployment on a server.</p>
 <h2>Install</h2>
 <p>Install node.js, clone the repository, then say</p>
 <pre class="prettyprint source lang-sh"><code>npm install
 </code></pre>
-<p>If you want to accept incoming connections, you'll need to set up a proxy, such as nginx, to forward all websocket connections on a specific path to your daemon running this code.  See example configuration for nginx in <a href="../../../ocore">ocore</a> documentation.</p>
+<p>If you want to accept incoming connections, you'll need to set up a proxy, such as nginx, to forward all websocket connections on a specific path to your daemon running this code.  See example configuration for nginx in <a href="https://github.com/byteball/ocore">ocore</a> documentation.</p>
 <h2>Testnet</h2>
 <p>Run <code>cp .env.testnet .env</code> to connect to TESTNET hub. Backup and delete the database if you already ran it on MAINNET. Wallet app for <a href="https://obyte.org/testnet.html">TESTNET can be downloaded from Obyte.org</a> website.</p>
 <h2>Run</h2>
 <pre class="prettyprint source lang-sh"><code>node start.js 2>errlog
 </code></pre>
-<p>The first time you run it, it will generate a new extended private key (BIP44) and ask you for a passphrase to encrypt it.  The BIP39 mnemonic will be saved to the file keys.json in the app data directory (see <a href="../../../ocore">ocore</a> for its location), the passphrase is, of course, never saved.  Every time you start the wallet, you'll have to type the passphrase.  One implication of this is the wallet cannot be started automatically when your server restarts, you'll have to ssh the server and type the passphrase.</p>
+<p>The first time you run it, it will generate a new extended private key (BIP44) and ask you for a passphrase to encrypt it.  The BIP39 mnemonic will be saved to the file keys.json in the app data directory (see <a href="https://github.com/byteball/ocore">ocore</a> for its location), the passphrase is, of course, never saved.  Every time you start the wallet, you'll have to type the passphrase.  One implication of this is the wallet cannot be started automatically when your server restarts, you'll have to ssh the server and type the passphrase.</p>
 <p>After you enter the passphrase, the wallet redirects all output to a log file in your app data directory but it still holds the terminal window.  To release it, type Ctrl-Z, then bg to resume the wallet in the background.  After that, you can safely terminate the ssh session.</p>
 <h3>Running non-interactively</h3>
 <p>If you are unable to enter a passphrase every time the wallet starts and/or are willing to accept the security risks, set <code>bNoPassphrase</code> to <code>true</code> and daemonize the app when starting:</p>
@@ -85,7 +85,7 @@ node recovery.js --limit=20
 <p>The script generates your wallet addresses and stops when it finds <code>limit</code> (default 20) unused addresses in a row.  If using full wallet, your node should be synced before running the script.</p>
 <p>If you already have <code>keys.json</code> file, copy it to the data folder, otherwise the script will ask you about your mnemonic.</p>
 <h2>Customize</h2>
-<p>If you want to change any defaults, refer to the documentation of <a href="../../../ocore">ocore</a>, the core Obyte library <code>require()</code>'d from here.  Below are some headless wallet specific settings you might want to change:</p>
+<p>If you want to change any defaults, refer to the documentation of <a href="https://github.com/byteball/ocore">ocore</a>, the core Obyte library <code>require()</code>'d from here.  Below are some headless wallet specific settings you might want to change:</p>
 <ul>
 <li><code>bLight</code>: some bots don't need to sync full node. If your bot is designed to work as light node or you just wish to get it working first, change <code>bLight</code> variable to <code>true</code> in configuration file. Changing this value will make it use a different SQLite database next time you run it.</li>
 <li><code>bSingleAddress</code>: Should the wallet use single address or could generate new addresses?</li>
@@ -120,7 +120,7 @@ node recovery.js --limit=20
 <p>First, don't run the server wallet if you don't absolutely need to.  For example, if you want to only accept payments, you don't need it.  Consider server wallet only if you need to <em>send</em> payments in programmatic manner.</p>
 <p>Having the keys encrypted by a passphrase helps protect against the most trivial theft of private keys in case an attacker gets access to your server.  Set a good passphrase that cannot be easily bruteforced and never store it on the server.</p>
 <p>However, that is not enough.  If an attacker gets access to your server, he could also modify your conf.json and change <code>control_addresses</code> and <code>payout_address</code>, then wait that you restart the wallet and steal its entire balance.  To help you prevent such attacks, every time the wallet starts it prints out the current values of <code>control_addresses</code> and <code>payout_address</code>, please pay attention to these values before entering your passphrase.</p>
-<p>Use TOR (<a href="../../../ocore#confsockshost-confsocksport-and-confsockslocaldns">conf.socksHost, conf.socksPort, and conf.socksLocalDNS</a>) to hide your server IP address from potential attackers.</p>
+<p>Use TOR (<a href="https://github.com/byteball/ocore#confsockshost-confsocksport-and-confsockslocaldns">conf.socksHost, conf.socksPort, and conf.socksLocalDNS</a>) to hide your server IP address from potential attackers.</p>
 <p>Don't keep more funds than necessary on the server wallet, withdraw the excess using <code>pay</code> command in the chat interface.</p>
 <h2>Custom commands</h2>
 <p>Payments are the central but not the only type of data that Obyte stores.  In <a href="tools/">tools/</a> subdirectory, you will find many small scripts that demonstrate how to create other message types that are not available through the GUI wallet.  In particular, you can declare and issue your own assets, post data as an oracle, create polls and cast votes.  Just edit any of these scripts and run it.</p>
@@ -175,7 +175,7 @@ and let the script running in the background. (hit Ctrl+P+Q)</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.5</a> on Thu Sep 03 2020 23:50:59 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.5</a> on Thu Sep 03 2020 23:59:46 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

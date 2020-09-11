@@ -12,7 +12,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Install docdash and jsdoc
-      run: npm install docdash jsdoc
+      run: npm install better-docs jsdoc
 
     - name: Build
       run: npm run generate-docs

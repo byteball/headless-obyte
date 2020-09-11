@@ -1,41 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    
-    <meta charset="utf-8">
-    <title>rpc_service - Documentation</title>
-    
-    
-    <script src="scripts/prettify/prettify.js"></script>
-    <script src="scripts/prettify/lang-css.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
-    <script src="scripts/nav.js" defer></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> rpc_service</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
 </head>
-<body>
 
-<input type="checkbox" id="nav-trigger" class="nav-trigger" />
-<label for="nav-trigger" class="navicon-button x">
-  <div class="navicon"></div>
-</label>
 
-<label for="nav-trigger" class="overlay"></label>
 
-<nav >
-    
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="rpc_service.html">rpc_service</a><ul class='methods'><li data-type='method'><a href="rpc_service.html#.claimTextcoin">claimTextcoin</a></li><li data-type='method'><a href="rpc_service.html#.getAddresses">getAddresses</a></li><li data-type='method'><a href="rpc_service.html#.getBalance">getBalance</a></li><li data-type='method'><a href="rpc_service.html#.getConnectionCount">getConnectionCount</a></li><li data-type='method'><a href="rpc_service.html#.getInfo">getInfo</a></li><li data-type='method'><a href="rpc_service.html#.getMainBalance">getMainBalance</a></li><li data-type='method'><a href="rpc_service.html#.getNetworkInfo">getNetworkInfo</a></li><li data-type='method'><a href="rpc_service.html#.getNewAddress">getNewAddress</a></li><li data-type='method'><a href="rpc_service.html#.getTransaction">getTransaction</a></li><li data-type='method'><a href="rpc_service.html#.listTransactions">listTransactions</a></li><li data-type='method'><a href="rpc_service.html#.sendFrom">sendFrom</a></li><li data-type='method'><a href="rpc_service.html#.sendToAddress">sendToAddress</a></li><li data-type='method'><a href="rpc_service.html#.signMessage">signMessage</a></li><li data-type='method'><a href="rpc_service.html#.validateAddress">validateAddress</a></li><li data-type='method'><a href="rpc_service.html#.verifyMessage">verifyMessage</a></li></ul></li><li><a href="start.html">start</a><ul class='methods'><li data-type='method'><a href="start.html#.isControlAddress">isControlAddress</a></li><li data-type='method'><a href="start.html#.isReady">isReady</a></li><li data-type='method'><a href="start.html#.issueChangeAddressAndSendMultiPayment">issueChangeAddressAndSendMultiPayment</a></li><li data-type='method'><a href="start.html#.issueChangeAddressAndSendPayment">issueChangeAddressAndSendPayment</a></li><li data-type='method'><a href="start.html#.issueNextMainAddress">issueNextMainAddress</a></li><li data-type='method'><a href="start.html#.issueOrSelectAddressByIndex">issueOrSelectAddressByIndex</a></li><li data-type='method'><a href="start.html#.issueOrSelectNextMainAddress">issueOrSelectNextMainAddress</a></li><li data-type='method'><a href="start.html#.issueOrSelectStaticChangeAddress">issueOrSelectStaticChangeAddress</a></li><li data-type='method'><a href="start.html#.readFirstAddress">readFirstAddress</a></li><li data-type='method'><a href="start.html#.readSingleAddress">readSingleAddress</a></li><li data-type='method'><a href="start.html#.readSingleWallet">readSingleWallet</a></li><li data-type='method'><a href="start.html#.sendAllBytes">sendAllBytes</a></li><li data-type='method'><a href="start.html#.sendAllBytesFromAddress">sendAllBytesFromAddress</a></li><li data-type='method'><a href="start.html#.sendAssetFromAddress">sendAssetFromAddress</a></li><li data-type='method'><a href="start.html#.sendData">sendData</a></li><li data-type='method'><a href="start.html#.sendMultiPayment">sendMultiPayment</a></li><li data-type='method'><a href="start.html#.sendPaymentUsingOutputs">sendPaymentUsingOutputs</a></li><li data-type='method'><a href="start.html#.signMessage">signMessage</a></li><li data-type='method'><a href="start.html#.signWithLocalPrivateKey">signWithLocalPrivateKey</a></li><li data-type='method'><a href="start.html#.waitTillReady">waitTillReady</a></li></ul></li></ul><h3><a href="global.html">Global</a></h3>
-</nav>
-
-<div id="main">
-    
-    <h1 class="page-title">rpc_service</h1>
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
     
 
-    
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Namespaces</h3><ul><li><a href="headless_wallet.html">headless_wallet</a></li><li><a href="rpc_service.html">rpc_service</a></li></ul><h3><a href="global.html">Global</a></h3></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Namespace</p>
+                    <h1>rpc_service</h1>
+                </header>
+                
 
 
 
@@ -44,106 +85,22 @@
 
 <header>
     
-        <h2>
-        rpc_service
-        </h2>
+        <h2>rpc_service</h2>
         
     
 </header>
 
 <article>
+    <div class="container-overview">
     
-        <div class="container-overview">
         
-            
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line2">line 2</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-            
-
-            
-        
-        </div>
-    
-
-    
-
-    
-
-    
-    
-    
-
-     
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
 
         
-            
-
-    
-
-    <h4 class="name" id=".claimTextcoin"><span class="type-signature">(static) </span>claimTextcoin<span class="signature">(mnemonic, address<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="global.html#claimtextcoinResponse">claimtextcoinResponse</a>}</span></h4>
-
-    
-
-
 
 
 <dl class="details">
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line535">line 535</a>
-    </li></ul></dd>
-    
 
     
 
@@ -166,179 +123,487 @@
     
 
     
-
     
 
     
 
     
 
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line2">line 2</a>
+            </span>
+        </p>
     
 </dl>
 
 
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Methods</h1>
+            <div class="members">
+            
+                <div class="member">
 
 
+    
+    <h4 class="name" id=".claimTextcoin">
+        <a class="href-link" href="#.claimTextcoin">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                claimTextcoin<span class="signature">(mnemonic, address<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="global.html#claimtextcoinResponse">claimtextcoinResponse</a>}</span>
+            
+        </span>
+    </h4>
+    
 
-<div class="description usertext">
-    Claim the textcoin.<br>
+    
+    
+    <div class="description">
+        Claim the textcoin.<br>
 If address is invalid, then returns "invalid address".
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
+    </div>
     
-    <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"claimtextcoin", "params":{mnemonic: "gym-cruise-upset-license-scan-viable-diary-release-corn-legal-bronze-mosquito"} }' http://127.0.0.1:6332 | json_pp</code></pre>
+
+
+
+
+
 
 
 
 
     <h5>Parameters:</h5>
     
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
+<div class="table-container">
+    <table class="params table">
+        <thead>
         <tr>
             
-                <td class="name"><code>mnemonic</code></td>
+            <th>Name</th>
             
 
-            <td class="type">
+            <th>Type</th>
+
             
-                
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>mnemonic</code></td>
+  
+
+  <td class="type">
+  
+      
 <span class="param-type">string</span>
 
 
-            
-            </td>
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last">textcoin words</td>
+</tr>
+
+
+        
 
             
-                <td class="attributes">
-                
+<tr class="deep-level-0">
+  
+      <td class="name"><code>address</code></td>
+  
 
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">textcoin words</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>address</code></td>
-            
-
-            <td class="type">
-            
-                
+  <td class="type">
+  
+      
 <span class="param-type">string</span>
 
 
-            
-            </td>
+  
+  </td>
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
 
-                
+      
 
-                
-                </td>
-            
+      
+      </td>
+  
 
-            
+  
 
-            <td class="description last">wallet address to receive funds</td>
-        </tr>
+  <td class="description last">wallet address to receive funds</td>
+</tr>
 
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
 
         
-<div class="param-desc">
-    unit ID and asset
+        </tbody>
+    </table>
 </div>
 
 
 
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line535">line 535</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'>unit ID and asset</div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
         
 <span class="param-type"><a href="global.html#claimtextcoinResponse">claimtextcoinResponse</a></span>
 
 
-    </dd>
-</dl>
+    </div>
+    
+</div>
 
+                
+        </div>
+    </div>
+
+
+
+
+    <h5>Example</h5>
+    
+    
+        <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"claimtextcoin", "params":{mnemonic: "gym-cruise-upset-license-scan-viable-diary-release-corn-legal-bronze-mosquito"} }' http://127.0.0.1:6332 | json_pp</code></pre>
     
 
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getAddresses">
+        <a class="href-link" href="#.getAddresses">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getAddresses<span class="signature">(type<span class="signature-attributes">opt</span>, reverse<span class="signature-attributes">opt</span>, limit<span class="signature-attributes">opt</span>, verbose<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="global.html#getaddressesResponse">getaddressesResponse</a>>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        Returns the list of addresses for the whole wallet.
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>type</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last">must be: "deposit", "change", "shared", "textcoin", null - shows both deposit and change by default</td>
+</tr>
 
 
         
+
             
+<tr class="deep-level-0">
+  
+      <td class="name"><code>reverse</code></td>
+  
 
-    
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+|
 
-    <h4 class="name" id=".getAddresses"><span class="type-signature">(static) </span>getAddresses<span class="signature">(type<span class="signature-attributes">opt</span>, reverse<span class="signature-attributes">opt</span>, limit<span class="signature-attributes">opt</span>, verbose<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="global.html#getaddressesResponse">getaddressesResponse</a>>}</span></h4>
+<span class="param-type">boolean</span>
 
-    
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last">"reverse" by default</td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>limit</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">number</span>
+|
+
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last">100 by default</td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>verbose</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+|
+
+<span class="param-type">boolean</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last">off by default, includes is_definition_public info when "verbose"</td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
 
 
 
@@ -346,11 +611,6 @@ If address is invalid, then returns "invalid address".
 <dl class="details">
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line179">line 179</a>
-    </li></ul></dd>
-    
 
     
 
@@ -373,13 +633,19 @@ If address is invalid, then returns "invalid address".
     
 
     
-
     
 
     
 
     
 
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line179">line 179</a>
+            </span>
+        </p>
     
 </dl>
 
@@ -387,9 +653,6 @@ If address is invalid, then returns "invalid address".
 
 
 
-<div class="description usertext">
-    Returns the list of addresses for the whole wallet.
-</div>
 
 
 
@@ -399,442 +662,319 @@ If address is invalid, then returns "invalid address".
 
 
 
-    <h5>Example</h5>
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
     
-    <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getaddresses", "params":{} }' http://127.0.0.1:6332 | json_pp</code></pre>
-
-
-
-
-    <h5>Parameters:</h5>
+    <div class='param-desc column is-7'>list of addresses</div>
     
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
     
-
-        <tr>
-            
-                <td class="name"><code>type</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">must be: "deposit", "change", "shared", "textcoin", null - shows both deposit and change by default</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>reverse</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-|
-
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">"reverse" by default</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>limit</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-|
-
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">100 by default</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>verbose</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-|
-
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">off by default, includes is_definition_public info when "verbose"</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    list of addresses
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
         
 <span class="param-type">Array.&lt;<a href="global.html#getaddressesResponse">getaddressesResponse</a>></span>
 
 
-    </dd>
-</dl>
+    </div>
+    
+</div>
 
+                
+        </div>
+    </div>
+
+
+
+
+    <h5>Example</h5>
+    
+    
+        <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getaddresses", "params":{} }' http://127.0.0.1:6332 | json_pp</code></pre>
     
 
 
+</div>
+            
+                <div class="member">
 
+
+    
+    <h4 class="name" id=".getBalance">
+        <a class="href-link" href="#.getBalance">#</a>
         
             
-
-    
-
-    <h4 class="name" id=".getBalance"><span class="type-signature">(static) </span>getBalance<span class="signature">(address<span class="signature-attributes">opt</span>, asset<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="global.html#balanceResponse">balanceResponse</a>}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line244">line 244</a>
-    </li></ul></dd>
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getBalance<span class="signature">(address<span class="signature-attributes">opt</span>, asset<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="global.html#balanceResponse">balanceResponse</a>}</span>
+            
+        </span>
+    </h4>
     
 
     
-
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    Returns address balance(stable and pending).<br>
+    <div class="description">
+        Returns address balance(stable and pending).<br>
 If address is invalid, then returns "invalid address".<br>
 If your wallet doesn`t own the address, then returns "address not found".<br>
 If no address supplied, returns wallet balance(stable and pending).
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Examples</h5>
+    </div>
     
-    <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getbalance", "params":{} }' http://127.0.0.1:6332 | json_pp</code></pre>
 
-    <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getbalance", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3"] }' http://127.0.0.1:6332 | json_pp</code></pre>
+
+
+
+
 
 
 
 
     <h5>Parameters:</h5>
     
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
+<div class="table-container">
+    <table class="params table">
+        <thead>
         <tr>
             
-                <td class="name"><code>address</code></td>
+            <th>Name</th>
             
 
-            <td class="type">
+            <th>Type</th>
+
             
-                
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>address</code></td>
+  
+
+  <td class="type">
+  
+      
 <span class="param-type">string</span>
 
 
-            
-            </td>
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
 
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+<tr class="deep-level-0">
+  
+      <td class="name"><code>asset</code></td>
+  
 
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>asset</code></td>
-            
-
-            <td class="type">
-            
-                
+  <td class="type">
+  
+      
 <span class="param-type">string</span>
 
 
-            
-            </td>
+  
+  </td>
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
 
-                
+      
 
-                
-                </td>
-            
+      
+      </td>
+  
 
-            
+  
 
-            <td class="description last"></td>
-        </tr>
+  <td class="description last"></td>
+</tr>
 
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
 
         
-<div class="param-desc">
-    balance
+        </tbody>
+    </table>
 </div>
 
 
 
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line244">line 244</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'>balance</div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
         
 <span class="param-type"><a href="global.html#balanceResponse">balanceResponse</a></span>
 
 
-    </dd>
-</dl>
+    </div>
+    
+</div>
 
+                
+        </div>
+    </div>
+
+
+
+
+    <h5>Examples</h5>
+    
+    
+        <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getbalance", "params":{} }' http://127.0.0.1:6332 | json_pp</code></pre>
+    
+
+    
+        <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getbalance", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3"] }' http://127.0.0.1:6332 | json_pp</code></pre>
     
 
 
+</div>
+            
+                <div class="member">
 
+
+    
+    <h4 class="name" id=".getConnectionCount">
+        <a class="href-link" href="#.getConnectionCount">#</a>
         
             
-
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getConnectionCount<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span>
+            
+        </span>
+    </h4>
     
 
-    <h4 class="name" id=".getConnectionCount"><span class="type-signature">(static) </span>getConnectionCount<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span></h4>
-
     
+    
+    <div class="description">
+        Returns the number of connections to other nodes.
+    </div>
+    
+
+
+
+
+
+
+
+
+
 
 
 
@@ -842,11 +982,6 @@ If no address supplied, returns wallet balance(stable and pending).
 <dl class="details">
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line80">line 80</a>
-    </li></ul></dd>
-    
 
     
 
@@ -869,13 +1004,19 @@ If no address supplied, returns wallet balance(stable and pending).
     
 
     
-
     
 
     
 
     
 
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line80">line 80</a>
+            </span>
+        </p>
     
 </dl>
 
@@ -883,9 +1024,6 @@ If no address supplied, returns wallet balance(stable and pending).
 
 
 
-<div class="description usertext">
-    Returns the number of connections to other nodes.
-</div>
 
 
 
@@ -895,60 +1033,81 @@ If no address supplied, returns wallet balance(stable and pending).
 
 
 
-    <h5>Example</h5>
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
     
-    <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getconnectioncount", "params":{} }' http://127.0.0.1:6332 | json_pp</code></pre>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    response
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
+    <div class='param-desc column is-7'>response</div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
         
 <span class="param-type">number</span>
 
 
-    </dd>
-</dl>
+    </div>
+    
+</div>
 
+                
+        </div>
+    </div>
+
+
+
+
+    <h5>Example</h5>
+    
+    
+        <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getconnectioncount", "params":{} }' http://127.0.0.1:6332 | json_pp</code></pre>
     
 
 
+</div>
+            
+                <div class="member">
 
+
+    
+    <h4 class="name" id=".getInfo">
+        <a class="href-link" href="#.getInfo">#</a>
         
             
-
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getInfo<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="global.html#getInfoResponse">getInfoResponse</a>}</span>
+            
+        </span>
+    </h4>
     
 
-    <h4 class="name" id=".getInfo"><span class="type-signature">(static) </span>getInfo<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="global.html#getInfoResponse">getInfoResponse</a>}</span></h4>
-
     
+    
+    <div class="description">
+        Returns information about the current state.
+    </div>
+    
+
+
+
+
+
+
+
+
+
 
 
 
@@ -956,11 +1115,6 @@ If no address supplied, returns wallet balance(stable and pending).
 <dl class="details">
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line56">line 56</a>
-    </li></ul></dd>
-    
 
     
 
@@ -983,13 +1137,19 @@ If no address supplied, returns wallet balance(stable and pending).
     
 
     
-
     
 
     
 
     
 
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line56">line 56</a>
+            </span>
+        </p>
     
 </dl>
 
@@ -997,9 +1157,6 @@ If no address supplied, returns wallet balance(stable and pending).
 
 
 
-<div class="description usertext">
-    Returns information about the current state.
-</div>
 
 
 
@@ -1009,60 +1166,81 @@ If no address supplied, returns wallet balance(stable and pending).
 
 
 
-    <h5>Example</h5>
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
     
-    <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getinfo", "params":{} }' http://127.0.0.1:6332 | json_pp</code></pre>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Response
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
+    <div class='param-desc column is-7'>Response</div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
         
 <span class="param-type"><a href="global.html#getInfoResponse">getInfoResponse</a></span>
 
 
-    </dd>
-</dl>
+    </div>
+    
+</div>
 
+                
+        </div>
+    </div>
+
+
+
+
+    <h5>Example</h5>
+    
+    
+        <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getinfo", "params":{} }' http://127.0.0.1:6332 | json_pp</code></pre>
     
 
 
+</div>
+            
+                <div class="member">
 
+
+    
+    <h4 class="name" id=".getMainBalance">
+        <a class="href-link" href="#.getMainBalance">#</a>
         
             
-
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getMainBalance<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="global.html#balanceResponse">balanceResponse</a>}</span>
+            
+        </span>
+    </h4>
     
 
-    <h4 class="name" id=".getMainBalance"><span class="type-signature">(static) </span>getMainBalance<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="global.html#balanceResponse">balanceResponse</a>}</span></h4>
-
     
+    
+    <div class="description">
+        Returns wallet balance(stable and pending) without commissions earned from headers and witnessing.
+    </div>
+    
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1070,11 +1248,6 @@ If no address supplied, returns wallet balance(stable and pending).
 <dl class="details">
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line301">line 301</a>
-    </li></ul></dd>
-    
 
     
 
@@ -1097,13 +1270,19 @@ If no address supplied, returns wallet balance(stable and pending).
     
 
     
-
     
 
     
 
     
 
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line301">line 301</a>
+            </span>
+        </p>
     
 </dl>
 
@@ -1111,9 +1290,6 @@ If no address supplied, returns wallet balance(stable and pending).
 
 
 
-<div class="description usertext">
-    Returns wallet balance(stable and pending) without commissions earned from headers and witnessing.
-</div>
 
 
 
@@ -1123,60 +1299,81 @@ If no address supplied, returns wallet balance(stable and pending).
 
 
 
-    <h5>Example</h5>
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
     
-    <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getmainbalance", "params":{} }' http://127.0.0.1:6332 | json_pp</code></pre>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    balance
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
+    <div class='param-desc column is-7'>balance</div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
         
 <span class="param-type"><a href="global.html#balanceResponse">balanceResponse</a></span>
 
 
-    </dd>
-</dl>
+    </div>
+    
+</div>
 
+                
+        </div>
+    </div>
+
+
+
+
+    <h5>Example</h5>
+    
+    
+        <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getmainbalance", "params":{} }' http://127.0.0.1:6332 | json_pp</code></pre>
     
 
 
+</div>
+            
+                <div class="member">
 
+
+    
+    <h4 class="name" id=".getNetworkInfo">
+        <a class="href-link" href="#.getNetworkInfo">#</a>
         
             
-
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getNetworkInfo<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="global.html#getNetworkInfoResponse">getNetworkInfoResponse</a>}</span>
+            
+        </span>
+    </h4>
     
 
-    <h4 class="name" id=".getNetworkInfo"><span class="type-signature">(static) </span>getNetworkInfo<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="global.html#getNetworkInfoResponse">getNetworkInfoResponse</a>}</span></h4>
-
     
+    
+    <div class="description">
+        Returns information about the node's connection to the network.
+    </div>
+    
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1184,11 +1381,6 @@ If no address supplied, returns wallet balance(stable and pending).
 <dl class="details">
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line108">line 108</a>
-    </li></ul></dd>
-    
 
     
 
@@ -1211,13 +1403,19 @@ If no address supplied, returns wallet balance(stable and pending).
     
 
     
-
     
 
     
 
     
 
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line108">line 108</a>
+            </span>
+        </p>
     
 </dl>
 
@@ -1225,9 +1423,6 @@ If no address supplied, returns wallet balance(stable and pending).
 
 
 
-<div class="description usertext">
-    Returns information about the node's connection to the network.
-</div>
 
 
 
@@ -1237,60 +1432,81 @@ If no address supplied, returns wallet balance(stable and pending).
 
 
 
-    <h5>Example</h5>
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
     
-    <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getnetworkinfo", "params":{} }' http://127.0.0.1:6332 | json_pp</code></pre>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Response
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
+    <div class='param-desc column is-7'>Response</div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
         
 <span class="param-type"><a href="global.html#getNetworkInfoResponse">getNetworkInfoResponse</a></span>
 
 
-    </dd>
-</dl>
+    </div>
+    
+</div>
 
+                
+        </div>
+    </div>
+
+
+
+
+    <h5>Example</h5>
+    
+    
+        <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getnetworkinfo", "params":{} }' http://127.0.0.1:6332 | json_pp</code></pre>
     
 
 
+</div>
+            
+                <div class="member">
 
+
+    
+    <h4 class="name" id=".getNewAddress">
+        <a class="href-link" href="#.getNewAddress">#</a>
         
             
-
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getNewAddress<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span>
+            
+        </span>
+    </h4>
     
 
-    <h4 class="name" id=".getNewAddress"><span class="type-signature">(static) </span>getNewAddress<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
-
     
+    
+    <div class="description">
+        Creates and returns new wallet address.
+    </div>
+    
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1298,11 +1514,6 @@ If no address supplied, returns wallet balance(stable and pending).
 <dl class="details">
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line153">line 153</a>
-    </li></ul></dd>
-    
 
     
 
@@ -1325,13 +1536,19 @@ If no address supplied, returns wallet balance(stable and pending).
     
 
     
-
     
 
     
 
     
 
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line153">line 153</a>
+            </span>
+        </p>
     
 </dl>
 
@@ -1339,9 +1556,6 @@ If no address supplied, returns wallet balance(stable and pending).
 
 
 
-<div class="description usertext">
-    Creates and returns new wallet address.
-</div>
 
 
 
@@ -1351,302 +1565,215 @@ If no address supplied, returns wallet balance(stable and pending).
 
 
 
-    <h5>Example</h5>
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
     
-    <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getnewaddress", "params":{} }' http://127.0.0.1:6332 | json_pp</code></pre>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    address
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
+    <div class='param-desc column is-7'>address</div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
         
 <span class="param-type">string</span>
 
 
-    </dd>
-</dl>
-
+    </div>
     
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".getTransaction"><span class="type-signature">(static) </span>getTransaction<span class="signature">(unit, verbose<span class="signature-attributes">opt</span>, asset<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="global.html#gettransactionResponse">gettransactionResponse</a>}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line331">line 331</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    Returns transaction by unit ID.
 </div>
 
-
-
-
-
+                
+        </div>
+    </div>
 
 
 
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"gettransaction", "params":["vuudtbL5ASwr0LJZ9tuV4S0j/lIsotJCKifphvGATmU=", true] }' http://127.0.0.1:6332 | json_pp</code></pre>
+    
+        <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"getnewaddress", "params":{} }' http://127.0.0.1:6332 | json_pp</code></pre>
+    
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getTransaction">
+        <a class="href-link" href="#.getTransaction">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getTransaction<span class="signature">(unit, verbose<span class="signature-attributes">opt</span>, asset<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="global.html#gettransactionResponse">gettransactionResponse</a>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        Returns transaction by unit ID.
+    </div>
+    
+
+
+
+
+
 
 
 
 
     <h5>Parameters:</h5>
     
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
+<div class="table-container">
+    <table class="params table">
+        <thead>
         <tr>
             
-                <td class="name"><code>unit</code></td>
+            <th>Name</th>
             
 
-            <td class="type">
+            <th>Type</th>
+
             
-                
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>unit</code></td>
+  
+
+  <td class="type">
+  
+      
 <span class="param-type">string</span>
 
 
-            
-            </td>
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last">transaction unit ID</td>
+</tr>
+
+
+        
 
             
-                <td class="attributes">
-                
+<tr class="deep-level-0">
+  
+      <td class="name"><code>verbose</code></td>
+  
 
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">transaction unit ID</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>verbose</code></td>
-            
-
-            <td class="type">
-            
-                
+  <td class="type">
+  
+      
 <span class="param-type">boolean</span>
 |
 
 <span class="param-type">string</span>
 
 
-            
-            </td>
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last">includes unit definition if "verbose" is second parameter</td>
+</tr>
+
+
+        
 
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+<tr class="deep-level-0">
+  
+      <td class="name"><code>asset</code></td>
+  
 
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">includes unit definition if "verbose" is second parameter</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>asset</code></td>
-            
-
-            <td class="type">
-            
-                
+  <td class="type">
+  
+      
 <span class="param-type">string</span>
 
 
-            
-            </td>
+  
+  </td>
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
 
-                
+      
 
-                
-                </td>
-            
+      
+      </td>
+  
 
-            
+  
 
-            <td class="description last">asset ID</td>
-        </tr>
+  <td class="description last">asset ID</td>
+</tr>
 
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
 
         
-<div class="param-desc">
-    Response
+        </tbody>
+    </table>
 </div>
 
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="global.html#gettransactionResponse">gettransactionResponse</a></span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".listTransactions"><span class="type-signature">(static) </span>listTransactions<span class="signature">(address<span class="signature-attributes">opt</span>, since_mci<span class="signature-attributes">opt</span>, unit<span class="signature-attributes">opt</span>, asset<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="global.html#gettransactionResponse">gettransactionResponse</a>>}</span></h4>
-
-    
 
 
 
@@ -1654,11 +1781,6 @@ If no address supplied, returns wallet balance(stable and pending).
 <dl class="details">
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line373">line 373</a>
-    </li></ul></dd>
-    
 
     
 
@@ -1681,13 +1803,19 @@ If no address supplied, returns wallet balance(stable and pending).
     
 
     
-
     
 
     
 
     
 
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line331">line 331</a>
+            </span>
+        </p>
     
 </dl>
 
@@ -1695,510 +1823,565 @@ If no address supplied, returns wallet balance(stable and pending).
 
 
 
-<div class="description usertext">
-    Returns transaction list.<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'>Response</div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type"><a href="global.html#gettransactionResponse">gettransactionResponse</a></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+    <h5>Example</h5>
+    
+    
+        <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"gettransaction", "params":["vuudtbL5ASwr0LJZ9tuV4S0j/lIsotJCKifphvGATmU=", true] }' http://127.0.0.1:6332 | json_pp</code></pre>
+    
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".listTransactions">
+        <a class="href-link" href="#.listTransactions">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                listTransactions<span class="signature">(address<span class="signature-attributes">opt</span>, since_mci<span class="signature-attributes">opt</span>, unit<span class="signature-attributes">opt</span>, asset<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="global.html#gettransactionResponse">gettransactionResponse</a>>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        Returns transaction list.<br>
 If address is invalid, then returns "invalid address".<br>
 If no address supplied, returns wallet transaction list.
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>address</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last">optional</td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>since_mci</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last">optional, counts only if no address</td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>unit</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last">optional, counts only if no address</td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>asset</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last">optional, counts only if no address</td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
 </div>
 
 
 
 
 
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line373">line 373</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'>Response</div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Array.&lt;<a href="global.html#gettransactionResponse">gettransactionResponse</a>></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
 
 
 
 
     <h5>Examples</h5>
     
-    <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"listtransactions", "params":{"since_mci": 1234} }' http://127.0.0.1:6332 | json_pp</code></pre>
-
-    <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"listtransactions", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3"] }' http://127.0.0.1:6332 | json_pp</code></pre>
-
-
-
-
-    <h5>Parameters:</h5>
+    
+        <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"listtransactions", "params":{"since_mci": 1234} }' http://127.0.0.1:6332 | json_pp</code></pre>
     
 
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
+    
+        <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"listtransactions", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3"] }' http://127.0.0.1:6332 | json_pp</code></pre>
     
 
-        <tr>
-            
-                <td class="name"><code>address</code></td>
-            
 
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">optional</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>since_mci</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">optional, counts only if no address</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>unit</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">optional, counts only if no address</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>asset</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">optional, counts only if no address</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Response
 </div>
+            
+                <div class="member">
 
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array.&lt;<a href="global.html#gettransactionResponse">gettransactionResponse</a>></span>
-
-
-    </dd>
-</dl>
 
     
-
-
-
+    <h4 class="name" id=".sendFrom">
+        <a class="href-link" href="#.sendFrom">#</a>
         
             
-
-    
-
-    <h4 class="name" id=".sendFrom"><span class="type-signature">(static) </span>sendFrom<span class="signature">(from_address, to_address, amount, asset<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {string}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line471">line 471</a>
-    </li></ul></dd>
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                sendFrom<span class="signature">(from_address, to_address, amount, asset<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {string}</span>
+            
+        </span>
+    </h4>
     
 
     
-
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    Send funds from address to address, keeping change to sending address.<br>
+    <div class="description">
+        Send funds from address to address, keeping change to sending address.<br>
 If eiher addresses are invalid, then returns "invalid address" error.<br>
 If your wallet doesn`t own the address, then returns "address not found".<br>
 Bytes payment can have amount as 'all', other assets must specify exact amount.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
+    </div>
     
-    <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"sendfrom", "params":{"from_address":"BVVJ2K7ENPZZ3VYZFWQWK7ISPCATFIW3", "to_address":"SNYRRHTIWDVJHSKE5BUIS3HWXKBN57JJ", "amount:"1000} }' http://127.0.0.1:6332 | json_pp</code></pre>
+
+
+
+
+
 
 
 
 
     <h5>Parameters:</h5>
     
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
+<div class="table-container">
+    <table class="params table">
+        <thead>
         <tr>
             
-                <td class="name"><code>from_address</code></td>
+            <th>Name</th>
             
 
-            <td class="type">
+            <th>Type</th>
+
             
-                
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>from_address</code></td>
+  
+
+  <td class="type">
+  
+      
 <span class="param-type">string</span>
 
 
-            
-            </td>
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last">wallet address</td>
+</tr>
+
+
+        
 
             
-                <td class="attributes">
-                
+<tr class="deep-level-0">
+  
+      <td class="name"><code>to_address</code></td>
+  
 
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">wallet address</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>to_address</code></td>
-            
-
-            <td class="type">
-            
-                
+  <td class="type">
+  
+      
 <span class="param-type">string</span>
 
 
-            
-            </td>
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last">wallet address</td>
+</tr>
+
+
+        
 
             
-                <td class="attributes">
-                
+<tr class="deep-level-0">
+  
+      <td class="name"><code>amount</code></td>
+  
 
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">wallet address</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>amount</code></td>
-            
-
-            <td class="type">
-            
-                
+  <td class="type">
+  
+      
 <span class="param-type">number</span>
 |
 
 <span class="param-type">string</span>
 
 
-            
-            </td>
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last">positive integer or 'all' (for Bytes only)</td>
+</tr>
+
+
+        
 
             
-                <td class="attributes">
-                
+<tr class="deep-level-0">
+  
+      <td class="name"><code>asset</code></td>
+  
 
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">positive integer or 'all' (for Bytes only)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>asset</code></td>
-            
-
-            <td class="type">
-            
-                
+  <td class="type">
+  
+      
 <span class="param-type">string</span>
 
 
-            
-            </td>
+  
+  </td>
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
 
-                
+      
 
-                
-                </td>
-            
+      
+      </td>
+  
 
-            
+  
 
-            <td class="description last">asset ID</td>
-        </tr>
+  <td class="description last">asset ID</td>
+</tr>
 
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
 
         
-<div class="param-desc">
-    unit ID
+        </tbody>
+    </table>
 </div>
 
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".sendToAddress"><span class="type-signature">(static) </span>sendToAddress<span class="signature">(address, amount, asset<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {string}</span></h4>
-
-    
 
 
 
@@ -2206,11 +2389,6 @@ Bytes payment can have amount as 'all', other assets must specify exact amount.
 <dl class="details">
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line432">line 432</a>
-    </li></ul></dd>
-    
 
     
 
@@ -2233,13 +2411,19 @@ Bytes payment can have amount as 'all', other assets must specify exact amount.
     
 
     
-
     
 
     
 
     
 
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line471">line 471</a>
+            </span>
+        </p>
     
 </dl>
 
@@ -2247,199 +2431,223 @@ Bytes payment can have amount as 'all', other assets must specify exact amount.
 
 
 
-<div class="description usertext">
-    Send funds to address.<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'>unit ID</div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">string</span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+    <h5>Example</h5>
+    
+    
+        <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"sendfrom", "params":{"from_address":"BVVJ2K7ENPZZ3VYZFWQWK7ISPCATFIW3", "to_address":"SNYRRHTIWDVJHSKE5BUIS3HWXKBN57JJ", "amount:"1000} }' http://127.0.0.1:6332 | json_pp</code></pre>
+    
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".sendToAddress">
+        <a class="href-link" href="#.sendToAddress">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                sendToAddress<span class="signature">(address, amount, asset<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {string}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        Send funds to address.<br>
 If address is invalid, then returns "invalid address".
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
+    </div>
     
-    <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"sendtoaddress", "params":["BVVJ2K7ENPZZ3VYZFWQWK7ISPCATFIW3", 1000] }' http://127.0.0.1:6332 | json_pp</code></pre>
+
+
+
+
+
 
 
 
 
     <h5>Parameters:</h5>
     
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
+<div class="table-container">
+    <table class="params table">
+        <thead>
         <tr>
             
-                <td class="name"><code>address</code></td>
+            <th>Name</th>
             
 
-            <td class="type">
+            <th>Type</th>
+
             
-                
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>address</code></td>
+  
+
+  <td class="type">
+  
+      
 <span class="param-type">string</span>
 
 
-            
-            </td>
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last">wallet address</td>
+</tr>
+
+
+        
 
             
-                <td class="attributes">
-                
+<tr class="deep-level-0">
+  
+      <td class="name"><code>amount</code></td>
+  
 
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">wallet address</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>amount</code></td>
-            
-
-            <td class="type">
-            
-                
+  <td class="type">
+  
+      
 <span class="param-type">number</span>
 |
 
 <span class="param-type">string</span>
 
 
-            
-            </td>
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last">positive integer</td>
+</tr>
+
+
+        
 
             
-                <td class="attributes">
-                
+<tr class="deep-level-0">
+  
+      <td class="name"><code>asset</code></td>
+  
 
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">positive integer</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>asset</code></td>
-            
-
-            <td class="type">
-            
-                
+  <td class="type">
+  
+      
 <span class="param-type">string</span>
 
 
-            
-            </td>
+  
+  </td>
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
 
-                
+      
 
-                
-                </td>
-            
+      
+      </td>
+  
 
-            
+  
 
-            <td class="description last">asset ID</td>
-        </tr>
+  <td class="description last">asset ID</td>
+</tr>
 
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
 
         
-<div class="param-desc">
-    unit ID
+        </tbody>
+    </table>
 </div>
 
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".signMessage"><span class="type-signature">(static) </span>signMessage<span class="signature">(address, message)</span><span class="type-signature"> &rarr; {string}</span></h4>
-
-    
 
 
 
@@ -2447,11 +2655,6 @@ If address is invalid, then returns "invalid address".
 <dl class="details">
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line576">line 576</a>
-    </li></ul></dd>
-    
 
     
 
@@ -2474,13 +2677,19 @@ If address is invalid, then returns "invalid address".
     
 
     
-
     
 
     
 
     
 
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line432">line 432</a>
+            </span>
+        </p>
     
 </dl>
 
@@ -2488,149 +2697,171 @@ If address is invalid, then returns "invalid address".
 
 
 
-<div class="description usertext">
-    Signs a message with address.<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'>unit ID</div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">string</span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+    <h5>Example</h5>
+    
+    
+        <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"sendtoaddress", "params":["BVVJ2K7ENPZZ3VYZFWQWK7ISPCATFIW3", 1000] }' http://127.0.0.1:6332 | json_pp</code></pre>
+    
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".signMessage">
+        <a class="href-link" href="#.signMessage">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                signMessage<span class="signature">(address, message)</span><span class="type-signature"> &rarr; {string}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        Signs a message with address.<br>
 If address is invalid, then returns "invalid address".<br>
 If your wallet doesn`t own the address, then returns "address not found".
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
+    </div>
     
-    <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"signmessage", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3", "Let there be light!"] }' http://127.0.0.1:6332 | json_pp</code></pre>
+
+
+
+
+
 
 
 
 
     <h5>Parameters:</h5>
     
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
+<div class="table-container">
+    <table class="params table">
+        <thead>
         <tr>
             
-                <td class="name"><code>address</code></td>
+            <th>Name</th>
             
 
-            <td class="type">
+            <th>Type</th>
+
             
-                
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>address</code></td>
+  
+
+  <td class="type">
+  
+      
 <span class="param-type">string</span>
 
 
-            
-            </td>
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last">wallet that signs the message</td>
+</tr>
+
+
+        
 
             
+<tr class="deep-level-0">
+  
+      <td class="name"><code>message</code></td>
+  
 
-            
-
-            <td class="description last">wallet that signs the message</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>message</code></td>
-            
-
-            <td class="type">
-            
-                
+  <td class="type">
+  
+      
 <span class="param-type">string</span>
 |
 
 <span class="param-type">object</span>
 
 
-            
-            </td>
+  
+  </td>
 
-            
+  
 
-            
+  
 
-            <td class="description last">message to be signed</td>
-        </tr>
+  <td class="description last">message to be signed</td>
+</tr>
 
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
 
         
-<div class="param-desc">
-    base64 encoded signature
+        </tbody>
+    </table>
 </div>
 
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".validateAddress"><span class="type-signature">(static) </span>validateAddress<span class="signature">(address)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-
-    
 
 
 
@@ -2638,11 +2869,6 @@ If your wallet doesn`t own the address, then returns "address not found".
 <dl class="details">
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line134">line 134</a>
-    </li></ul></dd>
-    
 
     
 
@@ -2665,13 +2891,19 @@ If your wallet doesn`t own the address, then returns "address not found".
     
 
     
-
     
 
     
 
     
 
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line576">line 576</a>
+            </span>
+        </p>
     
 </dl>
 
@@ -2679,121 +2911,408 @@ If your wallet doesn`t own the address, then returns "address not found".
 
 
 
-<div class="description usertext">
-    Validates address.
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'>base64 encoded signature</div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">string</span>
+
+
+    </div>
+    
 </div>
 
-
-
-
-
+                
+        </div>
+    </div>
 
 
 
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"validateaddress", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3"] }' http://127.0.0.1:6332 | json_pp</code></pre>
+    
+        <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"signmessage", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3", "Let there be light!"] }' http://127.0.0.1:6332 | json_pp</code></pre>
+    
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".validateAddress">
+        <a class="href-link" href="#.validateAddress">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                validateAddress<span class="signature">(address)</span><span class="type-signature"> &rarr; {boolean}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        Validates address.
+    </div>
+    
+
+
+
+
+
 
 
 
 
     <h5>Parameters:</h5>
     
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
+<div class="table-container">
+    <table class="params table">
+        <thead>
         <tr>
             
-                <td class="name"><code>address</code></td>
+            <th>Name</th>
             
 
-            <td class="type">
+            <th>Type</th>
+
             
-                
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>address</code></td>
+  
+
+  <td class="type">
+  
+      
 <span class="param-type">string</span>
 
 
-            
-            </td>
+  
+  </td>
 
-            
+  
 
-            
+  
 
-            <td class="description last"></td>
-        </tr>
+  <td class="description last"></td>
+</tr>
 
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
 
         
-<div class="param-desc">
-    is_valid
+        </tbody>
+    </table>
 </div>
 
 
 
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line134">line 134</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'>is_valid</div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
         
 <span class="param-type">boolean</span>
 
 
-    </dd>
-</dl>
+    </div>
+    
+</div>
 
+                
+        </div>
+    </div>
+
+
+
+
+    <h5>Example</h5>
+    
+    
+        <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"validateaddress", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3"] }' http://127.0.0.1:6332 | json_pp</code></pre>
     
 
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".verifyMessage">
+        <a class="href-link" href="#.verifyMessage">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                verifyMessage<span class="signature">(address<span class="signature-attributes">opt</span>, signature, message<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="global.html#verifymessageResponse">verifymessageResponse</a>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        Verifies signed message.
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>address</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last">wallet that signed the message (first param can be null)</td>
+</tr>
 
 
         
+
             
+<tr class="deep-level-0">
+  
+      <td class="name"><code>signature</code></td>
+  
 
-    
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
 
-    <h4 class="name" id=".verifyMessage"><span class="type-signature">(static) </span>verifyMessage<span class="signature">(address<span class="signature-attributes">opt</span>, signature, message<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="global.html#verifymessageResponse">verifymessageResponse</a>}</span></h4>
 
-    
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last">base64 encoded signature</td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>message</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+|
+
+<span class="param-type">object</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last">the message that was signed</td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
 
 
 
@@ -2801,11 +3320,6 @@ If your wallet doesn`t own the address, then returns "address not found".
 <dl class="details">
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line623">line 623</a>
-    </li></ul></dd>
-    
 
     
 
@@ -2828,13 +3342,19 @@ If your wallet doesn`t own the address, then returns "address not found".
     
 
     
-
     
 
     
 
     
 
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line623">line 623</a>
+            </span>
+        </p>
     
 </dl>
 
@@ -2842,193 +3362,58 @@ If your wallet doesn`t own the address, then returns "address not found".
 
 
 
-<div class="description usertext">
-    Verifies signed message.
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'>objSignedMessage</div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type"><a href="global.html#verifymessageResponse">verifymessageResponse</a></span>
+
+
+    </div>
+    
 </div>
 
-
-
-
-
+                
+        </div>
+    </div>
 
 
 
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"verifymessage", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3", "TGV0IHRoZXJlIGJlIGxpZ2h0IQ==", "Let there be light!"] }' http://127.0.0.1:6332 | json_pp</code></pre>
-
-
-
-
-    <h5>Parameters:</h5>
+    
+        <pre class="prettyprint"><code>$ curl -s --data '{"jsonrpc":"2.0", "id":1, "method":"verifymessage", "params":["QZEM3UWTG5MPKYZYRMUZLNLX5AL437O3", "TGV0IHRoZXJlIGJlIGxpZ2h0IQ==", "Let there be light!"] }' http://127.0.0.1:6332 | json_pp</code></pre>
     
 
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
 
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>address</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">wallet that signed the message (first param can be null)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>signature</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">base64 encoded signature</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>message</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-|
-
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">the message that was signed</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    objSignedMessage
 </div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="global.html#verifymessageResponse">verifymessageResponse</a></span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
+            
+            </div>
+        </div>
     
 
     
@@ -3041,21 +3426,25 @@ If your wallet doesn`t own the address, then returns "address not found".
 
 
 
-    
-    
-</div>
-
-<br class="clear">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.5</a> on Thu Sep 03 2020 23:59:46 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
-</footer>
-
-<script>prettyPrint();</script>
-<script src="scripts/polyfill.js"></script>
-<script src="scripts/linenumber.js"></script>
-
-
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.5</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
 
 </body>
 </html>

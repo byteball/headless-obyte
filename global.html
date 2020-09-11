@@ -1,41 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    
-    <meta charset="utf-8">
-    <title>Global - Documentation</title>
-    
-    
-    <script src="scripts/prettify/prettify.js"></script>
-    <script src="scripts/prettify/lang-css.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
-    <script src="scripts/nav.js" defer></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Global</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
 </head>
-<body>
 
-<input type="checkbox" id="nav-trigger" class="nav-trigger" />
-<label for="nav-trigger" class="navicon-button x">
-  <div class="navicon"></div>
-</label>
 
-<label for="nav-trigger" class="overlay"></label>
 
-<nav >
-    
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="rpc_service.html">rpc_service</a><ul class='methods'><li data-type='method'><a href="rpc_service.html#.claimTextcoin">claimTextcoin</a></li><li data-type='method'><a href="rpc_service.html#.getAddresses">getAddresses</a></li><li data-type='method'><a href="rpc_service.html#.getBalance">getBalance</a></li><li data-type='method'><a href="rpc_service.html#.getConnectionCount">getConnectionCount</a></li><li data-type='method'><a href="rpc_service.html#.getInfo">getInfo</a></li><li data-type='method'><a href="rpc_service.html#.getMainBalance">getMainBalance</a></li><li data-type='method'><a href="rpc_service.html#.getNetworkInfo">getNetworkInfo</a></li><li data-type='method'><a href="rpc_service.html#.getNewAddress">getNewAddress</a></li><li data-type='method'><a href="rpc_service.html#.getTransaction">getTransaction</a></li><li data-type='method'><a href="rpc_service.html#.listTransactions">listTransactions</a></li><li data-type='method'><a href="rpc_service.html#.sendFrom">sendFrom</a></li><li data-type='method'><a href="rpc_service.html#.sendToAddress">sendToAddress</a></li><li data-type='method'><a href="rpc_service.html#.signMessage">signMessage</a></li><li data-type='method'><a href="rpc_service.html#.validateAddress">validateAddress</a></li><li data-type='method'><a href="rpc_service.html#.verifyMessage">verifyMessage</a></li></ul></li><li><a href="start.html">start</a><ul class='methods'><li data-type='method'><a href="start.html#.isControlAddress">isControlAddress</a></li><li data-type='method'><a href="start.html#.isReady">isReady</a></li><li data-type='method'><a href="start.html#.issueChangeAddressAndSendMultiPayment">issueChangeAddressAndSendMultiPayment</a></li><li data-type='method'><a href="start.html#.issueChangeAddressAndSendPayment">issueChangeAddressAndSendPayment</a></li><li data-type='method'><a href="start.html#.issueNextMainAddress">issueNextMainAddress</a></li><li data-type='method'><a href="start.html#.issueOrSelectAddressByIndex">issueOrSelectAddressByIndex</a></li><li data-type='method'><a href="start.html#.issueOrSelectNextMainAddress">issueOrSelectNextMainAddress</a></li><li data-type='method'><a href="start.html#.issueOrSelectStaticChangeAddress">issueOrSelectStaticChangeAddress</a></li><li data-type='method'><a href="start.html#.readFirstAddress">readFirstAddress</a></li><li data-type='method'><a href="start.html#.readSingleAddress">readSingleAddress</a></li><li data-type='method'><a href="start.html#.readSingleWallet">readSingleWallet</a></li><li data-type='method'><a href="start.html#.sendAllBytes">sendAllBytes</a></li><li data-type='method'><a href="start.html#.sendAllBytesFromAddress">sendAllBytesFromAddress</a></li><li data-type='method'><a href="start.html#.sendAssetFromAddress">sendAssetFromAddress</a></li><li data-type='method'><a href="start.html#.sendData">sendData</a></li><li data-type='method'><a href="start.html#.sendMultiPayment">sendMultiPayment</a></li><li data-type='method'><a href="start.html#.sendPaymentUsingOutputs">sendPaymentUsingOutputs</a></li><li data-type='method'><a href="start.html#.signMessage">signMessage</a></li><li data-type='method'><a href="start.html#.signWithLocalPrivateKey">signWithLocalPrivateKey</a></li><li data-type='method'><a href="start.html#.waitTillReady">waitTillReady</a></li></ul></li></ul><h3><a href="global.html">Global</a></h3>
-</nav>
-
-<div id="main">
-    
-    <h1 class="page-title">Global</h1>
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
     
 
-    
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Namespaces</h3><ul><li><a href="headless_wallet.html">headless_wallet</a></li><li><a href="rpc_service.html">rpc_service</a></li></ul><h3><a href="global.html">Global</a></h3></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Title</p>
+                    <h1>Global</h1>
+                </header>
+                
 
 
 
@@ -44,18 +85,18 @@
 
 <header>
     
-        <h2>
-        
-        </h2>
+        <h2></h2>
         
     
 </header>
 
 <article>
+    <div class="container-overview">
     
-        <div class="container-overview">
         
-            
+
+        
+
 
 <dl class="details">
 
@@ -82,7 +123,6 @@
     
 
     
-
     
 
     
@@ -93,24 +133,11 @@
 </dl>
 
 
-
-
-            
-
-            
         
-        </div>
     
-
-    
-
-    
-
+    </div>
     
     
-    
-
-     
 
     
 
@@ -119,439 +146,620 @@
     
 
     
-        <h3 class="subsection-title">Type Definitions</h3>
 
+    
+
+    
+
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Type Definitions</h1>
+            <div class="members">
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
         
-                
-<h4 class="name" id="assetInBalanceResponse">assetInBalanceResponse</h4>
-
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line235">line 235</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>stable</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>pending</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
 <span class="param-type">Object</span>
 
 
-        </li>
-    </ul>
+    </span>
 
-
-
-
-
-
-            
-                
-<h4 class="name" id="balanceResponse">balanceResponse</h4>
-
-
-
-
-
-<dl class="details">
-
+<h4 class="name" id="assetInBalanceResponse">
+    <a class="href-link" href="#assetInBalanceResponse">#</a>
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line240">line 240</a>
-    </li></ul></dd>
+    <span class="code-name">
+        assetInBalanceResponse
+    </span>
     
+</h4>
 
-    
 
-    
 
-    
 
-    
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
 
 
 
     <h5 class="subsection-title">Properties:</h5>
 
     
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
+<div class="table-container">
+    <table class="props table">
+        <thead>
         <tr>
             
-                <td class="name"><code>asset</code></td>
+            <th>Name</th>
             
 
-            <td class="type">
+            <th>Type</th>
+
             
-                
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>stable</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">number</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>pending</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">number</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line235">line 235</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<span class="param-type">Object</span>
+
+
+    </span>
+
+<h4 class="name" id="balanceResponse">
+    <a class="href-link" href="#balanceResponse">#</a>
+    
+    <span class="code-name">
+        balanceResponse
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>asset</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type"><a href="global.html#assetInBalanceResponse">assetInBalanceResponse</a></span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
-    </tbody>
-</table>
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line240">line 240</a>
+            </span>
+        </p>
+    
+</dl>
 
 
 
 
 
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
+</div>
             
+                <div class="member">
+
+<h4 class="name" id="claimtextcoinResponse">
+    <a class="href-link" href="#claimtextcoinResponse">#</a>
+    
+    <span class="code-name">
+        claimtextcoinResponse
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>unit</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">string</span>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+
+        
+        </td>
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>asset</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">string</span>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line530">line 530</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
 <span class="param-type">Object</span>
 
 
-        </li>
-    </ul>
+    </span>
 
-
-
-
-
-
-            
-                
-<h4 class="name" id="claimtextcoinResponse">claimtextcoinResponse</h4>
-
-
-
-
-
-<dl class="details">
-
+<h4 class="name" id="getaddressesResponse">
+    <a class="href-link" href="#getaddressesResponse">#</a>
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line530">line 530</a>
-    </li></ul></dd>
+    <span class="code-name">
+        getaddressesResponse
+    </span>
     
+</h4>
 
-    
 
-    
 
-    
 
-    
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
 
 
 
     <h5 class="subsection-title">Properties:</h5>
 
     
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
+<div class="table-container">
+    <table class="props table">
+        <thead>
         <tr>
             
-                <td class="name"><code>unit</code></td>
+            <th>Name</th>
             
 
-            <td class="type">
+            <th>Type</th>
+
             
-                
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>address</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>asset</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>address_index</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
-    </tbody>
-</table>
 
+    
 
+    <td class="description last"></td>
+</tr>
 
-
-
-
-
-
-
-
-
-
-
+        
             
-                
-<h4 class="name" id="getaddressesResponse">getaddressesResponse</h4>
+<tr class="deep-level-0">
+    
+        <td class="name"><code>is_change</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">number</span>
 
 
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>is_definition_public</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">number</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>creation_ts</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">string</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
 
 
 
 <dl class="details">
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line171">line 171</a>
-    </li></ul></dd>
-    
 
     
 
@@ -574,738 +782,533 @@
     
 
     
-
     
 
     
 
     
 
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line171">line 171</a>
+            </span>
+        </p>
     
 </dl>
 
 
 
-    <h5 class="subsection-title">Properties:</h5>
 
-    
 
-<table class="props">
-    <thead>
-    <tr>
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>address</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>address_index</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>is_change</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>is_definition_public</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>creation_ts</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
 <span class="param-type">Object</span>
 
 
-        </li>
-    </ul>
+    </span>
 
-
-
-
-
-
-            
-                
-<h4 class="name" id="getInfoResponse">getInfoResponse</h4>
-
-
-
-
-
-<dl class="details">
-
+<h4 class="name" id="getInfoResponse">
+    <a class="href-link" href="#getInfoResponse">#</a>
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line49">line 49</a>
-    </li></ul></dd>
+    <span class="code-name">
+        getInfoResponse
+    </span>
     
+</h4>
 
-    
 
-    
 
-    
 
-    
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
 
 
 
     <h5 class="subsection-title">Properties:</h5>
 
     
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
+<div class="table-container">
+    <table class="props table">
+        <thead>
         <tr>
             
-                <td class="name"><code>connections</code></td>
+            <th>Name</th>
             
 
-            <td class="type">
+            <th>Type</th>
+
             
-                
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>connections</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">number</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>last_mci</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>last_mci</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">number</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>last_stable_mci</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>last_stable_mci</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">number</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>count_unhandled</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>count_unhandled</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">number</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
-    </tbody>
-</table>
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line49">line 49</a>
+            </span>
+        </p>
+    
+</dl>
 
 
 
 
 
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
+</div>
             
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
 <span class="param-type">Object</span>
 
 
-        </li>
-    </ul>
+    </span>
 
-
-
-
-
-
-            
-                
-<h4 class="name" id="getNetworkInfoResponse">getNetworkInfoResponse</h4>
-
-
-
-
-
-<dl class="details">
-
+<h4 class="name" id="getNetworkInfoResponse">
+    <a class="href-link" href="#getNetworkInfoResponse">#</a>
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line94">line 94</a>
-    </li></ul></dd>
+    <span class="code-name">
+        getNetworkInfoResponse
+    </span>
     
+</h4>
 
-    
 
-    
 
-    
 
-    
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
 
 
 
     <h5 class="subsection-title">Properties:</h5>
 
     
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
+<div class="table-container">
+    <table class="props table">
+        <thead>
         <tr>
             
-                <td class="name"><code>version</code></td>
+            <th>Name</th>
             
 
-            <td class="type">
+            <th>Type</th>
+
             
-                
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>version</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>subversion</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>subversion</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>protocolversion</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>protocolversion</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>alt</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>alt</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>connections</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>connections</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">number</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>bLight</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>bLight</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">boolean</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>socksConfigured</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>socksConfigured</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">boolean</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>COUNT_WITNESSES</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>COUNT_WITNESSES</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">number</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>MAJORITY_OF_WITNESSES</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>MAJORITY_OF_WITNESSES</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">number</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>GENESIS_UNIT</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>GENESIS_UNIT</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>BLACKBYTES_ASSET</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>BLACKBYTES_ASSET</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
-    </tbody>
-</table>
 
+    
 
+    <td class="description last"></td>
+</tr>
 
-
-
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">Object</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-
-            
-                
-<h4 class="name" id="gettransactionResponse">gettransactionResponse</h4>
-
-
+        
+        </tbody>
+    </table>
+</div>
 
 
 
 <dl class="details">
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line318">line 318</a>
-    </li></ul></dd>
-    
 
     
 
@@ -1328,312 +1331,316 @@
     
 
     
-
     
 
     
 
     
 
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line94">line 94</a>
+            </span>
+        </p>
     
 </dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<span class="param-type">Object</span>
+
+
+    </span>
+
+<h4 class="name" id="gettransactionResponse">
+    <a class="href-link" href="#gettransactionResponse">#</a>
+    
+    <span class="code-name">
+        gettransactionResponse
+    </span>
+    
+</h4>
+
+
+
+
+
 
 
 
     <h5 class="subsection-title">Properties:</h5>
 
     
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
+<div class="table-container">
+    <table class="props table">
+        <thead>
         <tr>
             
-                <td class="name"><code>action</code></td>
+            <th>Name</th>
             
 
-            <td class="type">
+            <th>Type</th>
+
             
-                
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>action</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>amount</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>amount</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">number</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>my_address</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>my_address</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>arrPayerAddresses</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>arrPayerAddresses</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">Array.&lt;String></span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>confirmations</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>confirmations</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">number</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>unit</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>unit</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>fee</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>fee</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">number</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>time</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>time</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>level</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>level</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">number</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>asset</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>asset</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
-    </tbody>
-</table>
 
+    
 
+    <td class="description last"></td>
+</tr>
 
-
-
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">Object</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-
-            
-                
-<h4 class="name" id="PaymentResult">PaymentResult</h4>
-
-
+        
+        </tbody>
+    </table>
+</div>
 
 
 
 <dl class="details">
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="start.js.html">start.js</a>, <a href="start.js.html#line45">line 45</a>
-    </li></ul></dd>
-    
 
     
 
@@ -1656,120 +1663,303 @@
     
 
     
-
     
 
     
 
     
 
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line318">line 318</a>
+            </span>
+        </p>
     
 </dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<span class="param-type">Object</span>
+
+
+    </span>
+
+<h4 class="name" id="PaymentResult">
+    <a class="href-link" href="#PaymentResult">#</a>
+    
+    <span class="code-name">
+        PaymentResult
+    </span>
+    
+</h4>
+
+
+
+
+
 
 
 
     <h5 class="subsection-title">Properties:</h5>
 
     
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
+<div class="table-container">
+    <table class="props table">
+        <thead>
         <tr>
             
-                <td class="name"><code>unit</code></td>
+            <th>Name</th>
             
 
-            <td class="type">
+            <th>Type</th>
+
             
-                
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>unit</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>assocMnemonics</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>assocMnemonics</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="start.js.html" class="button">View Source</a>
+            <span>
+                <a href="start.js.html">start.js</a>, <a href="start.js.html#line45">line 45</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
             
-            </td>
+                <div class="member">
+
+
+    
+    <h4 class="name" id="paymentResultCallback">
+        <a class="href-link" href="#paymentResultCallback">#</a>
+        
+        <span class="code-name">
+            
+                paymentResultCallback<span class="signature">(error, unit, assocMnemonics)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
 
             
 
             
 
-            <td class="description last"></td>
+            <th class="last">Description</th>
         </tr>
+        </thead>
 
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">Object</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
+        <tbody>
+        
 
             
-                
+<tr class="deep-level-0">
+  
+      <td class="name"><code>error</code></td>
+  
 
-    
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
 
-    <h4 class="name" id="paymentResultCallback"><span class="type-signature"></span>paymentResultCallback<span class="signature">(error, unit, assocMnemonics)</span><span class="type-signature"></span></h4>
 
-    
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>unit</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>assocMnemonics</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
 
 
 
@@ -1777,11 +1967,6 @@
 <dl class="details">
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="start.js.html">start.js</a>, <a href="start.js.html#line38">line 38</a>
-    </li></ul></dd>
-    
 
     
 
@@ -1804,13 +1989,19 @@
     
 
     
-
     
 
     
 
     
 
+    
+        <p class="tag-source">
+            <a href="start.js.html" class="button">View Source</a>
+            <span>
+                <a href="start.js.html">start.js</a>, <a href="start.js.html#line38">line 38</a>
+            </span>
+        </p>
     
 </dl>
 
@@ -1828,126 +2019,91 @@
 
 
 
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="resultCallback">
+        <a class="href-link" href="#resultCallback">#</a>
+        
+        <span class="code-name">
+            
+                resultCallback<span class="signature">(result)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+
+
+
+
+
+
+
+
+
     <h5>Parameters:</h5>
     
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
+<div class="table-container">
+    <table class="params table">
+        <thead>
         <tr>
             
-                <td class="name"><code>error</code></td>
+            <th>Name</th>
             
 
-            <td class="type">
+            <th>Type</th>
+
             
-                
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>result</code></td>
+  
+
+  <td class="type">
+  
+      
 <span class="param-type">string</span>
 
 
-            
-            </td>
+  
+  </td>
 
-            
+  
 
-            
+  
 
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>unit</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
+  <td class="description last"></td>
+</tr>
 
 
-            
-            </td>
+        
+        </tbody>
+    </table>
+</div>
 
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>assocMnemonics</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
-                
-
-    
-
-    <h4 class="name" id="resultCallback"><span class="type-signature"></span>resultCallback<span class="signature">(result)</span><span class="type-signature"></span></h4>
-
-    
 
 
 
@@ -1955,11 +2111,6 @@
 <dl class="details">
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="start.js.html">start.js</a>, <a href="start.js.html#line34">line 34</a>
-    </li></ul></dd>
-    
 
     
 
@@ -1982,13 +2133,19 @@
     
 
     
-
     
 
     
 
     
 
+    
+        <p class="tag-source">
+            <a href="start.js.html" class="button">View Source</a>
+            <span>
+                <a href="start.js.html">start.js</a>, <a href="start.js.html#line34">line 34</a>
+            </span>
+        </p>
     
 </dl>
 
@@ -2006,129 +2163,31 @@
 
 
 
-    <h5>Parameters:</h5>
-    
 
-<table class="params">
-    <thead>
-    <tr>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="signMessageCB">
+        <a class="href-link" href="#signMessageCB">#</a>
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
+        <span class="code-name">
             
-                <td class="name"><code>result</code></td>
+                signMessageCB<span class="signature">(error, objUnit)</span><span class="type-signature"></span>
             
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
-                
-
-    
-
-    <h4 class="name" id="signMessageCB"><span class="type-signature"></span>signMessageCB<span class="signature">(error, objUnit)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="start.js.html">start.js</a>, <a href="start.js.html#line945">line 945</a>
-    </li></ul></dd>
+        </span>
+    </h4>
     
 
     
-
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
 
 
 
@@ -2140,104 +2199,83 @@
 
     <h5>Parameters:</h5>
     
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
+<div class="table-container">
+    <table class="params table">
+        <thead>
         <tr>
             
-                <td class="name"><code>error</code></td>
+            <th>Name</th>
             
 
-            <td class="type">
+            <th>Type</th>
+
             
-                
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>error</code></td>
+  
+
+  <td class="type">
+  
+      
 <span class="param-type">string</span>
 
 
-            
-            </td>
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
 
             
+<tr class="deep-level-0">
+  
+      <td class="name"><code>objUnit</code></td>
+  
 
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>objUnit</code></td>
-            
-
-            <td class="type">
-            
-                
+  <td class="type">
+  
+      
 <span class="param-type">Object</span>
 |
 
 <span class="param-type">undefined</span>
 
 
-            
-            </td>
+  
+  </td>
 
-            
+  
 
-            
+  
 
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
+  <td class="description last"></td>
+</tr>
 
 
+        
+        </tbody>
+    </table>
+</div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
-                
-
-    
-
-    <h4 class="name" id="signWithLocalPrivateKeyCB"><span class="type-signature"></span>signWithLocalPrivateKeyCB<span class="signature">(result)</span><span class="type-signature"></span></h4>
-
-    
 
 
 
@@ -2245,11 +2283,6 @@
 <dl class="details">
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="start.js.html">start.js</a>, <a href="start.js.html#line332">line 332</a>
-    </li></ul></dd>
-    
 
     
 
@@ -2272,13 +2305,19 @@
     
 
     
-
     
 
     
 
     
 
+    
+        <p class="tag-source">
+            <a href="start.js.html" class="button">View Source</a>
+            <span>
+                <a href="start.js.html">start.js</a>, <a href="start.js.html#line945">line 945</a>
+            </span>
+        </p>
     
 </dl>
 
@@ -2287,6 +2326,40 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="signWithLocalPrivateKeyCB">
+        <a class="href-link" href="#signWithLocalPrivateKeyCB">#</a>
+        
+        <span class="code-name">
+            
+                signWithLocalPrivateKeyCB<span class="signature">(result)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
 
 
 
@@ -2298,73 +2371,54 @@
 
     <h5>Parameters:</h5>
     
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
+<div class="table-container">
+    <table class="params table">
+        <thead>
         <tr>
             
-                <td class="name"><code>result</code></td>
+            <th>Name</th>
             
 
-            <td class="type">
+            <th>Type</th>
+
             
-                
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>result</code></td>
+  
+
+  <td class="type">
+  
+      
 <span class="param-type">string</span>
 
 
-            
-            </td>
+  
+  </td>
 
-            
+  
 
-            
+  
 
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
+  <td class="description last"></td>
+</tr>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
-                
-<h4 class="name" id="smpOpts">smpOpts</h4>
+        
+        </tbody>
+    </table>
+</div>
 
 
 
@@ -2373,11 +2427,6 @@
 <dl class="details">
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="start.js.html">start.js</a>, <a href="start.js.html#line497">line 497</a>
-    </li></ul></dd>
-    
 
     
 
@@ -2400,824 +2449,844 @@
     
 
     
-
     
 
     
 
     
 
+    
+        <p class="tag-source">
+            <a href="start.js.html" class="button">View Source</a>
+            <span>
+                <a href="start.js.html">start.js</a>, <a href="start.js.html#line332">line 332</a>
+            </span>
+        </p>
     
 </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<span class="param-type">Object</span>
+
+
+    </span>
+
+<h4 class="name" id="smpOpts">
+    <a class="href-link" href="#smpOpts">#</a>
+    
+    <span class="code-name">
+        smpOpts
+    </span>
+    
+</h4>
+
+
+
+
+
 
 
 
     <h5 class="subsection-title">Properties:</h5>
 
     
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
+<div class="table-container">
+    <table class="props table">
+        <thead>
         <tr>
             
-                <td class="name"><code>wallet</code></td>
+            <th>Name</th>
             
 
-            <td class="type">
+            <th>Type</th>
+
             
-                
+            <th>Attributes</th>
+            
+
+            
+            <th>Default</th>
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>wallet</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">If specified, the payment will be from this wallet</td>
-        </tr>
+    
+    </td>
 
     
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
 
-        <tr>
-            
-                <td class="name"><code>fee_paying_wallet</code></td>
-            
+        
+        </td>
+    
 
-            <td class="type">
+    
+        <td class="default">
+        
+        </td>
+    
+
+    <td class="description last">If specified, the payment will be from this wallet</td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>fee_paying_wallet</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Fallback wallet for paying the fees, used if there is not enough bytes on the main paying wallet</td>
-        </tr>
+    
+    </td>
 
     
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
 
-        <tr>
-            
-                <td class="name"><code>paying_addresses</code></td>
-            
+        
+        </td>
+    
 
-            <td class="type">
+    
+        <td class="default">
+        
+        </td>
+    
+
+    <td class="description last">Fallback wallet for paying the fees, used if there is not enough bytes on the main paying wallet</td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>paying_addresses</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">Array.&lt;string></span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">If specified, payment will be sent from these addresses</td>
-        </tr>
+    
+    </td>
 
     
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
 
-        <tr>
-            
-                <td class="name"><code>change_address</code></td>
-            
+        
+        </td>
+    
 
-            <td class="type">
+    
+        <td class="default">
+        
+        </td>
+    
+
+    <td class="description last">If specified, payment will be sent from these addresses</td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>change_address</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Change address</td>
-        </tr>
+    
+    </td>
 
     
+        <td class="attributes">
+        
 
-        <tr>
-            
-                <td class="name"><code>amount</code></td>
-            
+        
+        </td>
+    
 
-            <td class="type">
+    
+        <td class="default">
+        
+        </td>
+    
+
+    <td class="description last">Change address</td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>amount</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">number</span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Payment amount</td>
-        </tr>
+    
+    </td>
 
     
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
 
-        <tr>
-            
-                <td class="name"><code>to_address</code></td>
-            
+        
+        </td>
+    
 
-            <td class="type">
+    
+        <td class="default">
+        
+        </td>
+    
+
+    <td class="description last">Payment amount</td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>to_address</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Payment address of the receiver</td>
-        </tr>
+    
+    </td>
 
     
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
 
-        <tr>
-            
-                <td class="name"><code>base_outputs</code></td>
-            
+        
+        </td>
+    
 
-            <td class="type">
+    
+        <td class="default">
+        
+        </td>
+    
+
+    <td class="description last">Payment address of the receiver</td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>base_outputs</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">Array.&lt;Object></span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Array of outputs for payment in bytes</td>
-        </tr>
+    
+    </td>
 
     
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
 
-        <tr>
-            
-                <td class="name"><code>asset</code></td>
-            
+        
+        </td>
+    
 
-            <td class="type">
+    
+        <td class="default">
+        
+        </td>
+    
+
+    <td class="description last">Array of outputs for payment in bytes</td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>asset</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 |
 
 <span class="param-type">null</span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Payment asset</td>
-        </tr>
+    
+    </td>
 
     
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
 
-        <tr>
-            
-                <td class="name"><code>asset_outputs</code></td>
-            
+        
+        </td>
+    
 
-            <td class="type">
+    
+        <td class="default">
+        
+        </td>
+    
+
+    <td class="description last">Payment asset</td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>asset_outputs</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">Array.&lt;Object></span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Array of outputs for payment in the specified asset</td>
-        </tr>
+    
+    </td>
 
     
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
 
-        <tr>
-            
-                <td class="name"><code>send_all</code></td>
-            
+        
+        </td>
+    
 
-            <td class="type">
+    
+        <td class="default">
+        
+        </td>
+    
+
+    <td class="description last">Array of outputs for payment in the specified asset</td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>send_all</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">boolean</span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Send all bytes to "to_address"</td>
-        </tr>
+    
+    </td>
 
     
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
 
-        <tr>
-            
-                <td class="name"><code>messages</code></td>
-            
+        
+        </td>
+    
 
-            <td class="type">
+    
+        <td class="default">
+        
+        </td>
+    
+
+    <td class="description last">Send all bytes to "to_address"</td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>messages</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">Array.&lt;Object></span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Array of messages to send along with the payment</td>
-        </tr>
+    
+    </td>
 
     
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
 
-        <tr>
-            
-                <td class="name"><code>spend_unconfirmed</code></td>
-            
+        
+        </td>
+    
 
-            <td class="type">
+    
+        <td class="default">
+        
+        </td>
+    
+
+    <td class="description last">Array of messages to send along with the payment</td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>spend_unconfirmed</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>own</code>
-                
-                </td>
-            
-
-            <td class="description last">What unspent outputs to use for the payment (all - all available, own - sent by us or stable, none - only stable)</td>
-        </tr>
+    
+    </td>
 
     
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
 
-        <tr>
-            
-                <td class="name"><code>recipient_device_address</code></td>
-            
+        
+        </td>
+    
 
-            <td class="type">
+    
+        <td class="default">
+        
+            own
+        
+        </td>
+    
+
+    <td class="description last">What unspent outputs to use for the payment (all - all available, own - sent by us or stable, none - only stable)</td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>recipient_device_address</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Device address for payment notification or sending the private payloads</td>
-        </tr>
+    
+    </td>
 
     
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
 
-        <tr>
-            
-                <td class="name"><code>recipient_device_addresses</code></td>
-            
+        
+        </td>
+    
 
-            <td class="type">
+    
+        <td class="default">
+        
+        </td>
+    
+
+    <td class="description last">Device address for payment notification or sending the private payloads</td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>recipient_device_addresses</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">Array.&lt;string></span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Device addresses for payment notification or sending the private payloads</td>
-        </tr>
+    
+    </td>
 
     
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
 
-        <tr>
-            
-                <td class="name"><code>arrSigningDeviceAddresses</code></td>
-            
+        
+        </td>
+    
 
-            <td class="type">
+    
+        <td class="default">
+        
+        </td>
+    
+
+    <td class="description last">Device addresses for payment notification or sending the private payloads</td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>arrSigningDeviceAddresses</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">Array.&lt;string></span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Device addresses which need to sign the transaction</td>
-        </tr>
+    
+    </td>
 
     
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
 
-        <tr>
-            
-                <td class="name"><code>signing_addresses</code></td>
-            
+        
+        </td>
+    
 
-            <td class="type">
+    
+        <td class="default">
+        
+        </td>
+    
+
+    <td class="description last">Device addresses which need to sign the transaction</td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>signing_addresses</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">Array.&lt;string></span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Payment addresses which need to sign the transaction</td>
-        </tr>
+    
+    </td>
 
     
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
 
-        <tr>
-            
-                <td class="name"><code>signWithLocalPrivateKey</code></td>
-            
+        
+        </td>
+    
 
-            <td class="type">
+    
+        <td class="default">
+        
+        </td>
+    
+
+    <td class="description last">Payment addresses which need to sign the transaction</td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>signWithLocalPrivateKey</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">function</span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">A function for signing the transaction with a key stored on the wallet's device</td>
-        </tr>
+    
+    </td>
 
     
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
 
-        <tr>
-            
-                <td class="name"><code>aa_addresses_checked</code></td>
-            
+        
+        </td>
+    
 
-            <td class="type">
+    
+        <td class="default">
+        
+        </td>
+    
+
+    <td class="description last">A function for signing the transaction with a key stored on the wallet's device</td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>aa_addresses_checked</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">boolean</span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Whether the output addresses have already been checked for being Autonomous Agent addresses and the respective bounce fees added where necessary. If false, the job will be performed by the function</td>
-        </tr>
+    
+    </td>
 
     
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
 
-        <tr>
-            
-                <td class="name"><code>do_not_email</code></td>
-            
+        
+        </td>
+    
 
-            <td class="type">
+    
+        <td class="default">
+        
+        </td>
+    
+
+    <td class="description last">Whether the output addresses have already been checked for being Autonomous Agent addresses and the respective bounce fees added where necessary. If false, the job will be performed by the function</td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>do_not_email</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">boolean</span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Do not send an email when sending textcoins, the caller will take care of delivery of the produced textcoins</td>
-        </tr>
+    
+    </td>
 
     
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
 
-        <tr>
-            
-                <td class="name"><code>email_subject</code></td>
-            
+        
+        </td>
+    
 
-            <td class="type">
+    
+        <td class="default">
+        
+        </td>
+    
+
+    <td class="description last">Do not send an email when sending textcoins, the caller will take care of delivery of the produced textcoins</td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>email_subject</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Subject for the email message sent when sending textcoins</td>
-        </tr>
+    
+    </td>
 
     
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
 
-        <tr>
-            
-                <td class="name"><code>getPrivateAssetPayloadSavePath</code></td>
-            
+        
+        </td>
+    
 
-            <td class="type">
+    
+        <td class="default">
+        
+        </td>
+    
+
+    <td class="description last">Subject for the email message sent when sending textcoins</td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>getPrivateAssetPayloadSavePath</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">function</span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Function that returns the path to save the file with private payloads when sending a private textcoin</td>
-        </tr>
+    
+    </td>
 
     
-    </tbody>
-</table>
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
 
+        
+        </td>
+    
 
+    
+        <td class="default">
+        
+        </td>
+    
 
+    <td class="description last">Function that returns the path to save the file with private payloads when sending a private textcoin</td>
+</tr>
 
-
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">Object</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-
-            
-                
-<h4 class="name" id="verifymessageResponse">verifymessageResponse</h4>
-
-
+        
+        </tbody>
+    </table>
+</div>
 
 
 
 <dl class="details">
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line617">line 617</a>
-    </li></ul></dd>
-    
 
     
 
@@ -3240,139 +3309,204 @@
     
 
     
-
     
 
     
 
     
 
+    
+        <p class="tag-source">
+            <a href="start.js.html" class="button">View Source</a>
+            <span>
+                <a href="start.js.html">start.js</a>, <a href="start.js.html#line497">line 497</a>
+            </span>
+        </p>
     
 </dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<span class="param-type">Object</span>
+
+
+    </span>
+
+<h4 class="name" id="verifymessageResponse">
+    <a class="href-link" href="#verifymessageResponse">#</a>
+    
+    <span class="code-name">
+        verifymessageResponse
+    </span>
+    
+</h4>
+
+
+
+
+
 
 
 
     <h5 class="subsection-title">Properties:</h5>
 
     
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
+<div class="table-container">
+    <table class="props table">
+        <thead>
         <tr>
             
-                <td class="name"><code>version</code></td>
+            <th>Name</th>
             
 
-            <td class="type">
+            <th>Type</th>
+
             
-                
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>version</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>signed_message</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>signed_message</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">string</span>
 |
 
 <span class="param-type">Object</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
+    
+    </td>
 
     
 
-        <tr>
-            
-                <td class="name"><code>authors</code></td>
-            
+    
 
-            <td class="type">
+    <td class="description last"></td>
+</tr>
+
+        
             
-                
+<tr class="deep-level-0">
+    
+        <td class="name"><code>authors</code></td>
+    
+
+    <td class="type">
+    
+        
 <span class="param-type">Object</span>
 
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
 
     
-    </tbody>
-</table>
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="tools_rpc_service.js.html" class="button">View Source</a>
+            <span>
+                <a href="tools_rpc_service.js.html">tools/rpc_service.js</a>, <a href="tools_rpc_service.js.html#line617">line 617</a>
+            </span>
+        </p>
+    
+</dl>
 
 
 
 
 
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
+</div>
             
-<span class="param-type">Object</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-
-            
+            </div>
+        </div>
     
 
     
@@ -3383,21 +3517,25 @@
 
 
 
-    
-    
-</div>
-
-<br class="clear">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.5</a> on Thu Sep 03 2020 23:59:46 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
-</footer>
-
-<script>prettyPrint();</script>
-<script src="scripts/polyfill.js"></script>
-<script src="scripts/linenumber.js"></script>
-
-
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.5</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
 
 </body>
 </html>

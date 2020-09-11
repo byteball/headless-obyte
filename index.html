@@ -1,48 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    
-    <meta charset="utf-8">
-    <title>Home - Documentation</title>
-    
-    
-    <script src="scripts/prettify/prettify.js"></script>
-    <script src="scripts/prettify/lang-css.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
-    <script src="scripts/nav.js" defer></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Home</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
 </head>
-<body>
 
-<input type="checkbox" id="nav-trigger" class="nav-trigger" />
-<label for="nav-trigger" class="navicon-button x">
-  <div class="navicon"></div>
-</label>
 
-<label for="nav-trigger" class="overlay"></label>
 
-<nav >
-    
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="rpc_service.html">rpc_service</a><ul class='methods'><li data-type='method'><a href="rpc_service.html#.claimTextcoin">claimTextcoin</a></li><li data-type='method'><a href="rpc_service.html#.getAddresses">getAddresses</a></li><li data-type='method'><a href="rpc_service.html#.getBalance">getBalance</a></li><li data-type='method'><a href="rpc_service.html#.getConnectionCount">getConnectionCount</a></li><li data-type='method'><a href="rpc_service.html#.getInfo">getInfo</a></li><li data-type='method'><a href="rpc_service.html#.getMainBalance">getMainBalance</a></li><li data-type='method'><a href="rpc_service.html#.getNetworkInfo">getNetworkInfo</a></li><li data-type='method'><a href="rpc_service.html#.getNewAddress">getNewAddress</a></li><li data-type='method'><a href="rpc_service.html#.getTransaction">getTransaction</a></li><li data-type='method'><a href="rpc_service.html#.listTransactions">listTransactions</a></li><li data-type='method'><a href="rpc_service.html#.sendFrom">sendFrom</a></li><li data-type='method'><a href="rpc_service.html#.sendToAddress">sendToAddress</a></li><li data-type='method'><a href="rpc_service.html#.signMessage">signMessage</a></li><li data-type='method'><a href="rpc_service.html#.validateAddress">validateAddress</a></li><li data-type='method'><a href="rpc_service.html#.verifyMessage">verifyMessage</a></li></ul></li><li><a href="start.html">start</a><ul class='methods'><li data-type='method'><a href="start.html#.isControlAddress">isControlAddress</a></li><li data-type='method'><a href="start.html#.isReady">isReady</a></li><li data-type='method'><a href="start.html#.issueChangeAddressAndSendMultiPayment">issueChangeAddressAndSendMultiPayment</a></li><li data-type='method'><a href="start.html#.issueChangeAddressAndSendPayment">issueChangeAddressAndSendPayment</a></li><li data-type='method'><a href="start.html#.issueNextMainAddress">issueNextMainAddress</a></li><li data-type='method'><a href="start.html#.issueOrSelectAddressByIndex">issueOrSelectAddressByIndex</a></li><li data-type='method'><a href="start.html#.issueOrSelectNextMainAddress">issueOrSelectNextMainAddress</a></li><li data-type='method'><a href="start.html#.issueOrSelectStaticChangeAddress">issueOrSelectStaticChangeAddress</a></li><li data-type='method'><a href="start.html#.readFirstAddress">readFirstAddress</a></li><li data-type='method'><a href="start.html#.readSingleAddress">readSingleAddress</a></li><li data-type='method'><a href="start.html#.readSingleWallet">readSingleWallet</a></li><li data-type='method'><a href="start.html#.sendAllBytes">sendAllBytes</a></li><li data-type='method'><a href="start.html#.sendAllBytesFromAddress">sendAllBytesFromAddress</a></li><li data-type='method'><a href="start.html#.sendAssetFromAddress">sendAssetFromAddress</a></li><li data-type='method'><a href="start.html#.sendData">sendData</a></li><li data-type='method'><a href="start.html#.sendMultiPayment">sendMultiPayment</a></li><li data-type='method'><a href="start.html#.sendPaymentUsingOutputs">sendPaymentUsingOutputs</a></li><li data-type='method'><a href="start.html#.signMessage">signMessage</a></li><li data-type='method'><a href="start.html#.signWithLocalPrivateKey">signWithLocalPrivateKey</a></li><li data-type='method'><a href="start.html#.waitTillReady">waitTillReady</a></li></ul></li></ul><h3><a href="global.html">Global</a></h3>
-</nav>
-
-<div id="main">
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
     
 
-    
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Namespaces</h3><ul><li><a href="headless_wallet.html">headless_wallet</a></li><li><a href="rpc_service.html">rpc_service</a></li></ul><h3><a href="global.html">Global</a></h3></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p></p>
+                    <h1>Home</h1>
+                </header>
+                
 
 
 
     
 
 
-    <section class="package">
-        <h3> </h3>		
-    </section>
+    <h3> </h3>
+
 
 
 
@@ -56,7 +98,8 @@
 
 
 
-    <section class="readme usertext">
+
+    <section>
         <article><h1>Headless wallet for Obyte network</h1>
 <p>This is a headless alternative of the <a href="https://github.com/byteball/obyte-gui-wallet">GUI wallet</a> for Obyte network.  It is designed for an always-online deployment on a server.</p>
 <h2>Install</h2>
@@ -168,21 +211,25 @@ and let the script running in the background. (hit Ctrl+P+Q)</p>
 
 
 
-    
-    
-</div>
-
-<br class="clear">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.5</a> on Thu Sep 03 2020 23:59:46 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
-</footer>
-
-<script>prettyPrint();</script>
-<script src="scripts/polyfill.js"></script>
-<script src="scripts/linenumber.js"></script>
-
-
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.5</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
 
 </body>
 </html>

@@ -1,7 +1,7 @@
 /*jslint node: true */
 "use strict";
 /**
- * @namespace start
+ * @namespace headless_wallet
  */
 var fs = require('fs');
 var crypto = require('crypto');
@@ -50,7 +50,7 @@ var bReady = false;
 
 /**
  * Returns whether the wallet is ready
- * @memberOf start
+ * @memberOf headless_wallet
  * @return {boolean} is ready
  *
  * @example
@@ -65,7 +65,7 @@ function isReady() {
 /**
  * Waits for the wallet to be ready
  * @async
- * @memberOf start
+ * @memberOf headless_wallet
  * @example
  * await waitTillReady();
  */
@@ -231,7 +231,7 @@ function createWallet(xPrivKey, onDone){
 
 /**
  * Check that the device address is in the array of controlled addresses
- * @memberOf start
+ * @memberOf headless_wallet
  * @param device_address
  * @return {boolean}
  * @example
@@ -245,7 +245,7 @@ function isControlAddress(device_address){
 
 /**
  * Returns the address of the single-address wallet, throws if the wallet is not single-address
- * @memberOf start
+ * @memberOf headless_wallet
  * @param {resultCallback=} handleAddress
  * @return {Promise<string>}
  * @example
@@ -265,7 +265,7 @@ function readSingleAddress(handleAddress){
 
 /**
  * Returns the first address of the wallet
- * @memberOf start
+ * @memberOf headless_wallet
  * @param {resultCallback=} handleAddress
  * @return {Promise<string>}
  * @example
@@ -303,7 +303,7 @@ function prepareBalanceText(handleBalanceText){
 
 /**
  * Returns the wallet ID. There should be only one wallet, throws otherwise.
- * @memberOf start
+ * @memberOf headless_wallet
  * @param {resultCallback=} handleWallet
  * @return {Promise<string>}
  * @example
@@ -335,7 +335,7 @@ function determineIfWalletExists(handleResult){
  */
 /**
  * Signs a transaction/message using the local private key
- * @memberOf start
+ * @memberOf headless_wallet
  * @param {string} wallet_id
  * @param {number} account
  * @param {number} is_change
@@ -520,7 +520,7 @@ function sendPayment(asset, amount, to_address, change_address, device_address, 
  */
 /**
  * Sends payment with specified parameters. See more examples in the [documentation]{@link https://developer.obyte.org}
- * @memberOf start
+ * @memberOf headless_wallet
  * @param {smpOpts} opts
  * @param {paymentResultCallback=} onDone
  * @return {Promise<PaymentResult>}
@@ -582,7 +582,7 @@ function sendMultiPayment(opts, onDone){
 
 /**
  * Sends payment using the specified outputs
- * @memberOf start
+ * @memberOf headless_wallet
  * @param asset
  * @param outputs
  * @param change_address
@@ -628,7 +628,7 @@ function sendPaymentUsingOutputs(asset, outputs, change_address, onDone) {
 
 /**
  * Sends all bytes from all addresses
- * @memberOf start
+ * @memberOf headless_wallet
  * @param {string} to_address
  * @param {string|null} recipient_device_address
  * @param {paymentResultCallback=} onDone
@@ -665,7 +665,7 @@ function sendAllBytes(to_address, recipient_device_address, onDone) {
 
 /**
  * Sends all bytes from the specified address
- * @memberOf start
+ * @memberOf headless_wallet
  * @param {string} from_address
  * @param {string} to_address
  * @param {string|null} recipient_device_address
@@ -704,7 +704,7 @@ function sendAllBytesFromAddress(from_address, to_address, recipient_device_addr
 
 /**
  * Sends a payment in the specified asset from the specified address
- * @memberOf start
+ * @memberOf headless_wallet
  * @param {string|null} asset
  * @param {number} amount
  * @param {string} from_address
@@ -747,7 +747,7 @@ function sendAssetFromAddress(asset, amount, from_address, to_address, recipient
 
 /**
  * Publish data to DAG
- * @memberOf start
+ * @memberOf headless_wallet
  * @param {Object} opts
  * @param {paymentResultCallback=} onDone
  * @return {Promise<string>}
@@ -783,7 +783,7 @@ function sendData(opts, onDone){
 
 /**
  * Issue change address and send payment
- * @memberOf start
+ * @memberOf headless_wallet
  * @param {string|null} asset
  * @param {number} amount
  * @param {string} to_address
@@ -811,7 +811,7 @@ function issueChangeAddressAndSendPayment(asset, amount, to_address, device_addr
 
 /**
  * Issue change address and send payment with specified parameters
- * @memberOf start
+ * @memberOf headless_wallet
  * @param {smpOpts} opts
  * @param {paymentResultCallback=} onDone
  * @return {Promise<PaymentResult>}
@@ -839,7 +839,7 @@ function issueChangeAddressAndSendMultiPayment(opts, onDone){
 
 /**
  * Returns the next main address, or reuses an existing address if there is already a long row of unused addresses
- * @memberOf start
+ * @memberOf headless_wallet
  * @param {resultCallback=} handleAddress
  * @return {Promise<string>}
  * @example
@@ -856,7 +856,7 @@ function issueOrSelectNextMainAddress(handleAddress){
 
 /**
  * Issue the next main address
- * @memberOf start
+ * @memberOf headless_wallet
  * @param {resultCallback=} handleAddress
  * @return {Promise<string>}
  * @example
@@ -873,7 +873,7 @@ function issueNextMainAddress(handleAddress){
 
 /**
  * Returns the wallet's address by is_change flag and index. If the address does not exist, it will be created
- * @memberOf start
+ * @memberOf headless_wallet
  * @param is_change {number}
  * @param address_index {number}
  * @param {resultCallback=} handleAddress
@@ -896,7 +896,7 @@ function issueOrSelectAddressByIndex(is_change, address_index, handleAddress){
 
 /**
  * Returns static change address, which is the same as the first change address. If the address does not exist, it will be created
- * @memberOf start
+ * @memberOf headless_wallet
  * @param {resultCallback=} handleAddress
  * @return {Promise<string>}
  * @example
@@ -949,7 +949,7 @@ function signMessage(signing_address, message, cb) {
  */
 /**
  * Signs message
- * @memberOf start
+ * @memberOf headless_wallet
  * @param signing_address
  * @param message
  * @param {signMessageCB=} cb

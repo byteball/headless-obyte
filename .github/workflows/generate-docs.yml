@@ -11,7 +11,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Install docdash and jsdoc
+    - name: Install jsdoc and better-docs
       run: npm install jsdoc better-docs
 
     - name: Build

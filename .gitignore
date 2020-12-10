@@ -44,3 +44,4 @@ processed.txt
 .idea
 .env
 docs
+yarn.lock

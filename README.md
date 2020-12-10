@@ -1,6 +1,6 @@
 # Headless wallet for Obyte network
 
-This is a headless alternative of the [GUI wallet](../../../obyte-gui-wallet) for Obyte network.  It is designed for an always-online deployment on a server.
+This is a headless alternative of the [GUI wallet](https://github.com/byteball/obyte-gui-wallet) for Obyte network.  It is designed for an always-online deployment on a server.
 
 ## Install
 
@@ -8,7 +8,7 @@ Install node.js, clone the repository, then say
 ```sh
 npm install
 ```
-If you want to accept incoming connections, you'll need to set up a proxy, such as nginx, to forward all websocket connections on a specific path to your daemon running this code.  See example configuration for nginx in [ocore](../../../ocore) documentation.
+If you want to accept incoming connections, you'll need to set up a proxy, such as nginx, to forward all websocket connections on a specific path to your daemon running this code.  See example configuration for nginx in [ocore](https://github.com/byteball/ocore) documentation.
 
 ## Testnet
 
@@ -18,7 +18,7 @@ Run `cp .env.testnet .env` to connect to TESTNET hub. Backup and delete the data
 ```sh
 node start.js 2>errlog
 ```
-The first time you run it, it will generate a new extended private key (BIP44) and ask you for a passphrase to encrypt it.  The BIP39 mnemonic will be saved to the file keys.json in the app data directory (see [ocore](../../../ocore) for its location), the passphrase is, of course, never saved.  Every time you start the wallet, you'll have to type the passphrase.  One implication of this is the wallet cannot be started automatically when your server restarts, you'll have to ssh the server and type the passphrase.
+The first time you run it, it will generate a new extended private key (BIP44) and ask you for a passphrase to encrypt it.  The BIP39 mnemonic will be saved to the file keys.json in the app data directory (see [ocore](https://github.com/byteball/ocore) for its location), the passphrase is, of course, never saved.  Every time you start the wallet, you'll have to type the passphrase.  One implication of this is the wallet cannot be started automatically when your server restarts, you'll have to ssh the server and type the passphrase.
 
 After you enter the passphrase, the wallet redirects all output to a log file in your app data directory but it still holds the terminal window.  To release it, type Ctrl-Z, then bg to resume the wallet in the background.  After that, you can safely terminate the ssh session.
 
@@ -45,26 +45,29 @@ If you already have `keys.json` file, copy it to the data folder, otherwise the 
 
 ## Customize
 
-If you want to change any defaults, refer to the documentation of [ocore](../../../ocore), the core Obyte library `require()`'d from here.  Below are some headless wallet specific settings you might want to change:
+If you want to change any defaults, refer to the documentation of [ocore](https://github.com/byteball/ocore), the core Obyte library `require()`'d from here.  Below are some headless wallet specific settings you might want to change:
 
 * `bLight`: some bots don't need to sync full node. If your bot is designed to work as light node or you just wish to get it working first, change `bLight` variable to `true` in configuration file. Changing this value will make it use a different SQLite database next time you run it.
 * `bSingleAddress`: Should the wallet use single address or could generate new addresses?
 * `bStaticChangeAddress`: Should the wallet issue new change addresses or always use the same static one?
 * `control_addresses`: array of device addresses of your other (likely GUI) wallets that can chat with the wallet and give commands.  To learn the device address of your GUI wallet, click menu button, then Global preferences, and look for 'Device address'.  If your `control_addresses` is empty array or contains a single address that is invalid (this is the default), then nobody can remotely control your wallet.
-* `payout_address`: if you give `pay` command over chat interface, the money will be sent to this Obyte address.
+* `payout_address`: if you give `pay` command over chat interface, funds will be sent to this Obyte address.
 * `hub`: hub address without wss://, the default is `obyte.org/bb`.
 * `deviceName`: the name of your device as seen in the chat interface.
 * `permanent_pairing_secret`: the pairing secret used to authenticate pairing requests when you pair your GUI wallet for remote control.  The pairing secret is the part of the pairing code after #.
 * `bNoPassphrase`: don't ask for passphrase when starting the wallet, assume it is an empty string. This option weakens the security of your funds but allows to start the wallet non-interactively.
-
+* `LOG_FILENAME`: by default `log.txt` file in data folder, set to `/dev/null` to disable all logs.
+* `logToSTDOUT`: by default `false` and writes logs to `LOG_FILENAME` file, set to `true` if you wish to keep the logs output to terminal screen, instead of file.
 
 ## Remote control
 
-You can remotely control your wallet via chat interface from devices listed in `control_addresses`.  When the wallet starts, it prints out its pairing code.  Copy it, open your GUI wallet, menu button, paired devices, add a new device, accept invitation, paste the code.  Now your GUI wallet is paired to your headless wallet and you can find it in the list of correspondents (menu, paired devices) to start a chat.  There are four commands you can give:
+You can remotely control your wallet via chat interface from devices listed in `control_addresses`.  When the wallet starts, it prints out its pairing code.  Copy it, open your GUI wallet, menu button, paired devices, add a new device, accept invitation, paste the code.  Now your GUI wallet is paired to your headless wallet and you can find it in the list of correspondents (menu, paired devices) to start a chat.  These are the commands you can give:
 
 * `balance`: to request the current balance on the headless wallet;
 * `address`: to get to know one of the wallet's addresses, you use it to refill the wallet's balance;
-* `pay <amount in bytes>` to request withdrawal from the headless wallet to your `payout_address`, or `pay <amount> <asset>` to withdraw another asset.
+* `pay <amount in bytes>` to withdraw Bytes to your `payout_address`;
+* `pay all bytes` to withdraw all Bytes (including earned commissions) to your `payout_address`;
+* `pay <amount> <asset>` to withdraw specific asset to your `payout_address`;
 * `mci`: to get the last stable MCI on the headless wallet;
 * `space`: to get the file sizes of data folder;
 
@@ -83,9 +86,9 @@ Having the keys encrypted by a passphrase helps protect against the most trivial
 
 However, that is not enough.  If an attacker gets access to your server, he could also modify your conf.json and change `control_addresses` and `payout_address`, then wait that you restart the wallet and steal its entire balance.  To help you prevent such attacks, every time the wallet starts it prints out the current values of `control_addresses` and `payout_address`, please pay attention to these values before entering your passphrase.
 
-Use TOR ([conf.socksHost, conf.socksPort, and conf.socksLocalDNS](../../../ocore#confsockshost-confsocksport-and-confsockslocaldns)) to hide your server IP address from potential attackers.
+Use TOR ([conf.socksHost, conf.socksPort, and conf.socksLocalDNS](https://github.com/byteball/ocore#confsockshost-confsocksport-and-confsockslocaldns)) to hide your server IP address from potential attackers.
 
-Don't keep more money than necessary on the server wallet, withdraw the excess using `pay` command in the chat interface.
+Don't keep more funds than necessary on the server wallet, withdraw the excess using `pay` command in the chat interface.
 
 ## Custom commands
 

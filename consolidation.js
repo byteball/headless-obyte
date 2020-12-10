@@ -7,12 +7,15 @@ const ValidationUtils = require('ocore/validation_utils');
 
 const AUTHOR_SIZE = 3 // "sig"
 	+ 44  // pubkey
-	+ 88; // signature
+	+ 88 // signature
+	+ 32 // address
+	+ "pubkey".length + "definition".length + "r".length + "authentifiers".length + "address".length;
 
 const TRANSFER_INPUT_SIZE = 0 // type: "transfer" omitted
 	+ 44 // unit
 	+ 8 // message_index
-	+ 8; // output_index
+	+ 8 // output_index
+	+ "unit".length + "message_index".length + "output_index".length; // keys
 
 
 function readLeastFundedAddresses(asset, wallet, handleFundedAddresses){

@@ -1,5 +1,8 @@
 /*jslint node: true */
 "use strict";
+/**
+ * @namespace headless_wallet
+ */
 var fs = require('fs');
 var crypto = require('crypto');
 var util = require('util');
@@ -28,10 +31,44 @@ var wallet_id;
 var xPrivKey;
 var bReady = false;
 
+/**
+ * @callback resultCallback
+ * @param {string} result
+ */
+/**
+ * @callback paymentResultCallback
+ * @param {string} error
+ * @param {string} unit
+ * @param {string} assocMnemonics
+ */
+
+/**
+ * @typedef {Object} PaymentResult
+ * @property {string} unit
+ * @property {string} assocMnemonics
+ */
+
+/**
+ * Returns whether the wallet is ready
+ * @memberOf headless_wallet
+ * @return {boolean} is ready
+ *
+ * @example
+ * if (isReady()) {
+ *
+ * }
+ */
 function isReady() {
 	return bReady;
 }
 
+/**
+ * Waits for the wallet to be ready
+ * @async
+ * @memberOf headless_wallet
+ * @example
+ * await waitTillReady();
+ */
 function waitTillReady() {
 	if (bReady)
 		return;
@@ -191,10 +228,29 @@ function createWallet(xPrivKey, onDone){
 	});
 }
 
+
+/**
+ * Check that the device address is in the array of controlled addresses
+ * @memberOf headless_wallet
+ * @param device_address
+ * @return {boolean}
+ * @example
+ * if (isControlAddress('0CUUZZ2UYM4ATP4HULSRH646B5V4G3JRW')) {
+ *
+ * }
+ */
 function isControlAddress(device_address){
 	return (conf.control_addresses && conf.control_addresses.indexOf(device_address) >= 0);
 }
 
+/**
+ * Returns the address of the single-address wallet, throws if the wallet is not single-address
+ * @memberOf headless_wallet
+ * @param {resultCallback=} handleAddress
+ * @return {Promise<string>}
+ * @example
+ * const address = await readSingleAddress();
+ */
 function readSingleAddress(handleAddress){
 	if (!handleAddress)
 		return new Promise(resolve => readSingleAddress(resolve));
@@ -207,6 +263,14 @@ function readSingleAddress(handleAddress){
 	});
 }
 
+/**
+ * Returns the first address of the wallet
+ * @memberOf headless_wallet
+ * @param {resultCallback=} handleAddress
+ * @return {Promise<string>}
+ * @example
+ * const address = await readFirstAddress();
+ */
 function readFirstAddress(handleAddress){
 	if (!handleAddress)
 		return new Promise(resolve => readFirstAddress(resolve));
@@ -226,15 +290,25 @@ function prepareBalanceText(handleBalanceText){
 		for (var asset in assocBalances){
 			var total = assocBalances[asset].stable + assocBalances[asset].pending;
 			var units = (asset === 'base') ? ' bytes' : (' of ' + asset);
-			var line = total + units;
+			var line = "* "+ total + units;
 			if (assocBalances[asset].pending)
 				line += ' (' + assocBalances[asset].pending + ' pending)';
+			else if (asset === 'base')
+				line += ' (including earned commissions)';
 			arrLines.push(line);
 		}
 		handleBalanceText(arrLines.join("\n"));
 	});
 }
 
+/**
+ * Returns the wallet ID. There should be only one wallet, throws otherwise.
+ * @memberOf headless_wallet
+ * @param {resultCallback=} handleWallet
+ * @return {Promise<string>}
+ * @example
+ * const wallet = await readSingleWallet();
+ */
 function readSingleWallet(handleWallet){
 	if (!handleWallet)
 		return new Promise(resolve => readSingleWallet(resolve));
@@ -255,6 +329,24 @@ function determineIfWalletExists(handleResult){
 	});
 }
 
+/**
+ * @callback signWithLocalPrivateKeyCB
+ * @param {string} result
+ */
+/**
+ * Signs a transaction/message using the local private key
+ * @memberOf headless_wallet
+ * @param {string} wallet_id
+ * @param {number} account
+ * @param {number} is_change
+ * @param {number} address_index
+ * @param {string} text_to_sign
+ * @param {signWithLocalPrivateKeyCB=} handleSig
+ * @return {Promise<string>}
+ * @example
+ * const walletId = '+lCx+8UGlbwdXC8ZlnQeuQZ2cKI5fyaWyxzGFXUEnbA=';
+ * const sign = await signWithLocalPrivateKey(walletId, 0, 0, 0, 'hello');
+ */
 function signWithLocalPrivateKey(wallet_id, account, is_change, address_index, text_to_sign, handleSig){
 	if (!handleSig)
 		return new Promise(resolve => signWithLocalPrivateKey(wallet_id, account, is_change, address_index, text_to_sign, resolve));
@@ -402,6 +494,65 @@ function sendPayment(asset, amount, to_address, change_address, device_address, 
 	);
 }
 
+/**
+ * @typedef {Object} smpOpts
+ * @property {string} [wallet] If specified, the payment will be from this wallet
+ * @property {string} [fee_paying_wallet] Fallback wallet for paying the fees, used if there is not enough bytes on the main paying wallet
+ * @property {Array<string>} [paying_addresses] If specified, payment will be sent from these addresses
+ * @property {string} change_address Change address
+ * @property {number} [amount] Payment amount
+ * @property {string} [to_address] Payment address of the receiver
+ * @property {Array<Object>} [base_outputs] Array of outputs for payment in bytes
+ * @property {string|null} [asset] Payment asset
+ * @property {Array<Object>} [asset_outputs] Array of outputs for payment in the specified asset
+ * @property {boolean} [send_all] Send all bytes to "to_address"
+ * @property {Array<Object>} [messages] Array of messages to send along with the payment
+ * @property {string} [spend_unconfirmed=own] What unspent outputs to use for the payment (all - all available, own - sent by us or stable, none - only stable)
+ * @property {string} [recipient_device_address] Device address for payment notification or sending the private payloads
+ * @property {Array<string>} [recipient_device_addresses] Device addresses for payment notification or sending the private payloads
+ * @property {Array<string>} [arrSigningDeviceAddresses] Device addresses which need to sign the transaction
+ * @property {Array<string>} [signing_addresses] Payment addresses which need to sign the transaction
+ * @property {function} [signWithLocalPrivateKey] A function for signing the transaction with a key stored on the wallet's device
+ * @property {boolean} [aa_addresses_checked] Whether the output addresses have already been checked for being Autonomous Agent addresses and the respective bounce fees added where necessary. If false, the job will be performed by the function
+ * @property {boolean} [do_not_email] Do not send an email when sending textcoins, the caller will take care of delivery of the produced textcoins
+ * @property {string} [email_subject] Subject for the email message sent when sending textcoins
+ * @property {function} [getPrivateAssetPayloadSavePath] Function that returns the path to save the file with private payloads when sending a private textcoin
+ */
+/**
+ * Sends payment with specified parameters. See more examples in the [documentation]{@link https://developer.obyte.org}
+ * @memberOf headless_wallet
+ * @param {smpOpts} opts
+ * @param {paymentResultCallback=} onDone
+ * @return {Promise<PaymentResult>}
+ * @example
+ * const opts = {};
+ * opts.paying_addresses = ['FCNQIGCW7JIYTARK6M54NMSCPFVIY25E'];
+ * opts.change_address = 'FCNQIGCW7JIYTARK6M54NMSCPFVIY25E';
+ * opts.amount = 10000;
+ * opts.toAddress = '2T35YT6L53OYFEUKIOXBQRKUZD4B3CYW';
+ * const {unit, assocMnemonics} = await sendMultiPayment(opts);
+ * @example
+ * const datafeed = {key: "value"};
+ * const objMessage = {
+ *    app: "data_feed",
+ *    payload_location: "inline",
+ *    payload_hash: objectHash.getBase64Hash(datafeed),
+ *    payload: datafeed
+ * };
+ * var opts = {
+ *    paying_addresses: [my_address],
+ *    change_address: my_address,
+ *    messages: [objMessage]
+ * };
+ *
+ * const {unit, assocMnemonics} = await sendMultiPayment(opts);
+ * @example
+ * const opts = {};
+ * opts.paying_addresses = ['FCNQIGCW7JIYTARK6M54NMSCPFVIY25E'];
+ * opts.change_address = 'FCNQIGCW7JIYTARK6M54NMSCPFVIY25E';
+ * opts.base_outputs = [{address: "2T35YT6L53OYFEUKIOXBQRKUZD4B3CYW", amount: 10000}];
+ * const {unit, assocMnemonics} = await sendMultiPayment(opts);
+ */
 function sendMultiPayment(opts, onDone){
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
@@ -429,6 +580,22 @@ function sendMultiPayment(opts, onDone){
 	});
 }
 
+/**
+ * Sends payment using the specified outputs
+ * @memberOf headless_wallet
+ * @param asset
+ * @param outputs
+ * @param change_address
+ * @param {paymentResultCallback=} onDone
+ * @return {Promise<PaymentResult>}
+ * @example
+ * const address = await issueOrSelectStaticChangeAddress();
+ * const outputs = [
+ *     {amount: 10000, address: 'FCNQIGCW7JIYTARK6M54NMSCPFVIY25E'},
+ *     {amount: 0, address: address}
+ * ];
+ * const {unit, assocMnemonics} = await sendPaymentUsingOutputs(null, outputs, address);
+ */
 function sendPaymentUsingOutputs(asset, outputs, change_address, onDone) {
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
@@ -459,6 +626,18 @@ function sendPaymentUsingOutputs(asset, outputs, change_address, onDone) {
 	});
 }
 
+/**
+ * Sends all bytes from all addresses
+ * @memberOf headless_wallet
+ * @param {string} to_address
+ * @param {string|null} recipient_device_address
+ * @param {paymentResultCallback=} onDone
+ * @return {Promise<PaymentResult>}
+ * @example
+ * const peerAddress = '2T35YT6L53OYFEUKIOXBQRKUZD4B3CYW';
+ * const peerDeviceAddress = '0CUUZZ2UYM4ATP4HULSRH646B5V4G3JRW';
+ * const {unit, assocMnemonics} = await sendAssetFromAddress(peerAddress, peerDeviceAddress);
+ */
 function sendAllBytes(to_address, recipient_device_address, onDone) {
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
@@ -484,6 +663,20 @@ function sendAllBytes(to_address, recipient_device_address, onDone) {
 	});
 }
 
+/**
+ * Sends all bytes from the specified address
+ * @memberOf headless_wallet
+ * @param {string} from_address
+ * @param {string} to_address
+ * @param {string|null} recipient_device_address
+ * @param {paymentResultCallback=} onDone
+ * @return {Promise<PaymentResult>}
+ * @example
+ * const myAddress = 'FCNQIGCW7JIYTARK6M54NMSCPFVIY25E';
+ * const peerAddress = '2T35YT6L53OYFEUKIOXBQRKUZD4B3CYW';
+ * const peerDeviceAddress = '0CUUZZ2UYM4ATP4HULSRH646B5V4G3JRW';
+ * const {unit, assocMnemonics} = await sendAllBytesFromAddress(myAddress, peerAddress, peerDeviceAddress);
+ */
 function sendAllBytesFromAddress(from_address, to_address, recipient_device_address, onDone) {
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
@@ -509,6 +702,22 @@ function sendAllBytesFromAddress(from_address, to_address, recipient_device_addr
 	});
 }
 
+/**
+ * Sends a payment in the specified asset from the specified address
+ * @memberOf headless_wallet
+ * @param {string|null} asset
+ * @param {number} amount
+ * @param {string} from_address
+ * @param {string} to_address
+ * @param {string|null} recipient_device_address
+ * @param {paymentResultCallback=} onDone
+ * @return {Promise<PaymentResult>}
+ * @example
+ * const myAddress = 'FCNQIGCW7JIYTARK6M54NMSCPFVIY25E';
+ * const peerAddress = '2T35YT6L53OYFEUKIOXBQRKUZD4B3CYW';
+ * const peerDeviceAddress = '0CUUZZ2UYM4ATP4HULSRH646B5V4G3JRW';
+ * const {unit, assocMnemonics} = await sendAssetFromAddress(null, 10000, myAddress, peerAddress, peerDeviceAddress);
+ */
 function sendAssetFromAddress(asset, amount, from_address, to_address, recipient_device_address, onDone) {
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
@@ -536,6 +745,19 @@ function sendAssetFromAddress(asset, amount, from_address, to_address, recipient
 	});
 }
 
+/**
+ * Publish data to DAG
+ * @memberOf headless_wallet
+ * @param {Object} opts
+ * @param {paymentResultCallback=} onDone
+ * @return {Promise<string>}
+ * @example
+ * const opts = {
+ *   app: 'text',
+ *   payload: 'hello Obyte!'
+ * };
+ * const unit = await sendData(opts);
+ */
 function sendData(opts, onDone){
 	if (!opts.payload)
 		throw Error("no payload");
@@ -559,6 +781,20 @@ function sendData(opts, onDone){
 	sendMultiPayment(payment_opts, onDone);
 }
 
+/**
+ * Issue change address and send payment
+ * @memberOf headless_wallet
+ * @param {string|null} asset
+ * @param {number} amount
+ * @param {string} to_address
+ * @param {string|null} device_address
+ * @param {paymentResultCallback=} onDone
+ * @return {Promise<PaymentResult>}
+ * @example
+ * const address = '2T35YT6L53OYFEUKIOXBQRKUZD4B3CYW';
+ * const deviceAddress = '0CUUZZ2UYM4ATP4HULSRH646B5V4G3JRW';
+ * const {unit, assocMnemonics} = await issueChangeAddressAndSendPayment(null, 10000, address, deviceAddress);
+ */
 function issueChangeAddressAndSendPayment(asset, amount, to_address, device_address, onDone){
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
@@ -573,6 +809,19 @@ function issueChangeAddressAndSendPayment(asset, amount, to_address, device_addr
 	});
 }
 
+/**
+ * Issue change address and send payment with specified parameters
+ * @memberOf headless_wallet
+ * @param {smpOpts} opts
+ * @param {paymentResultCallback=} onDone
+ * @return {Promise<PaymentResult>}
+ * @example
+ * const opts = {};
+ * opts.paying_addresses = 'FCNQIGCW7JIYTARK6M54NMSCPFVIY25E';
+ * opts.amount = 10000;
+ * opts.toAddress = '2T35YT6L53OYFEUKIOXBQRKUZD4B3CYW';
+ * const {unit, assocMnemonics} = await issueChangeAddressAndSendMultiPayment(opts);
+ */
 function issueChangeAddressAndSendMultiPayment(opts, onDone){
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
@@ -588,6 +837,14 @@ function issueChangeAddressAndSendMultiPayment(opts, onDone){
 	});
 }
 
+/**
+ * Returns the next main address, or reuses an existing address if there is already a long row of unused addresses
+ * @memberOf headless_wallet
+ * @param {resultCallback=} handleAddress
+ * @return {Promise<string>}
+ * @example
+ * const address = await issueOrSelectNextMainAddress();
+ */
 function issueOrSelectNextMainAddress(handleAddress){
 	if (!handleAddress)
 		return new Promise(resolve => issueOrSelectNextMainAddress(resolve));
@@ -597,6 +854,14 @@ function issueOrSelectNextMainAddress(handleAddress){
 	});
 }
 
+/**
+ * Issue the next main address
+ * @memberOf headless_wallet
+ * @param {resultCallback=} handleAddress
+ * @return {Promise<string>}
+ * @example
+ * const address = await issueNextMainAddress();
+ */
 function issueNextMainAddress(handleAddress){
 	if (!handleAddress)
 		return new Promise(resolve => issueNextMainAddress(resolve));
@@ -606,6 +871,16 @@ function issueNextMainAddress(handleAddress){
 	});
 }
 
+/**
+ * Returns the wallet's address by is_change flag and index. If the address does not exist, it will be created
+ * @memberOf headless_wallet
+ * @param is_change {number}
+ * @param address_index {number}
+ * @param {resultCallback=} handleAddress
+ * @return {Promise<string>}
+ * @example
+ * const address = await issueOrSelectAddressByIndex(0, 0);
+ */
 function issueOrSelectAddressByIndex(is_change, address_index, handleAddress){
 	if (!handleAddress)
 		return new Promise(resolve => issueOrSelectAddressByIndex(is_change, address_index, resolve));
@@ -619,6 +894,14 @@ function issueOrSelectAddressByIndex(is_change, address_index, handleAddress){
 	});
 }
 
+/**
+ * Returns static change address, which is the same as the first change address. If the address does not exist, it will be created
+ * @memberOf headless_wallet
+ * @param {resultCallback=} handleAddress
+ * @return {Promise<string>}
+ * @example
+ * const address = await issueOrSelectStaticChangeAddress();
+ */
 function issueOrSelectStaticChangeAddress(handleAddress){
 	if (!handleAddress)
 		return new Promise(resolve => issueOrSelectStaticChangeAddress(resolve));
@@ -659,6 +942,21 @@ function signMessage(signing_address, message, cb) {
 }
 */
 
+/**
+ * @callback signMessageCB
+ * @param {string} error
+ * @param {Object|undefined} objUnit
+ */
+/**
+ * Signs message
+ * @memberOf headless_wallet
+ * @param signing_address
+ * @param message
+ * @param {signMessageCB=} cb
+ * @return {Promise<Object>} objUnit
+ * @example
+ * const objUnit = await signMessage('2T35YT6L53OYFEUKIOXBQRKUZD4B3CYW', 'hello');
+ */
 function signMessage(signing_address, message, cb) {
 	if (!cb)
 		return new Promise((resolve, reject) => signMessage(signing_address, message, (err, objUnit) => {
@@ -704,14 +1002,15 @@ function handleText(from_address, text, onUnknown){
 			analyzePayParams(params[0], params[1], function(asset, amount){
 				if(asset===null && amount===null){
 					var msg = "syntax: pay [amount] [asset]";
-					msg +=	"\namount: digits only";
-					msg +=	"\nasset: one of '', 'bytes', 'blackbytes', ASSET_ID";
+					msg +=	"\namount: positive integer or 'all'";
+					msg +=	"\nasset: optional ('bytes', 'blackbytes', any ASSET_ID)";
 					msg +=	"\n";
-					msg +=	"\nExample 1: 'pay 12345' pays 12345 bytes";
-					msg +=	"\nExample 2: 'pay 12345 bytes' pays 12345 bytes";
-					msg +=	"\nExample 3: 'pay 12345 blackbytes' pays 12345 blackbytes";
-					msg +=	"\nExample 4: 'pay 12345 qO2JsiuDMh/j+pqJYZw3u82O71WjCDf0vTNvsnntr8o=' pays 12345 blackbytes";
-					msg +=	"\nExample 5: 'pay 12345 ASSET_ID' pays 12345 of asset with ID ASSET_ID";
+					msg +=	"\n* Example 1: 'pay 12345' withdraws 12345 bytes";
+					msg +=	"\n* Example 2: 'pay 12345 bytes' withdraws 12345 bytes";
+					msg +=	"\n* Example 3: 'pay all bytes' withdraws all bytes (including earned commissions)";
+					msg +=	"\n* Example 4: 'pay 12345 blackbytes' withdraws 12345 blackbytes";
+					msg +=	"\n* Example 5: 'pay 12345 qO2JsiuDMh/j+pqJYZw3u82O71WjCDf0vTNvsnntr8o=' withdraws 12345 blackbytes";
+					msg +=	"\n* Example 6: 'pay 12345 ASSET_ID' withdraws 12345 of asset with ASSET_ID";
 					return device.sendMessageToDevice(from_address, 'text', msg);
 				}
 
@@ -719,6 +1018,14 @@ function handleText(from_address, text, onUnknown){
 					return device.sendMessageToDevice(from_address, 'text', "payout address not defined");
 
 				function payout(amount, asset){
+					if (!amount)
+						return device.sendMessageToDevice(from_address, 'text', 'amount must be positive integer'); 
+					if (amount === 'all') {
+						if (asset===null)
+							return sendAllBytes(conf.payout_address, from_address);
+						else
+							return device.sendMessageToDevice(from_address, 'text', '[get balance](command:balance) and then use exact amount for custom assets');
+					}
 					if (conf.bSingleAddress)
 						readSingleAddress(function(address){
 							sendPayment(asset, amount, conf.payout_address, address, from_address);
@@ -805,30 +1112,27 @@ function getFileSizes(rootDir, cb) {
 
 function analyzePayParams(amountText, assetText, cb){
 	// expected:
-	// amountText = amount; only digits
-	// assetText = asset; '' -> whitebytes, 'bytes' -> whitebytes, 'blackbytes' -> blackbytes, '{asset-ID}' -> any asset
+	// amountText: positive integer or 'all'
+	// assetText: '' -> whitebytes, 'bytes' -> whitebytes, 'blackbytes' -> blackbytes, '{asset-ID}' -> any asset
+	if (amountText==='' && assetText==='') return cb(null, null);
 
-	if (amountText===''&&assetText==='') return cb(null, null);
+	var pattern = /^\d+$/; // checks if positive integer
+	amountText = String(amountText).toLowerCase();
 
-	var pattern = /^\d+$/;
-    if(pattern.test(amountText)){
-
-		var amount = parseInt(amountText);
-
-		var asset = assetText.toLowerCase();
-		switch(asset){
-			case '':
-			case 'bytes':
-				return cb(null, amount);
-			case 'blackbytes':
-				return cb(constants.BLACKBYTES_ASSET, amount);
-			default:
-				// return original assetText string because asset ID it is case sensitive
-				return cb(assetText, amount);
-		}
-
-	}else{
+	if(!pattern.test(amountText) && amountText !== 'all')
 		return cb(null, null);
+	if (amountText !== 'all')
+		amountText = parseInt(amountText);
+
+	switch(assetText.toLowerCase()){
+		case '':
+		case 'bytes':
+			return cb(null, amountText);
+		case 'blackbytes':
+			return cb(constants.BLACKBYTES_ASSET, amountText);
+		default:
+			// return original assetText string because asset ID it is case sensitive
+			return cb(assetText, amountText);
 	}
 }
 

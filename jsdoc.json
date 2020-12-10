@@ -1,0 +1,27 @@
+{
+	"plugins": [],
+	"recurseDepth": 10,
+	"source": {
+		"include": [
+			"start.js",
+			"tools/rpc_service.js"
+		]
+	},
+	"tags": {
+		"allowUnknownTags": true,
+		"dictionaries": [
+			"jsdoc",
+			"closure"
+		]
+	},
+	"opts": {
+		"template": "node_modules/better-docs",
+		"encoding": "utf8",
+		"destination": "docs/",
+		"recurse": true
+	},
+	"templates": {
+		"cleverLinks": false,
+		"monospaceLinks": false
+	}
+}

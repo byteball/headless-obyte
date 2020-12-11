@@ -4,9 +4,9 @@ This is a headless alternative of the [GUI wallet](https://github.com/byteball/o
 
 ## Install
 
-Install node.js, clone the repository, then say
+Install node.js v12 (`nvm install 12`), install yarn (`npm install -g yarn`), clone the repository, then say
 ```sh
-npm install
+yarn
 ```
 If you want to accept incoming connections, you'll need to set up a proxy, such as nginx, to forward all websocket connections on a specific path to your daemon running this code.  See example configuration for nginx in [ocore](https://github.com/byteball/ocore) documentation.
 

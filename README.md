@@ -4,7 +4,7 @@ This is a headless alternative of the [GUI wallet](https://github.com/byteball/o
 
 ## Install
 
-Install node.js v12 (`nvm install 12`), install yarn (`npm install -g yarn`), clone the repository, then say
+Install node.js, install yarn (`npm install -g yarn`), clone the repository, then say
 ```sh
 yarn
 ```

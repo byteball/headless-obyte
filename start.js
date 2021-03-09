@@ -85,11 +85,11 @@ function replaceConsoleLog(){
 	console.log('From this point, output will be redirected to '+log_filename);
 	console.log(conf.bNoPassphrase ? "Press Enter to release the terminal if you started the daemon with &. Otherwise, type Ctrl-Z, then 'bg'." : "To release the terminal, type Ctrl-Z, then 'bg'");
 	console.log = function(){
-		writeStream.write(new Date().toISOString()+': ');
-		writeStream.write(util.format.apply(null, arguments) + '\n');
+		writeStream.write(new Date().toISOString() + ': ' + util.format.apply(null, arguments) + '\n');
 	};
 	console.warn = console.log;
 	console.info = console.log;
+	process.on('exit', () => writeStream.end());
 }
 
 function requestInput(prompt, cb) {

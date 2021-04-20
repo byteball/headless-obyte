@@ -564,7 +564,12 @@ function sendMultiPayment(opts, onDone){
 	}
 	var device = require('ocore/device.js');
 	var Wallet = require('ocore/wallet.js');
-	if (!opts.paying_addresses)
+	if (opts.shared_address){
+		opts.paying_addresses = [opts.shared_address];
+		opts.change_address = opts.shared_address;
+		if (opts.asset && opts.asset !== 'base')
+			opts.fee_paying_wallet = wallet_id;
+	} else if (!opts.paying_addresses)
 		opts.wallet = wallet_id;
 	if (!opts.change_address) {
 		return readDefaultChangeAddress(change_address => {
@@ -572,8 +577,10 @@ function sendMultiPayment(opts, onDone){
 			sendMultiPayment(opts, onDone);
 		});
 	}
-	opts.arrSigningDeviceAddresses = [device.getMyDeviceAddress()];
-	opts.signWithLocalPrivateKey = signWithLocalPrivateKey;
+	if (!opts.arrSigningDeviceAddresses)
+		opts.arrSigningDeviceAddresses = [device.getMyDeviceAddress()];
+	if (!opts.signWithLocalPrivateKey)
+		opts.signWithLocalPrivateKey = signWithLocalPrivateKey;
 	Wallet.sendMultiPayment(opts, (err, unit, assocMnemonics) => {
 		if (onDone)
 			onDone(err, unit, assocMnemonics);

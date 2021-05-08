@@ -465,6 +465,31 @@ function handlePairing(from_address){
 	});
 }
 
+
+/**
+ * Waits for the unit to become stable. Applies only to units sent from or to our wallet. Returns immediately if the unit is already stable.
+ * @async
+ * @memberOf headless_wallet
+ * @example
+ * await waitUntilMyUnitBecameStable(unit);
+ */
+function waitUntilMyUnitBecameStable(unit, onDone) {
+	if (!onDone)
+		return new Promise(resolve => waitUntilMyUnitBecameStable(unit, resolve));
+	db.query("SELECT is_stable FROM units WHERE unit=?", [unit], rows => {
+		if (rows.length === 0)
+			throw Error('unknown unit: ' + unit);
+		if (rows[0].is_stable) {
+			console.log('already stable', unit);
+			return onDone();
+		}
+		eventBus.once('my_stable-' + unit, () => {
+			console.log(unit + 'became stable');
+			onDone();
+		});
+	});
+}
+
 function sendPayment(asset, amount, to_address, change_address, device_address, onDone){
 	if(!onDone) {
 		return new Promise((resolve, reject) => {
@@ -1157,6 +1182,7 @@ function setupChatEventHandlers(){
 
 exports.isReady = isReady;
 exports.waitTillReady = waitTillReady;
+exports.waitUntilMyUnitBecameStable = waitUntilMyUnitBecameStable;
 exports.readSingleWallet = readSingleWallet;
 exports.readSingleAddress = readSingleAddress;
 exports.readFirstAddress = readFirstAddress;

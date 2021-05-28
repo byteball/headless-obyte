@@ -37,5 +37,8 @@
   "devDependencies": {
     "better-docs": "^2.3.2",
     "jsdoc": "^3.6.5"
+  },
+  "resolutions": {
+    "level-rocksdb": "^4.0.0"
   }
 }

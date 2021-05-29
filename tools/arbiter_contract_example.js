@@ -6,9 +6,10 @@ const device = require('ocore/device.js');
 const validationUtils = require('ocore/validation_utils');
 
 function onReady() {
-	let contract_text = "I pay Tom $20, if he sends me a pair of his Air Jordans.";
+	let contract_text = "Bill pays Tom $20, if Tom sends Bill a pair of his Air Jordans.";
 	let contract_title = "Air Jordans Purchase from Tom";
-	let amount = 10000; // bytes
+	let amount = 10000; // in bytes, min 10000
+	let asset = null;
 	let ttl = 24; //hours
 	let arbiter_address = "VYDZPZABPIYNNHCPQKTMIKAEBHWEW3SQ";
 	let my_contacts = `Email me at: bill@example.com`;
@@ -21,7 +22,7 @@ function onReady() {
 	});
 
 	eventBus.on('paired', from_address => {
-		device.sendMessageToDevice(from_address, 'text', `Send me your address`);
+		device.sendMessageToDevice(from_address, 'text', `My address: ${my_address}, now send me your's.`);
 	});
 
 	/* ================ OFFER ================ */
@@ -34,7 +35,7 @@ function onReady() {
 			text: contract_text,
 			arbiter_address: arbiter_address,
 			amount: amount,
-			asset: null,
+			asset: asset,
 			peer_address: text,
 			my_address: my_address,
 			me_is_payer: me_is_payer,

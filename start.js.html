@@ -684,8 +684,10 @@ function sendMultiPayment(opts, onDone){
 			sendMultiPayment(opts, onDone);
 		});
 	}
-	opts.arrSigningDeviceAddresses = [device.getMyDeviceAddress()];
-	opts.signWithLocalPrivateKey = signWithLocalPrivateKey;
+	if (!opts.arrSigningDeviceAddresses)
+		opts.arrSigningDeviceAddresses = [device.getMyDeviceAddress()];
+	if (!opts.signWithLocalPrivateKey)
+		opts.signWithLocalPrivateKey = signWithLocalPrivateKey;
 	Wallet.sendMultiPayment(opts, (err, unit, assocMnemonics) => {
 		if (onDone)
 			onDone(err, unit, assocMnemonics);

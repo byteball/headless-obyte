@@ -94,6 +94,7 @@ function addAddressToDatabase(wallet, is_change, index) {
 }
 
 setTimeout(() => {
+	replaceConsoleLog();
 	getKeys(async (mnemonic_phrase, passphrase, deviceTempPrivKey, devicePrevTempPrivKey) => {
 		let saveTempKeys = function (new_temp_key, new_prev_temp_key, onDone) {
 			writeKeys(mnemonic_phrase, new_temp_key, new_prev_temp_key, onDone);
@@ -117,7 +118,6 @@ setTimeout(() => {
 			const light_wallet = require('ocore/light_wallet.js');
 			light_wallet.setLightVendorHost(conf.hub);
 		}
-		replaceConsoleLog();
 		let result = await generateAndCheckAddresses(xPrivKey, devicePrivKey);
 		if (result.not_change >= 0) {
 			let wallet_id = await getWalletId(strXPubKey);

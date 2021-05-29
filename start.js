@@ -85,11 +85,11 @@ function replaceConsoleLog(){
 	console.log('From this point, output will be redirected to '+log_filename);
 	console.log(conf.bNoPassphrase ? "Press Enter to release the terminal if you started the daemon with &. Otherwise, type Ctrl-Z, then 'bg'." : "To release the terminal, type Ctrl-Z, then 'bg'");
 	console.log = function(){
-		writeStream.write(new Date().toISOString()+': ');
-		writeStream.write(util.format.apply(null, arguments) + '\n');
+		writeStream.write(new Date().toISOString() + ': ' + util.format.apply(null, arguments) + '\n');
 	};
 	console.warn = console.log;
 	console.info = console.log;
+	process.on('exit', () => writeStream.end());
 }
 
 function requestInput(prompt, cb) {
@@ -462,6 +462,31 @@ function handlePairing(from_address){
 	var device = require('ocore/device.js');
 	prepareBalanceText(function(balance_text){
 		device.sendMessageToDevice(from_address, 'text', balance_text);
+	});
+}
+
+
+/**
+ * Waits for the unit to become stable. Applies only to units sent from or to our wallet. Returns immediately if the unit is already stable.
+ * @async
+ * @memberOf headless_wallet
+ * @example
+ * await waitUntilMyUnitBecameStable(unit);
+ */
+function waitUntilMyUnitBecameStable(unit, onDone) {
+	if (!onDone)
+		return new Promise(resolve => waitUntilMyUnitBecameStable(unit, resolve));
+	db.query("SELECT is_stable FROM units WHERE unit=?", [unit], rows => {
+		if (rows.length === 0)
+			throw Error('unknown unit: ' + unit);
+		if (rows[0].is_stable) {
+			console.log('already stable', unit);
+			return onDone();
+		}
+		eventBus.once('my_stable-' + unit, () => {
+			console.log(unit + 'became stable');
+			onDone();
+		});
 	});
 }
 
@@ -1159,6 +1184,7 @@ function setupChatEventHandlers(){
 
 exports.isReady = isReady;
 exports.waitTillReady = waitTillReady;
+exports.waitUntilMyUnitBecameStable = waitUntilMyUnitBecameStable;
 exports.readSingleWallet = readSingleWallet;
 exports.readSingleAddress = readSingleAddress;
 exports.readFirstAddress = readFirstAddress;

@@ -254,6 +254,8 @@ function isControlAddress(device_address){
 function readSingleAddress(handleAddress){
 	if (!handleAddress)
 		return new Promise(resolve => readSingleAddress(resolve));
+	if (!wallet_id)
+		throw Error("wallet not set yet");
 	db.query("SELECT address FROM my_addresses WHERE wallet=?", [wallet_id], function(rows){
 		if (rows.length === 0)
 			throw Error("no addresses");
@@ -274,6 +276,8 @@ function readSingleAddress(handleAddress){
 function readFirstAddress(handleAddress){
 	if (!handleAddress)
 		return new Promise(resolve => readFirstAddress(resolve));
+	if (!wallet_id)
+		throw Error("wallet not set yet");
 	db.query("SELECT address FROM my_addresses WHERE wallet=? AND address_index=0 AND is_change=0", [wallet_id], function(rows){
 		if (rows.length === 0)
 			throw Error("no addresses");

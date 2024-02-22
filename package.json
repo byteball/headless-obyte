@@ -13,6 +13,7 @@
     "DAG",
     "obyte",
     "byteball",
+    "crypto",
     "full node"
   ],
   "license": "MIT",

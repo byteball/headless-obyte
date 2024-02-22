@@ -36,7 +36,8 @@
   },
   "devDependencies": {
     "better-docs": "^2.3.2",
-    "jsdoc": "^3.6.5"
+    "jsdoc": "^3.6.5",
+	"@jsdoc/salty": "^0.2.7"
   },
   "resolutions": {
   }

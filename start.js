@@ -1126,11 +1126,11 @@ function niceBytes(x){
 
 function getFileSizes(rootDir, cb) {
 	fs.readdir(rootDir, function(err, files) {
-		var fileSizes = {};
-		for (var index = 0; index < files.length; ++index) {
-			var file = files[index];
+		let fileSizes = {};
+		for (let index = 0; index < files.length; ++index) {
+			const file = files[index];
 			if (file[0] !== '.') {
-				var filePath = rootDir + '/' + file;
+				const filePath = rootDir + '/' + file;
 				fs.stat(filePath, function(err, stat) {
 					fileSizes[this.file + (stat.isFile() ? '' : '/')] = stat['size'];
 					if (files.length === (this.index + 1)) {

@@ -150,7 +150,7 @@ function consolidate(wallet, signer, maxUnspentOutputs){
 									outputs: [{address: dest_address, amount: 0}],
 									inputs: arrInputs,
 									input_amount: input_amount,
-									earned_headers_commission_recipients: [{address: dest_address, earned_headers_commission_share: 100}],
+									earned_headers_commission_recipients: (arrUsedAddresses.length > 1 || arrUsedAddresses[0] !== dest_address) ? [{address: dest_address, earned_headers_commission_share: 100}] : undefined,
 									callbacks: composer.getSavingCallbacks({
 										ifOk: function(objJoint){
 											network.broadcastJoint(objJoint);
